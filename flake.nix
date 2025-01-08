@@ -51,6 +51,7 @@
           name = "bited-build";
           src = ./.;
 
+          nativeBuildInputs = with pkgs; [ makeWrapper ];
           buildInputs = with pkgs; [
             git
             bitsnpicas
@@ -59,7 +60,6 @@
             woff2
             zip
             nerd-font-patcher
-            makeWrapper
           ];
 
           installPhase = ''
@@ -76,11 +76,11 @@
           name = "bited-img";
           src = ./.;
 
+          nativeBuildInputs = with pkgs; [ makeWrapper ];
           buildInputs = with pkgs; [
             bitsnpicas
             imagemagick
             nushell
-            makeWrapper
           ];
 
           installPhase = ''
