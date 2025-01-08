@@ -80,6 +80,15 @@
           '';
         };
 
+        bited-utils = pkgs.symlinkJoin {
+          name = "bited-utils";
+
+          paths = [
+            bited-build
+            bited-img
+          ];
+        };
+
       in
       {
 
@@ -92,20 +101,9 @@
         packages = {
           inherit
             bitsnpicas
-            bited-build
-            bited-img
+            bited-utils
             ;
-        };
-
-        apps = {
-          bited-build = {
-            type = "app";
-            program = "${bited-build}/bin/bited-build";
-          };
-          bited-img = {
-            type = "app";
-            program = "${bited-img}/bin/bited-img";
-          };
+          default = bited-utils;
         };
       }
     );
