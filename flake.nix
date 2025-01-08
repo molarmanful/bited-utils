@@ -20,7 +20,7 @@
     utils.lib.eachDefaultSystem (
       system:
       let
-        pkgs = nixpkgs.legacyPackages.${system};
+        pkgs = import nixpkgs { inherit system; };
 
         bitsnpicas = pkgs.stdenvNoCC.mkDerivation {
           name = "bitsnpicas";
@@ -62,7 +62,7 @@
           ];
 
           text = ''
-            nu main.nu "$@"
+            nu build.nu "$@"
           '';
         };
 
