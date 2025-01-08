@@ -87,6 +87,13 @@
             bited-build
             bited-img
           ];
+
+          buildInputs = with pkgs; [ makeWrapper ];
+
+          postBuild = ''
+            wrapProgram $out/bin/bited-build
+            wrapProgram $out/bin/bited-img
+          '';
         };
 
       in
