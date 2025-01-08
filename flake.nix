@@ -2,7 +2,7 @@
   description = "A versatile bitmap font with an organic flair";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "nixpkgs/nixos-unstable";
     utils.url = "github:numtide/flake-utils";
     bitsnpicas-src = {
       url = "github:kreativekorp/bitsnpicas?dir=main/java/BitsNPicas";
@@ -95,6 +95,17 @@
             bited-build
             bited-img
             ;
+        };
+
+        apps = {
+          bited-build = {
+            type = "app";
+            program = "${bited-build}/bin/bited-build";
+          };
+          bited-img = {
+            type = "app";
+            program = "${bited-img}/bin/bited-img";
+          };
         };
       }
     );
