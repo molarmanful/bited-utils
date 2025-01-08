@@ -4,7 +4,7 @@ def main [src: path, cfg = 'bited-img.yaml'] {
   let cfg_val = if ($cfg | path type) == 'file' { open $cfg } else { {} }
   with-env (
     {
-      out: 'img'
+      out_dir: 'img'
       accents: false
       txt_dir: 'txt'
       txt: {
@@ -111,13 +111,21 @@ def gen_imgs [] {
   | get 'name'
   | par-each {
       let stem = $in | path parse | get stem
-      sh scripts/magick.sh -- $ttf 16 $in ($env.out | path join $stem) $env.bg $env.fg
+      sh (scripts_path 'magick.sh') -- $ttf 16 $in (out_path $stem) $env.bg $env.fg
       log info $' + ($stem)'
     }
 
   rm -f $ttf
 }
 
+def scripts_path [name: string] {
+  $env.FILE_PWD | path join 'scripts' $name
+}
+
 def txt_path [name: string] {
   $env.txt_dir | path join $'($name).txt'
+}
+
+def out_path [name: string] {
+  $env.out_dir | path join $name
 }
