@@ -1,4 +1,4 @@
-use deps/build/bited-scale.nu
+use scale.nu
 
 export def main [src: path, out: path, --nerd, --release, --xs = [2 3]] {
   let name = $src | path parse | get stem

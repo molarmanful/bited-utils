@@ -1,6 +1,6 @@
 use std repeat
 
-export def main [src: path, -x: int] {
+export def main [src: path, -x: int = 1] {
   let bdf = open $src
   if $x < 2 { return $bdf }
 

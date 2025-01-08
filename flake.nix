@@ -47,6 +47,22 @@
           '';
         };
 
+        bited-scale = pkgs.stdenvNoCC.mkDerivation {
+          name = "bited-scale";
+          src = ./.;
+
+          nativeBuildInputs = with pkgs; [ makeWrapper ];
+
+          installPhase = ''
+            runHook preInstall
+            mkdir -p $out/share
+            cp src/scale.nu $out/share
+            makeWrapper ${pkgs.nushell}/bin/nu $out/bin/bited-scale \
+              --add-flags "$out/share/scale.nu"
+            runHook postInstall
+          '';
+        };
+
         bited-build = pkgs.stdenvNoCC.mkDerivation {
           name = "bited-build";
           src = ./.;
@@ -62,6 +78,7 @@
               --set PATH ${
                 with pkgs;
                 lib.makeBinPath [
+                  bited-scale
                   git
                   bitsnpicas
                   fontforge
@@ -105,6 +122,7 @@
           name = "bited-utils";
 
           paths = [
+            bited-scale
             bited-build
             bited-img
           ];
@@ -122,12 +140,16 @@
             deadnix
             nushell
             yamlfix
+            lua-language-server
+            stylua
+            selene
           ];
         };
 
         packages = {
           inherit
             bitsnpicas
+            bited-scale
             bited-build
             bited-img
             bited-utils
