@@ -119,6 +119,8 @@
         packages = {
           inherit
             bitsnpicas
+            bited-build
+            bited-img
             bited-utils
             ;
           default = bited-utils;
