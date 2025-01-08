@@ -67,7 +67,7 @@
             mkdir -p $out/bin
             cp build.nu $out
             makeWrapper ${pkgs.nushell}/bin/nu $out/bin/bited-build \
-              --add-flags "../build.nu"
+              --add-flags "$out/build.nu"
             runHook postInstall
           '';
         };
@@ -88,7 +88,7 @@
             mkdir -p $out/bin
             cp img.nu $out
             makeWrapper ${pkgs.nushell}/bin/nu $out/bin/bited-img \
-              --add-flags "../img.nu"
+              --add-flags "$out/img.nu"
             runHook postInstall
           '';
         };
