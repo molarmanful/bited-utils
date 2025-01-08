@@ -80,7 +80,6 @@
           propagatedBuildInputs = with pkgs; [
             bitsnpicas
             imagemagick
-            nushell
           ];
 
           installPhase = ''
