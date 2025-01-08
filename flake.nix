@@ -47,36 +47,49 @@
           '';
         };
 
-        bited-build = pkgs.writeShellApplication {
+        bited-build = pkgs.stdenvNoCC.mkDerivation {
           name = "bited-build";
+          src = ./.;
 
-          runtimeInputs = with pkgs; [
+          buildInputs = with pkgs; [
             git
             bitsnpicas
             fontforge
             xorg.bdftopcf
             woff2
-            nushell
             zip
             nerd-font-patcher
+            makeWrapper
           ];
 
-          text = ''
-            nu build.nu "$@"
+          installPhase = ''
+            runHook preInstall
+            mkdir -p $out/bin
+            cp build.nu $out
+            makeWrapper ${pkgs.nushell}/bin/nu $out/bin/bited-build \
+              --add-flags "../build.nu"
+            runHook postInstall
           '';
         };
 
-        bited-img = pkgs.writeShellApplication {
+        bited-img = pkgs.stdenvNoCC.mkDerivation {
           name = "bited-img";
+          src = ./.;
 
-          runtimeInputs = with pkgs; [
+          buildInputs = with pkgs; [
             bitsnpicas
             imagemagick
             nushell
+            makeWrapper
           ];
 
-          text = ''
-            nu img.nu "$@"
+          installPhase = ''
+            runHook preInstall
+            mkdir -p $out/bin
+            cp img.nu $out
+            makeWrapper ${pkgs.nushell}/bin/nu $out/bin/bited-img \
+              --add-flags "../img.nu"
+            runHook postInstall
           '';
         };
 
@@ -87,13 +100,6 @@
             bited-build
             bited-img
           ];
-
-          buildInputs = with pkgs; [ makeWrapper ];
-
-          postBuild = ''
-            wrapProgram $out/bin/bited-build
-            wrapProgram $out/bin/bited-img
-          '';
         };
 
       in
@@ -101,6 +107,11 @@
 
         devShell = pkgs.mkShell {
           packages = with pkgs; [
+            nil
+            nixd
+            nixfmt-rfc-style
+            statix
+            deadnix
             nushell
           ];
         };
