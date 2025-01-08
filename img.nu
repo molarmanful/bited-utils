@@ -1,21 +1,25 @@
 use std log
 
-def main [src: path, cfg = './bited.yaml'] {
-  with-env ({
-    src: $src
-    out: 'img'
-    accents: false
-    txt_dir: 'txt'
-    txt: {
-      chars: 'chars'
-      map: 'map'
-      sample: 'sample'
-      all: 'all'
+def main [src: path, cfg = 'bited-img.yaml'] {
+  let cfg_val = if ($cfg | path type) == 'file' { open $cfg } else { {} }
+  with-env (
+    {
+      out: 'img'
+      accents: false
+      txt_dir: 'txt'
+      txt: {
+        chars: 'chars'
+        map: 'map'
+        sample: 'sample'
+        all: 'all'
+      }
+      samples: []
+      bg: '#ffffff'
+      fg: '#000000'
     }
-    samples: []
-    bg: '#ffffff'
-    fg: '#000000'
-  } | merge deep (open $cfg)) {
+    | merge deep $cfg_val
+    | merge { src: $src }
+  ) {
     let codes = get_codes
     $codes | gen_chars
     $codes | gen_map

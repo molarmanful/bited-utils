@@ -12,7 +12,6 @@
 
   outputs =
     {
-      self,
       nixpkgs,
       utils,
       bitsnpicas-src,
