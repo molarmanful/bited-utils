@@ -1,12 +1,12 @@
-def main [--accents] {
+def main [src: path, --accents, --txt = 'txt'] {
   let src = 'src/kirsch.bdf'
   let codes = get_codes $src
 
-  $codes | gen_chars $accents | save -f 'txt/chars.txt'
-  $codes | gen_map $accents | save -f 'txt/map.txt'
+  $codes | gen_chars $accents | save -f ($txt | path join 'chars.txt')
+  $codes | gen_map $accents | save -f ($txt | path join 'map.txt')
   txt_correct
-  gen_samples | save -f 'txt/sample.txt'
-  (open 'txt/header.txt') + "\n" + (open "txt/sample.txt") | save -f 'txt/all.txt'
+  gen_samples | save -f ($txt | path join 'sample.txt')
+  ($txt | path join 'header.txt') + "\n" + ($txt | path join 'sample.txt') | save -f ($txt | path join 'all.txt')
 
   gen_imgs $src
 }
