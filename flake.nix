@@ -52,7 +52,7 @@
           src = ./.;
 
           nativeBuildInputs = with pkgs; [ makeWrapper ];
-          buildInputs = with pkgs; [
+          propagatedBuildInputs = with pkgs; [
             git
             bitsnpicas
             fontforge
@@ -77,7 +77,7 @@
           src = ./.;
 
           nativeBuildInputs = with pkgs; [ makeWrapper ];
-          buildInputs = with pkgs; [
+          propagatedBuildInputs = with pkgs; [
             bitsnpicas
             imagemagick
             nushell
