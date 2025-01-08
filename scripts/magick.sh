@@ -10,4 +10,4 @@ magick \
   -font "$ttf" -pointsize "$fsz" +antialias \
   label:@$txt \
   -bordercolor "$bg" -border "$fsz" \
-  img/"$out".png
+  "$out".png
