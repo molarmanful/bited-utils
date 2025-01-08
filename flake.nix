@@ -1,5 +1,5 @@
 {
-  description = "A versatile bitmap font with an organic flair";
+  description = "Pipeline helpers and utilities for building fonts from bited BDFs";
 
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-unstable";
