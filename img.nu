@@ -1,3 +1,5 @@
+use std log
+
 def main [src: path, cfg = './bited.yaml'] {
   with-env ({
     src: $src
@@ -99,14 +101,14 @@ def gen_imgs [] {
   mv $tmp $ttf
   rm -rf tmpd
 
-  print 'imgs...'
+  log info 'imgs...'
   ls $env.txt_dir
   | where type == file
   | get 'name'
   | par-each {
       let stem = $in | path parse | get stem
       sh scripts/magick.sh -- $ttf 16 $in ($env.out | path join $stem) $env.bg $env.fg
-      print $' + ($stem)'
+      log info $' + ($stem)'
     }
 
   rm -f $ttf

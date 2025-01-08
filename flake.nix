@@ -52,6 +52,7 @@
           name = "bited-build";
 
           runtimeInputs = with pkgs; [
+            git
             bitsnpicas
             fontforge
             xorg.bdftopcf
