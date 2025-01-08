@@ -59,7 +59,6 @@
             nushell
             zip
             nerd-font-patcher
-            pnpm
           ];
 
           text = ''
