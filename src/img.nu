@@ -101,7 +101,6 @@ def gen_imgs [] {
   let ttf = mktemp --suffix .ttf
   let tmpd = mktemp -d
   let tmp = $tmpd | path join 'tmp.ttf'
-  echo $env.PATH
   bitsnpicas convertbitmap -f 'ttf' -o $tmp $env.src
   mv $tmp $ttf
   rm -rf tmpd
