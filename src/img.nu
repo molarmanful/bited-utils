@@ -1,4 +1,4 @@
-def main [src: path, cfg = 'bited-img.yaml'] {
+export def main [src: path, cfg = 'bited-img.yaml'] {
   let cfg_val = if ($cfg | path type) == 'file' { open $cfg } else { {} }
   with-env (
     deps_path 'bited-img.yaml' | open

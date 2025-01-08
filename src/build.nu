@@ -1,7 +1,6 @@
-# FIXME: replace?
 use deps/build/bited-scale.nu
 
-def main [src: path, out: path, --nerd, --release, --xs = [2 3]] {
+export def main [src: path, out: path, --nerd, --release, --xs = [2 3]] {
   let name = $src | path parse | get stem
   let ttf = $out | path join $'($name).ttf'
 
@@ -13,6 +12,7 @@ def main [src: path, out: path, --nerd, --release, --xs = [2 3]] {
     xs: $xs
     x_format: '{name}_{x}x'
   } {
+    if not ($out | path exists) { mkdir $out }
     cp $src $out
     mk_vec
     if $nerd { mk_nerd }
@@ -43,7 +43,7 @@ def mk_x [x = 1] {
     mk_rest $env.name
   } else {
     let nm = { name: $env.name, x: $x } | format pattern $env.x_format
-    bited-scale -x $x | save (out_path $'($nm).bdf')
+    bited-scale -x $x $env.src | save (out_path $'($nm).bdf')
     mk_rest $nm
   }
 }
