@@ -1,4 +1,5 @@
-use scripts/bited-scale.nu
+# FIXME: replace?
+use deps/build/bited-scale.nu
 
 def main [src: path, out: path, --nerd, --release, --xs = [2 3]] {
   let name = $src | path parse | get stem
@@ -25,7 +26,7 @@ def mk_vec [] {
   bitsnpicas convertbitmap -f 'ttf' -o $env.ttf $env.src
 
   [si0 fix so1]
-  | each { scripts_path $'($in).py' | open }
+  | each { deps_path $'($in).py' | open }
   | str join "\n"
   | fontforge -c $in $env.ttf
 
@@ -49,7 +50,7 @@ def mk_x [x = 1] {
 
 def mk_rest [name: string] {
   [si0 si1 fix so0]
-  | each { scripts_path $'($in).py' | open }
+  | each { deps_path $'($in).py' | open }
   | str join "\n"
   | fontforge -c $in $env.src (out_path $'($env.name).') $env.name
 
@@ -63,8 +64,8 @@ def mk_zip [] {
   ^zip -r (out_path $'kirsch_($tag).zip') (out_path '*')
 }
 
-def scripts_path [name: string] {
-  $env.FILE_PWD | path join 'scripts' $name
+def deps_path [name: string] {
+  $env.FILE_PWD | path join 'deps' 'build' $name
 }
 
 def out_path [name: string] {

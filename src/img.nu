@@ -1,31 +1,15 @@
-use std log
-
 def main [src: path, cfg = 'bited-img.yaml'] {
   let cfg_val = if ($cfg | path type) == 'file' { open $cfg } else { {} }
   with-env (
-    {
-      out_dir: 'img'
-      accents: false
-      txt_dir: 'txt'
-      txt: {
-        chars: 'chars'
-        map: 'map'
-        sample: 'sample'
-        all: 'all'
-      }
-      samples: []
-      bg: '#ffffff'
-      fg: '#000000'
-    }
+    deps_path 'bited-img.yaml' | open
     | merge deep $cfg_val
-    | merge { src: $src }
+    | upsert src $src
   ) {
     let codes = get_codes
     $codes | gen_chars
     $codes | gen_map
     txt_correct
-    gen_samples
-    gen_all
+    gen_gens
     gen_imgs
   }
 }
@@ -38,16 +22,20 @@ def get_codes []: nothing -> list<int> {
 }
 
 def gen_chars []: list<int> -> nothing {
+  if $env.chars in [null false ''] { return }
+
   $in
   | each { char -i $in }
   | if $env.accents { str replace -r '(\p{M})' ' $1' } else { }
   | chunks 48
   | each { str join ' ' }
   | str join "\n"
-  | save -f (txt_path $env.txt.chars)
+  | save -f (txt_path $env.chars)
 }
 
 def gen_map []: list<int> -> nothing {
+  if $env.map in [null false ''] { return }
+
   $in
   | group-by { $in // 16 }
   | transpose k v
@@ -72,7 +60,7 @@ def gen_map []: list<int> -> nothing {
       '        ┌────────────────────────────────'
     ]
   | str join "\n"
-  | save -f (txt_path $env.txt.map)
+  | save -f (txt_path $env.map)
 }
 
 def txt_correct [] {
@@ -85,47 +73,51 @@ def txt_correct [] {
     }
 }
 
-def gen_samples [] {
-  $env.samples
-  | each {|a| txt_path $a | open }
+def gen_gens [] {
+  $env.gens
+  | transpose k v
+  | each {
+      let k = $in.k
+      let v = $in.v
+      $v
+      | each { txt_path $in | open }
+      | str join "\n"
+      | save -f (txt_path $k)
+    }
   | str join "\n"
-  | save -f (txt_path $env.txt.sample)
-}
-
-def gen_all [] {
-  (txt_path $env.txt.sample) + "\n" + (txt_path $env.txt.sample)
-  | save -f (txt_path $env.txt.all)
 }
 
 def gen_imgs [] {
   let ttf = mktemp --suffix .ttf
   let tmpd = mktemp -d
   let tmp = $tmpd | path join 'tmp.ttf'
+
   bitsnpicas convertbitmap -f 'ttf' -o $tmp $env.src
   mv $tmp $ttf
   rm -rf tmpd
 
-  log info 'imgs...'
+  print 'imgs...'
   ls $env.txt_dir
   | where type == file
   | get 'name'
   | par-each {
       let stem = $in | path parse | get stem
-      sh (scripts_path 'magick.sh') -- $ttf 16 $in (out_path $stem) $env.bg $env.fg
-      log info $' + ($stem)'
+      let out = (out_path $stem)
+      bash (deps_path 'magick.bash') $ttf $in $out $env.font_size $env.bg $env.fg
+      print $' + ($stem)'
     }
 
   rm -f $ttf
 }
 
-def scripts_path [name: string] {
-  $env.FILE_PWD | path join 'scripts' $name
+def deps_path [name: string]: nothing -> path {
+  $env.FILE_PWD | path join 'deps' 'img' $name
 }
 
-def txt_path [name: string] {
+def txt_path [name: string]: nothing -> path {
   $env.txt_dir | path join $'($name).txt'
 }
 
-def out_path [name: string] {
+def out_path [name: string]: nothing -> path {
   $env.out_dir | path join $name
 }

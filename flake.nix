@@ -55,8 +55,9 @@
 
           installPhase = ''
             runHook preInstall
-            mkdir -p $out/share $out/bin
-            cp -r src/{build.nu,scripts} $out/share
+            mkdir -p $out/share/deps $out/bin
+            cp src/build.nu $out/share
+            cp -r src/deps/build $out/share/deps
             makeWrapper ${pkgs.nushell}/bin/nu $out/bin/bited-build \
               --set PATH ${
                 with pkgs;
@@ -83,12 +84,14 @@
 
           installPhase = ''
             runHook preInstall
-            mkdir -p $out/share $out/bin
-            cp -r src/img.nu $out/share
+            mkdir -p $out/share/deps $out/bin
+            cp src/img.nu $out/share
+            cp -r src/deps/img $out/share/deps
             makeWrapper ${pkgs.nushell}/bin/nu $out/bin/bited-img \
               --set PATH ${
                 with pkgs;
                 lib.makeBinPath [
+                  bash
                   bitsnpicas
                   imagemagick
                 ]
@@ -118,6 +121,7 @@
             statix
             deadnix
             nushell
+            yamlfix
           ];
         };
 
