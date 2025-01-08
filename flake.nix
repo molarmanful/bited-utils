@@ -52,21 +52,24 @@
           src = ./.;
 
           nativeBuildInputs = with pkgs; [ makeWrapper ];
-          propagatedBuildInputs = with pkgs; [
-            git
-            bitsnpicas
-            fontforge
-            xorg.bdftopcf
-            woff2
-            zip
-            nerd-font-patcher
-          ];
 
           installPhase = ''
             runHook preInstall
             mkdir -p $out/share $out/bin
             cp -r src/{build.nu,scripts} $out/share
             makeWrapper ${pkgs.nushell}/bin/nu $out/bin/bited-build \
+              --set PATH ${
+                with pkgs;
+                lib.makeBinPath [
+                  git
+                  bitsnpicas
+                  fontforge
+                  xorg.bdftopcf
+                  woff2
+                  zip
+                  nerd-font-patcher
+                ]
+              } \
               --add-flags "$out/share/build.nu"
             runHook postInstall
           '';
@@ -77,16 +80,19 @@
           src = ./.;
 
           nativeBuildInputs = with pkgs; [ makeWrapper ];
-          propagatedBuildInputs = with pkgs; [
-            bitsnpicas
-            imagemagick
-          ];
 
           installPhase = ''
             runHook preInstall
             mkdir -p $out/share $out/bin
             cp -r src/img.nu $out/share
             makeWrapper ${pkgs.nushell}/bin/nu $out/bin/bited-img \
+              --set PATH ${
+                with pkgs;
+                lib.makeBinPath [
+                  bitsnpicas
+                  imagemagick
+                ]
+              } \
               --add-flags "$out/share/img.nu"
             runHook postInstall
           '';
