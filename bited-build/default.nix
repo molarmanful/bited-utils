@@ -1,11 +1,11 @@
 {
+  version,
+
   lib,
-  version ? builtins.readFile ./VERSION,
-  callPackage,
   stdenvNoCC,
   makeWrapper,
-  bitsnpicas ? callPackage ../bitsnpicas { },
-  bited-scale ? callPackage ../bited-scale { },
+  bitsnpicas,
+  bited-scale,
   nushell,
   git,
   fontforge,

@@ -1,17 +1,17 @@
 {
-  version ? builtins.readFile ./VERSION,
-  callPackage,
+  version,
+
   symlinkJoin,
-  bited-build ? callPackage ./bited-build { },
-  bited-img ? callPackage ./bited-img { },
-  bited-scale ? callPackage ./bited-scale { },
+  bited-build,
+  bited-img,
+  bited-scale,
   ...
 }:
 
 symlinkJoin {
   inherit version;
+  pname = "bited-utils";
 
-  name = "bited-utils";
   paths = [
     bited-build
     bited-img
