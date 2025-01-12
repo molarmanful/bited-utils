@@ -1,4 +1,5 @@
 {
+  lib,
   stdenvNoCC,
   fetchFromGitHub,
   makeWrapper,
@@ -15,8 +16,8 @@ stdenvNoCC.mkDerivation rec {
     owner = "molarmanful"; # TODO: switch back to kreativekorp if pr merges
     repo = pname;
     rev = version;
-    sha256 = "sha256-r0TyCJs2CaXoTWr/0iyuzG1f/qZlIWDeMdmw2miSHC4=";
-    sparseCheckout = [ "main/java/BitsNPicas/src/com/kreative/bitsnpicas" ];
+    sha256 = "sha256-7qwjZj0dTZyTh6GSsDfDY8b/J5yfmRfWzPBpbuS2xhw=";
+    sparseCheckout = [ "main/java/BitsNPicas" ];
   };
 
   nativeBuildInputs = [
