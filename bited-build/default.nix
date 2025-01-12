@@ -1,10 +1,11 @@
 {
   lib,
   version,
+  callPackage,
   stdenvNoCC,
   makeWrapper,
-  bitsnpicas,
-  bited-scale,
+  bitsnpicas ? callPackage ../bitsnpicas { inherit version; },
+  bited-scale ? callPackage ../bited-scale { inherit version; },
   nushell,
   git,
   fontforge,

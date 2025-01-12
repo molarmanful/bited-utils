@@ -16,7 +16,7 @@
     utils.lib.eachDefaultSystem (
       system:
       let
-        pkgs = import nixpkgs { inherit system; };
+        pkgs = nixpkgs.legacyPackages.${system};
         version = self.shortRev or self.dirtyShortRev;
       in
       {
@@ -38,17 +38,10 @@
 
         packages = rec {
           bitsnpicas = pkgs.callPackage ./bitsnpicas { inherit version; };
-          bited-build = pkgs.callPackage ./bited-build { inherit version bitsnpicas bited-scale; };
-          bited-img = pkgs.callPackage ./bited-img { inherit version bitsnpicas; };
+          bited-build = pkgs.callPackage ./bited-build { inherit version; };
+          bited-img = pkgs.callPackage ./bited-img { inherit version; };
           bited-scale = pkgs.callPackage ./bited-scale { inherit version; };
-          bited-utils = pkgs.callPackage ./. {
-            inherit
-              version
-              bited-build
-              bited-img
-              bited-scale
-              ;
-          };
+          bited-utils = pkgs.callPackage ./. { inherit version; };
           default = bited-utils;
         };
       }

@@ -1,9 +1,10 @@
 {
   lib,
   version,
+  callPackage,
   stdenvNoCC,
   makeWrapper,
-  bitsnpicas,
+  bitsnpicas ? callPackage ../bitsnpicas { inherit version; },
   nushell,
   bash,
   imagemagick,

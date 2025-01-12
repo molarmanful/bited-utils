@@ -1,9 +1,10 @@
 {
   version,
+  callPackage,
   symlinkJoin,
-  bited-build,
-  bited-img,
-  bited-scale,
+  bited-build ? callPackage ./bited-build { inherit version; },
+  bited-img ? callPackage ./bited-img { inherit version; },
+  bited-scale ? callPackage ./bited-scale { inherit version; },
   ...
 }:
 
