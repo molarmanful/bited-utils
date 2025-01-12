@@ -8,7 +8,6 @@
 
   outputs =
     {
-      self,
       nixpkgs,
       utils,
       ...
@@ -17,7 +16,6 @@
       system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
-        version = self.shortRev or self.dirtyShortRev;
       in
       {
 
@@ -37,11 +35,11 @@
         };
 
         packages = rec {
-          bitsnpicas = pkgs.callPackage ./bitsnpicas { inherit version; };
-          bited-build = pkgs.callPackage ./bited-build { inherit version; };
-          bited-img = pkgs.callPackage ./bited-img { inherit version; };
-          bited-scale = pkgs.callPackage ./bited-scale { inherit version; };
-          bited-utils = pkgs.callPackage ./. { inherit version; };
+          bitsnpicas = pkgs.callPackage ./bitsnpicas { };
+          bited-build = pkgs.callPackage ./bited-build { };
+          bited-img = pkgs.callPackage ./bited-img { };
+          bited-scale = pkgs.callPackage ./bited-scale { };
+          bited-utils = pkgs.callPackage ./. { };
           default = bited-utils;
         };
       }

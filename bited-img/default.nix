@@ -1,10 +1,10 @@
 {
   lib,
-  version,
+  version ? builtins.readFile ./VERSION,
   callPackage,
   stdenvNoCC,
   makeWrapper,
-  bitsnpicas ? callPackage ../bitsnpicas { inherit version; },
+  bitsnpicas ? callPackage ../bitsnpicas { },
   nushell,
   bash,
   imagemagick,

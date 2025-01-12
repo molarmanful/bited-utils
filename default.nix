@@ -1,10 +1,10 @@
 {
-  version,
+  version ? builtins.readFile ./VERSION,
   callPackage,
   symlinkJoin,
-  bited-build ? callPackage ./bited-build { inherit version; },
-  bited-img ? callPackage ./bited-img { inherit version; },
-  bited-scale ? callPackage ./bited-scale { inherit version; },
+  bited-build ? callPackage ./bited-build { },
+  bited-img ? callPackage ./bited-img { },
+  bited-scale ? callPackage ./bited-scale { },
   ...
 }:
 
