@@ -1,5 +1,5 @@
 {
-  version,
+  version ? builtins.readFile ./VERSION,
   buildGoModule,
   ...
 }:
