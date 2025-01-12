@@ -41,7 +41,7 @@
           bited-build = pkgs.callPackage ./bited-build { inherit version bitsnpicas bited-scale; };
           bited-img = pkgs.callPackage ./bited-img { inherit version bitsnpicas; };
           bited-scale = pkgs.callPackage ./bited-scale { inherit version; };
-          bited-utils = pkgs.callPackage ./default.nix {
+          bited-utils = pkgs.callPackage ./. {
             inherit
               version
               bited-build
