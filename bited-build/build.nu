@@ -58,8 +58,8 @@ def mk_rest [name: string] {
 def mk_zip [] {
   let tag = git describe --tags --abbrev=0
 
-  cp ['README.md' 'LICENSE' 'AUTHORS'] $env.out
-  ^zip -r (out_path $'kirsch_($tag).zip') (out_path '*')
+  ['README.md' 'LICENSE' 'AUTHORS'] | each { cp $in $env.out }
+  ^zip -r (out_path $'kirsch_($tag).zip') $env.out
 }
 
 def deps_path [name: string] {
