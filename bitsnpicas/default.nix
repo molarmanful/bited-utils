@@ -11,22 +11,20 @@ stdenvNoCC.mkDerivation rec {
   pname = "bitsnpicas";
   version = "c6804949137229ef5a0c185e1464ef6b9e222601";
 
-  src = fetchFromGitHub {
-    owner = "molarmanful"; # TODO: switch back to kreativekorp if pr merges
-    repo = pname;
-    rev = version;
-    sha256 = "sha256-r0TyCJs2CaXoTWr/0iyuzG1f/qZlIWDeMdmw2miSHC4=";
-    sparseCheckout = [ "main/java/BitsNPicas/src/com/kreative/bitsnpicas" ];
-  };
+  src =
+    fetchFromGitHub {
+      owner = "molarmanful"; # TODO: switch back to kreativekorp if pr merges
+      repo = pname;
+      rev = version;
+      sha256 = "sha256-r0TyCJs2CaXoTWr/0iyuzG1f/qZlIWDeMdmw2miSHC4=";
+      sparseCheckout = [ "main/java/BitsNPicas/src/com/kreative/bitsnpicas" ];
+    }
+    + "main/java/BitsNPicas";
 
   nativeBuildInputs = [
     temurin-bin
     makeWrapper
   ];
-
-  preBuild = ''
-    cd main/java/BitsNPicas
-  '';
 
   buildFlags = "BitsNPicas.jar";
 

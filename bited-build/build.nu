@@ -1,5 +1,3 @@
-use scale.nu
-
 export def main [src: path, out: path, --nerd, --release, --xs = [2 3]] {
   let name = $src | path parse | get stem
   let ttf = $out | path join $'($name).ttf'
@@ -43,7 +41,7 @@ def mk_x [x = 1] {
     mk_rest $env.name
   } else {
     let nm = { name: $env.name, x: $x } | format pattern $env.x_format
-    bited-scale -x $x $env.src | save (out_path $'($nm).bdf')
+    bited-scale -n $x $env.src | save (out_path $'($nm).bdf')
     mk_rest $nm
   }
 }

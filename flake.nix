@@ -30,9 +30,9 @@
             deadnix
             nushell
             yamlfix
-            lua-language-server
-            stylua
-            selene
+            go
+            gopls
+            gotools
           ];
         };
 
