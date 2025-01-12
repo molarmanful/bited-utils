@@ -111,7 +111,7 @@ def gen_imgs [] {
 }
 
 def deps_path [name: string]: nothing -> path {
-  $env.FILE_PWD | path join 'deps' 'img' $name
+  $env.FILE_PWD | path join 'deps' $name
 }
 
 def txt_path [name: string]: nothing -> path {

@@ -65,7 +65,7 @@ def mk_zip [] {
 }
 
 def deps_path [name: string] {
-  $env.FILE_PWD | path join 'deps' 'build' $name
+  $env.FILE_PWD | path join 'deps' $name
 }
 
 def out_path [name: string] {
