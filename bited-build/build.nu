@@ -58,7 +58,7 @@ def mk_x [x = 1] {
   } else {
     let nm = { name: $env.name, x: $x } | format pattern $env.x_format
     open $env.src
-    | bited-scale -n $x
+    | bited-scale -n $x --name $nm
     | save -f (out_path $'($env.name)_($x)x.bdf')
     mk_rest $nm
   }

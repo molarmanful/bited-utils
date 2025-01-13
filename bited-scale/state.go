@@ -14,14 +14,15 @@ const (
 
 type State struct {
 	Scale int
+	Name  string
 	Mode  int
 	K     string
 	V     string
 	LUT   map[rune]string
 }
 
-func NewState(scale int) *State {
-	state := &State{Scale: scale, Mode: X}
+func NewState(scale int, name string) *State {
+	state := &State{Scale: scale, Name: name, Mode: X}
 	state.LUT = make(map[rune]string)
 	return state
 }
@@ -77,6 +78,9 @@ func (state *State) ModeProp() error {
 	case "ENDPROPERTIES":
 		state.Mode = X
 
+	case "FAMILY_NAME":
+		fmt.Print(`"`, strings.ReplaceAll(state.Name, `"`, `""`), `"`)
+
 	case
 		"PIXEL_SIZE",
 		"POINT_SIZE",
@@ -123,6 +127,11 @@ func (state *State) XLFD() error {
 			continue
 		}
 		fmt.Print("-")
+
+		if i == 2 {
+			fmt.Print(state.Name)
+			continue
+		}
 
 		if i == 7 || i == 8 || i == 12 {
 			if n, err := strconv.Atoi(v); err == nil {

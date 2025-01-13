@@ -10,10 +10,11 @@ import (
 
 var reKV = regexp.MustCompile(`^\s*(\w+)\s*(.*)\s*$`)
 var scale = flag.Int("n", 2, "scaling factor")
+var name = flag.String("name", "", "scaling factor")
 
 func main() {
 	flag.Parse()
-	state := NewState(*scale)
+	state := NewState(*scale, *name)
 	scanner := bufio.NewScanner(os.Stdin)
 	for scanner.Scan() {
 		line := scanner.Text()
