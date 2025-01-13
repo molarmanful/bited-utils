@@ -21,7 +21,7 @@
 
     {
       overlay = final: prev: {
-        bitsnpicas = final.callPackage ./bitsnpicas o;
+        bitsnpicas = final.callPackage ./bitsnpicas.nix o;
         bited-build = final.callPackage ./bited-build o;
         bited-img = final.callPackage ./bited-img o;
         bited-scale = final.callPackage ./bited-scale o;
@@ -58,7 +58,7 @@
             statix
             deadnix
             nushell
-            yamlfix
+            taplo
             go
             gopls
             gotools

@@ -1,23 +1,38 @@
-export def main [src: path, out: path, --nerd, --release, --xs = [2 3]] {
-  let name = $src | path parse | get stem
-  let ttf = $out | path join $'($name).ttf'
+export def main [cfg = 'bited-build.toml', --nerd, --release] {
+  let cfg_val = if ($cfg | path type) != 'file' { return }
 
-  with-env {
-    src: $src
-    out: $out
-    name: $name
-    ttf: $ttf
-    xs: $xs
-    x_format: '{name}_{x}x'
-  } {
-    if not ($out | path exists) { mkdir $out }
-    cp $src $out
-    mk_vec
-    if $nerd { mk_nerd }
-    [1 ...$xs] | each { mk_x $in }
+  open $cfg | transpose k v | each {
+    let name = $in.k
+    let v = $in.v
 
-    if $release { mk_zip }
+    with-env (
+      deps_path 'unit.toml' | open
+      | merge deep $v
+      | upsert name $name
+    ) {
+      with-env {
+        src: ({ name: $name } | format pattern $env.src)
+        ttf: (out_path $'($name).ttf')
+      } {
+        if not ($env.out | path exists) { mkdir $env.out }
+        cp $env.src $env.out
+
+        mk_vec
+        if $nerd { mk_nerd }
+
+        [1 ...$env.xs]
+        | each { into int --signed }
+        | uniq
+        | filter { $in > 0 }
+        | each { mk_x $in }
+
+        if $release { mk_zip }
+      }
+    }
+
+    print $'($name) built.'
   }
+  return
 }
 
 def mk_vec [] {
@@ -25,6 +40,7 @@ def mk_vec [] {
 
   [si0 fix so1]
   | each { deps_path $'($in).py' | open }
+  | insert 1 (ttfix)
   | str join "\n"
   | fontforge -c $in $env.ttf
 
@@ -41,7 +57,9 @@ def mk_x [x = 1] {
     mk_rest $env.name
   } else {
     let nm = { name: $env.name, x: $x } | format pattern $env.x_format
-    open $env.src | bited-scale -n $x | save (out_path $'($nm).bdf')
+    open $env.src
+    | bited-scale -n $x
+    | save -f (out_path $'($env.name)_($x)x.bdf')
     mk_rest $nm
   }
 }
@@ -49,6 +67,7 @@ def mk_x [x = 1] {
 def mk_rest [name: string] {
   [si0 si1 fix so0]
   | each { deps_path $'($in).py' | open }
+  | insert 2 (ttfix)
   | str join "\n"
   | fontforge -c $in $env.src (out_path $'($env.name).') $env.name
 
@@ -68,4 +87,19 @@ def deps_path [name: string] {
 
 def out_path [name: string] {
   $env.out | path join $name
+}
+
+def ttfix []: nothing -> string {
+  $env.sfnt
+  | transpose k v
+  | each {
+      [
+        'f.appendSFNTName('
+        ([$env.sfnt_lang $in.k $in.v] | each { to json -r } | str join ',')
+        ')'
+      ]
+      | str join
+    }
+  | append $env.ttfix
+  | str join "\n"
 }

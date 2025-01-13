@@ -1,0 +1,8 @@
+src = "src/{name}.bdf"
+out = "out"
+xs = []
+zip_includes = []
+x_format = "{name} {x}x"
+sfnt_lang = "English (US)"
+ttfix = ""
+kirsch.sfnt = {}
