@@ -10,9 +10,12 @@ export def main [cfg = 'bited-build.toml', --nerd, --release] {
       | merge deep $v
       | upsert name $name
     ) {
+      let src = ({ name: $name } | format pattern $env.src)
+      let stem = $src | path parse | get stem
       with-env {
-        src: ({ name: $name } | format pattern $env.src)
-        ttf: (out_path $'($name).ttf')
+        src: $src
+        stem: $stem
+        ttf: (out_path $'($stem).ttf')
       } {
         if not ($env.out | path exists) { mkdir $env.out }
         cp $env.src $env.out
@@ -54,24 +57,25 @@ def mk_nerd [] {
 
 def mk_x [x = 1] {
   if $x <= 1 {
-    mk_rest $env.name
+    mk_rest $env.stem $env.name
   } else {
-    let nm = { name: $env.name, x: $x } | format pattern $env.x_format
+    let name = { name: $env.name, x: $x } | format pattern $env.x_format
+    let stem = $'($env.name)_($x)x'
     open $env.src
-    | bited-scale -n $x --name $nm
-    | save -f (out_path $'($env.name)_($x)x.bdf')
-    mk_rest $nm
+    | bited-scale -n $x --name $name
+    | save -f (out_path $'($stem).bdf')
+    mk_rest $stem $name
   }
 }
 
-def mk_rest [name: string] {
+def mk_rest [stem: string, name: string] {
   [si0 si1 fix so0]
   | each { deps_path $'($in).py' | open }
   | insert 2 (ttfix)
   | str join "\n"
-  | fontforge -c $in $env.src (out_path $'($env.name).') $env.name
+  | fontforge -c $in $env.src (out_path $'($stem).') $name
 
-  bdftopcf -o (out_path $'($env.name).pcf') $env.src
+  bdftopcf -o (out_path $'($stem).pcf') $env.src
 }
 
 def mk_zip [] {
