@@ -20,7 +20,7 @@
     in
 
     {
-      overlay = final: prev: {
+      overlays.default = final: prev: {
         bitsnpicas = final.callPackage ./bitsnpicas.nix o;
         bited-build = final.callPackage ./bited-build o;
         bited-img = final.callPackage ./bited-img o;
@@ -32,7 +32,7 @@
     // utils.lib.eachDefaultSystem (
       system:
       let
-        pkgs = nixpkgs.legacyPackages.${system}.extend self.overlay;
+        pkgs = nixpkgs.legacyPackages.${system}.extend self.overlays.default;
       in
       {
 
@@ -47,7 +47,7 @@
           default = pkgs.bited-utils;
         };
 
-        devShell = pkgs.mkShell {
+        devShells.default = pkgs.mkShell {
           packages = with pkgs; [
             nil
             nixd
