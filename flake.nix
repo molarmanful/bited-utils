@@ -14,37 +14,27 @@
       ...
     }:
     let
-      o = {
-        version = builtins.readFile ./VERSION;
-      };
+      version = builtins.readFile ./VERSION;
     in
 
-    {
-      overlays.default = final: prev: {
-        bitsnpicas = final.callPackage ./bitsnpicas.nix o;
-        bited-build = final.callPackage ./bited-build o;
-        bited-img = final.callPackage ./bited-img o;
-        bited-scale = final.callPackage ./bited-scale o;
-        bited-utils = final.callPackage ./. o;
-      };
-    }
-
-    // utils.lib.eachDefaultSystem (
+    utils.lib.eachDefaultSystem (
       system:
       let
-        pkgs = nixpkgs.legacyPackages.${system}.extend self.overlays.default;
+        pkgs = nixpkgs.legacyPackages.${system};
+        o = {
+          inherit version;
+          P = self.packages.${system};
+        };
       in
       {
 
-        packages = {
-          inherit (pkgs)
-            bitsnpicas
-            bited-build
-            bited-img
-            bited-scale
-            bited-utils
-            ;
-          default = pkgs.bited-utils;
+        packages = rec {
+          bitsnpicas = pkgs.callPackage ./bitsnpicas.nix o;
+          bited-build = pkgs.callPackage ./bited-build o;
+          bited-img = pkgs.callPackage ./bited-img o;
+          bited-scale = pkgs.callPackage ./bited-scale o;
+          bited-utils = pkgs.callPackage ./. o;
+          default = bited-utils;
         };
 
         devShells.default = pkgs.mkShell {

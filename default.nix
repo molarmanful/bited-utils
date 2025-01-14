@@ -1,10 +1,8 @@
 {
   version,
+  P,
 
   symlinkJoin,
-  bited-build,
-  bited-img,
-  bited-scale,
   ...
 }:
 
@@ -13,8 +11,8 @@ symlinkJoin {
   pname = "bited-utils";
 
   paths = [
-    bited-build
-    bited-img
-    bited-scale
+    P.bited-build
+    P.bited-img
+    P.bited-scale
   ];
 }
