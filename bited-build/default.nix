@@ -7,7 +7,6 @@
   bitsnpicas,
   bited-scale,
   nushell,
-  git,
   fontforge,
   xorg,
   woff2,
@@ -32,7 +31,6 @@ stdenvNoCC.mkDerivation {
         lib.makeBinPath [
           bitsnpicas
           bited-scale
-          git
           fontforge
           xorg.bdftopcf
           woff2

@@ -79,7 +79,7 @@ def mk_rest [stem: string, name: string] {
 }
 
 def mk_zip [] {
-  let tag = git describe --tags --abbrev=0
+  let tag = open $env.verfile
 
   $env.zip_includes | each { cp $in $env.out_dir }
   ^zip -r (out_path $'kirsch_($tag).zip') $env.out_dir
