@@ -8,6 +8,7 @@
 
   outputs =
     {
+      self,
       nixpkgs,
       utils,
       ...
@@ -18,20 +19,20 @@
       };
     in
 
-    utils.lib.eachDefaultSystem (
+    {
+      overlay = final: prev: {
+        bitsnpicas = final.callPackage ./bitsnpicas.nix o;
+        bited-build = final.callPackage ./bited-build o;
+        bited-img = final.callPackage ./bited-img o;
+        bited-scale = final.callPackage ./bited-scale o;
+        bited-utils = final.callPackage ./. o;
+      };
+    }
+
+    // utils.lib.eachDefaultSystem (
       system:
       let
-        pkgs = nixpkgs.legacyPackages.${system}.extend (
-
-          final: prev: {
-            bitsnpicas = final.callPackage ./bitsnpicas.nix o;
-            bited-build = final.callPackage ./bited-build o;
-            bited-img = final.callPackage ./bited-img o;
-            bited-scale = final.callPackage ./bited-scale o;
-            bited-utils = final.callPackage ./. o;
-          }
-
-        );
+        pkgs = nixpkgs.legacyPackages.${system}.extend self.overlay;
       in
       {
 
