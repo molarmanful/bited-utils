@@ -1,16 +1,24 @@
-export def main [src: path, cfg = 'bited-img.toml'] {
-  let cfg_val = if ($cfg | path type) == 'file' { open $cfg } else { {} }
-  with-env (
-    deps_path 'bited-img.toml' | open
-    | merge deep $cfg_val
-    | upsert src $src
-  ) {
-    let codes = get_codes
-    $codes | gen_chars
-    $codes | gen_map
-    txt_correct
-    gen_gens
-    gen_imgs
+export def main [cfg = 'bited-img.toml'] {
+  if ($cfg | path type) != 'file' { return }
+
+  open $cfg | transpose k v | each {
+    let name = $in.k
+    let v = $in.v
+
+    with-env (
+      deps_path 'unit.toml' | open
+      | merge deep $v
+      | update src {|unit| { name: $name } | format pattern $unit.src }
+    ) {
+
+      let codes = get_codes
+      $codes | gen_chars
+      $codes | gen_map
+      txt_correct
+      gen_gens
+      gen_imgs
+
+    }
   }
 }
 

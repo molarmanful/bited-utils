@@ -1,5 +1,5 @@
 export def main [cfg = 'bited-build.toml', --nerd, --release] {
-  let cfg_val = if ($cfg | path type) != 'file' { return }
+  if ($cfg | path type) != 'file' { return }
 
   open $cfg | transpose k v | each {
     let name = $in.k
@@ -17,8 +17,8 @@ export def main [cfg = 'bited-build.toml', --nerd, --release] {
         stem: $stem
         ttf: (out_path $'($stem).ttf')
       } {
-        if not ($env.out | path exists) { mkdir $env.out }
-        cp $env.src $env.out
+        if not ($env.out_dir | path exists) { mkdir $env.out_dir }
+        cp $env.src $env.out_dir
 
         mk_vec
         if $nerd { mk_nerd }
@@ -51,8 +51,8 @@ def mk_vec [] {
 }
 
 def mk_nerd [] {
-  nerd-font-patcher $env.ttf -out $env.out --careful -c
-  nerd-font-patcher $env.ttf -out $env.out --careful -c -s
+  nerd-font-patcher $env.ttf -out $env.out_dir --careful -c
+  nerd-font-patcher $env.ttf -out $env.out_dir --careful -c -s
 }
 
 def mk_x [x = 1] {
@@ -81,8 +81,8 @@ def mk_rest [stem: string, name: string] {
 def mk_zip [] {
   let tag = git describe --tags --abbrev=0
 
-  $env.zip_includes | each { cp $in $env.out }
-  ^zip -r (out_path $'kirsch_($tag).zip') $env.out
+  $env.zip_includes | each { cp $in $env.out_dir }
+  ^zip -r (out_path $'kirsch_($tag).zip') $env.out_dir
 }
 
 def deps_path [name: string] {
@@ -90,7 +90,7 @@ def deps_path [name: string] {
 }
 
 def out_path [name: string] {
-  $env.out | path join $name
+  $env.out_dir | path join $name
 }
 
 def ttfix []: nothing -> string {

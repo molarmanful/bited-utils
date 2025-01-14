@@ -1,9 +1,10 @@
+src = "src/{name}.bdf"
 out_dir = "img"
 txt_dir = "txt"
 accents = false
 chars = "chars"
 map = "map"
-gens = [ ]
+gens = []
 font_size = 16
 bg = "#ffffff"
 fg = "#000000"
