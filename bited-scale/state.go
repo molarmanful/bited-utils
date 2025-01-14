@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"slices"
 	"strconv"
 	"strings"
 )
@@ -201,18 +202,24 @@ func (state *State) ScaleHex() error {
 				}
 			}
 
-			n1, err := strconv.ParseUint(b1.String(), 2, 64)
-			if err != nil {
-				return err
+			var b2 strings.Builder
+			for chunk := range slices.Chunk([]rune(b1.String()), 4) {
+				n1, err := strconv.ParseUint(string(chunk), 2, 4)
+				if err != nil {
+					return err
+				}
+				b2.WriteString(fmt.Sprintf("%X", n1))
 			}
-			state.LUT[c] = fmt.Sprintf("%02X", n1)
+			state.LUT[c] = b2.String()
 		}
 
 		line.WriteString(state.LUT[c])
 	}
 
+	lstr := line.String()
 	for i := 0; i < state.Scale; i++ {
-		fmt.Println(line.String())
+		fmt.Println(lstr)
 	}
+
 	return nil
 }
