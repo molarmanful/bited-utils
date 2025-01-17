@@ -8,6 +8,7 @@ export def main [cfg = 'bited-img.toml'] {
     with-env (
       deps_path 'unit.toml' | open
       | merge deep $v
+      | upsert name $name
       | update src {|unit| { name: $name } | format pattern $unit.src }
     ) {
 
@@ -72,7 +73,7 @@ def gen_map []: list<int> -> nothing {
 }
 
 def txt_correct [] {
-  ls $env.txt_dir
+  ls_txts
   | where type == file
   | get 'name'
   | each {
@@ -97,22 +98,70 @@ def gen_gens [] {
 
 def gen_imgs [] {
   let tmpd = mktemp -d
-  let ttf = $tmpd | path join 'tmp.ttf'
+  mkdir ($tmpd | path join 'fonts')
+  let ttf = $tmpd | path join 'fonts/tmp.ttf'
 
   bitsnpicas convertbitmap -f 'ttf' -o $ttf $env.src
+  let conf = mk_fc $tmpd
 
   print 'imgs...'
-  ls $env.txt_dir
+  ls_txts
   | where type == file
   | get 'name'
   | par-each {
-      let stem = $in | path parse | get stem
-      let out = (out_path $stem)
-      bash (deps_path 'magick.bash') $ttf $in $out $env.font_size $env.bg $env.fg
-      print $' + ($stem)'
+      let txt = $in
+      let path = $txt | path parse
+      let out = (out_path $path.stem)
+      let pango = $path | mk_pango
+      with-env { FONTCONFIG_FILE: $conf } {
+        bash (deps_path 'magick.bash') $ttf $txt $pango $out $env.font_size $env.clrs.bg $env.clrs.fg
+      }
+      print $' + ($path.stem)'
+      rm -f $pango
     }
 
   rm -f $ttf
+}
+
+def mk_fc [dir: path]: nothing -> path {
+  let d = $dir | path join 'fonts.conf'
+  { dir: ($dir | path join 'fonts') }
+  | format pattern (deps_path 'fonts.conf' | open)
+  | save -f $d
+  $d
+}
+
+def mk_pango [] {
+  let tmp = mktemp
+  {
+    tag: span
+    attributes: {
+      font: $env.name
+      size: $'($env.font_size * 3072 // 4)'
+      background: $env.clrs.bg
+      foreground: $env.clrs.fg
+    }
+    content: ($in | mk_content)
+  } | to xml | save -f $tmp
+  $tmp
+}
+
+def mk_content []: record -> list {
+  let path = $in
+  let txt = $path | path join
+  let clr = $path | upsert extension 'clr' | path join
+  if ($clr | path exists) {
+    let clrs = $env.clrs.base | str join "\n"
+    let $x = bited-pangogo --txt $txt --clr $clr --clrs $clrs | from json
+    { tag: span, content: $x } | to xml | save -f test.xml
+    $x
+  } else {
+    [($txt | open)]
+  }
+}
+
+def ls_txts [] {
+  ls ...(glob ($env.txt_dir | path join '*.txt'))
 }
 
 def deps_path [name: string]: nothing -> path {

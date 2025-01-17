@@ -14,5 +14,6 @@ symlinkJoin {
     P.bited-build
     P.bited-img
     P.bited-scale
+    P.bited-pangogo
   ];
 }

@@ -26,6 +26,7 @@ stdenvNoCC.mkDerivation {
       --set PATH ${
         lib.makeBinPath [
           P.bitsnpicas
+          P.bited-pangogo
           bash
           imagemagick
         ]
