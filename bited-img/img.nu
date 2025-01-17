@@ -1,3 +1,5 @@
+use std repeat
+
 export def main [cfg = 'bited-img.toml'] {
   if ($cfg | path type) != 'file' { return }
 
@@ -45,9 +47,9 @@ def gen_chars []: list<int> -> nothing {
 def gen_map []: list<int> -> nothing {
   if $env.map in [null false ''] { return }
 
-  $in
-  | group-by { $in // 16 }
-  | transpose k v
+  let kvs = $in | group-by { $in // 16 } | transpose k v
+
+  $kvs
   | each {
       let k = $in.k | into int
       let v = $in.v
@@ -70,6 +72,12 @@ def gen_map []: list<int> -> nothing {
     ]
   | str join "\n"
   | save -f (txt_path $env.map)
+
+  '5     1 8.'
+  | repeat ($kvs | length)
+  | prepend ['1' '8']
+  | str join "\n"
+  | save -f (txt_path $env.map "clr")
 }
 
 def txt_correct [] {
@@ -166,8 +174,8 @@ def deps_path [name: string]: nothing -> path {
   $env.FILE_PWD | path join 'deps' $name
 }
 
-def txt_path [name: string]: nothing -> path {
-  $env.txt_dir | path join $'($name).txt'
+def txt_path [name: string, ext = 'txt']: nothing -> path {
+  $env.txt_dir | path join $'($name).($ext)'
 }
 
 def out_path [name: string]: nothing -> path {
