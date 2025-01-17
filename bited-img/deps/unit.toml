@@ -6,5 +6,27 @@ chars = "chars"
 map = "map"
 gens = []
 font_size = 16
-bg = "#ffffff"
-fg = "#000000"
+
+[clrs]
+bg = "#101010"
+fg = "#66ff66"
+
+base = [
+  "#1c1c1c",
+  "#d81860",
+  "#60ff60",
+  "#f9fd75",
+  "#4695c8",
+  "#a78edb",
+  "#43afce",
+  "#f3ebe2",
+
+  "#4d4d4d",
+  "#f00060",
+  "#70ff70",
+  "#f9fd80",
+  "#5a9dc8",
+  "#b29fdb",
+  "#69b8ce",
+  "#eeeeee",
+]

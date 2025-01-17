@@ -23,9 +23,7 @@ type State struct {
 }
 
 func NewState(scale int, name string) *State {
-	state := &State{Scale: scale, Name: name, Mode: X}
-	state.LUT = make(map[rune]string)
-	return state
+	return &State{Scale: scale, Name: name, Mode: X, LUT: make(map[rune]string)}
 }
 
 func (state *State) Next() error {

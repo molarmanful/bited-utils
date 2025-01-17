@@ -33,6 +33,7 @@
           bited-build = pkgs.callPackage ./bited-build o;
           bited-img = pkgs.callPackage ./bited-img o;
           bited-scale = pkgs.callPackage ./bited-scale o;
+          bited-pangogo = pkgs.callPackage ./bited-pangogo o;
           bited-utils = pkgs.callPackage ./. o;
           default = bited-utils;
         };
