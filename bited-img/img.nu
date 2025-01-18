@@ -18,7 +18,6 @@ export def main [cfg = 'bited-img.toml'] {
       $codes | gen_chars
       $codes | gen_map
       txt_correct
-      gen_gens
       gen_imgs
 
     }
@@ -81,16 +80,32 @@ def gen_map []: list<int> -> nothing {
 }
 
 def txt_correct [] {
-  ls_txts
-  | where type == file
-  | get 'name'
-  | each {
-      let f = $in
-      open $f | str replace -m '\n$' '' | save -f $f
-    }
+  ls_txts | each {
+    let f = $in
+    open $f | str replace -m '\n$' '' | save -f $f
+  }
 }
 
-def gen_gens [] {
+def gen_imgs [] {
+  let tmpd = mktemp -d
+  mkdir ($tmpd | path join 'fonts')
+  let txtd = $tmpd | path join 'txts'
+  mkdir $txtd
+  let ttf = $tmpd | path join 'fonts/tmp.ttf'
+
+  bitsnpicas convertbitmap -f 'ttf' -o $ttf $env.src
+  let conf = gen_fc $tmpd
+
+  print 'imgs...'
+  ls_txts | par-each { gen_img $txtd $conf $ttf }
+
+  print 'gens...'
+  gen_gens $txtd $conf $ttf
+
+  rm -rf $tmpd
+}
+
+def gen_gens [txtd: path, conf: path, ttf: path] {
   $env.gens
   | transpose k v
   | each {
@@ -100,47 +115,39 @@ def gen_gens [] {
       | each { txt_path $in | open }
       | str join "\n"
       | save -f (txt_path $k)
+
+      $v
+      | each {|x| $txtd | path join $x | open }
+      | str join "\n"
+      | save -f ($txtd | path join $k)
+      txt_path $k | gen_img $txtd $conf $ttf --gen
     }
-  | str join "\n"
 }
 
-def gen_imgs [] {
-  let tmpd = mktemp -d
-  mkdir ($tmpd | path join 'fonts')
-  let ttf = $tmpd | path join 'fonts/tmp.ttf'
+def gen_img [txtd: path, conf: path, ttf: path, --gen] {
+  let txt = $in
+  let path = $txt | path parse
+  if ($path.stem in $env.gens) == $gen {
+    let out = (out_path $path.stem)
+    let pango = ($txtd | path join $path.stem)
+    if not $gen { $path | gen_pango $pango }
 
-  bitsnpicas convertbitmap -f 'ttf' -o $ttf $env.src
-  let conf = mk_fc $tmpd
-
-  print 'imgs...'
-  ls_txts
-  | where type == file
-  | get 'name'
-  | par-each {
-      let txt = $in
-      let path = $txt | path parse
-      let out = (out_path $path.stem)
-      let pango = $path | mk_pango
-      with-env { FONTCONFIG_FILE: $conf } {
-        bash (deps_path 'magick.bash') $ttf $txt $pango $out $env.font_size $env.clrs.bg $env.clrs.fg
-      }
-      print $' + ($path.stem)'
-      rm -f $pango
+    with-env { FONTCONFIG_FILE: $conf } {
+      bash (deps_path 'magick.bash') $ttf $txt $pango $out $env.font_size $env.clrs.bg $env.clrs.fg
     }
-
-  rm -f $ttf
+    print $' + ($path.stem)'
+  }
 }
 
-def mk_fc [dir: path]: nothing -> path {
-  let d = $dir | path join 'fonts.conf'
-  { dir: ($dir | path join 'fonts') }
+def gen_fc [tmpd: path]: nothing -> path {
+  let d = $tmpd | path join 'fonts.conf'
+  { dir: ($tmpd | path join 'fonts') }
   | format pattern (deps_path 'fonts.conf' | open)
   | save -f $d
   $d
 }
 
-def mk_pango [] {
-  let tmp = mktemp
+def gen_pango [out: path] {
   {
     tag: span
     attributes: {
@@ -149,12 +156,11 @@ def mk_pango [] {
       background: $env.clrs.bg
       foreground: $env.clrs.fg
     }
-    content: ($in | mk_content)
-  } | to xml | save -f $tmp
-  $tmp
+    content: ($in | gen_content)
+  } | to xml | save -f $out
 }
 
-def mk_content []: record -> list {
+def gen_content []: record -> list {
   let path = $in
   let txt = $path | path join
   let clr = $path | upsert extension 'clr' | path join
@@ -168,6 +174,8 @@ def mk_content []: record -> list {
 
 def ls_txts [] {
   ls ...(glob ($env.txt_dir | path join '*.txt'))
+  | where type == file
+  | get 'name'
 }
 
 def deps_path [name: string]: nothing -> path {
