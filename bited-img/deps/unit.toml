@@ -2,15 +2,20 @@ src = "src/{name}.bdf"
 out_dir = "img"
 txt_dir = "txt"
 accents = false
-chars = "chars"
-map = "map"
 gens = []
 font_size = 16
+
+[chars]
+out = "chars"
+width = 48
+
+[map]
+out = "map"
+label_clrs = ["1", "5"]
 
 [clrs]
 bg = "#161616"
 fg = "#ffffff"
-
 base = [
   "#222222",
   "#e84f4f",
@@ -20,7 +25,6 @@ base = [
   "#b7416e",
   "#6d878d",
   "#dddddd",
-
   "#666666",
   "#d23d3d",
   "#bde077",

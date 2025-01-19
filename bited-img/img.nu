@@ -32,19 +32,19 @@ def get_codes []: nothing -> list<int> {
 }
 
 def gen_chars []: list<int> -> nothing {
-  if $env.chars in [null false ''] { return }
+  if $env.chars.out in [null false ''] { return }
 
   $in
   | each { char -i $in }
   | if $env.accents { str replace -r '(\p{M})' ' $1' } else { }
-  | chunks 48
+  | chunks $env.chars.width
   | each { str join ' ' }
   | str join "\n"
-  | save -f (txt_path $env.chars)
+  | save -f (txt_path $env.chars.out)
 }
 
 def gen_map []: list<int> -> nothing {
-  if $env.map in [null false ''] { return }
+  if $env.map.out in [null false ''] { return }
 
   let kvs = $in | group-by { $in // 16 } | transpose k v
 
@@ -70,13 +70,13 @@ def gen_map []: list<int> -> nothing {
       '        ┌────────────────────────────────'
     ]
   | str join "\n"
-  | save -f (txt_path $env.map)
+  | save -f (txt_path $env.map.out)
 
-  '5     1 8.'
+  $'($env.map.label_clrs.1)     1 8.'
   | repeat ($kvs | length)
-  | prepend ['1' '8']
+  | prepend [$env.map.label_clrs.0 '8']
   | str join "\n"
-  | save -f (txt_path $env.map "clr")
+  | save -f (txt_path $env.map.out "clr")
 }
 
 def txt_correct [] {
