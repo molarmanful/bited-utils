@@ -12,6 +12,7 @@ width = 48
 [map]
 out = "map"
 label_clrs = ["1", "5"]
+border_clr = "8"
 
 [clrs]
 bg = "#161616"

@@ -72,9 +72,9 @@ def gen_map []: list<int> -> nothing {
   | str join "\n"
   | save -f (txt_path $env.map.out)
 
-  $'($env.map.label_clrs.1)     1 8.'
+  $'($env.map.label_clrs.1)     ($env.map.label_clrs.0) ($env.map.border_clr).'
   | repeat ($kvs | length)
-  | prepend [$env.map.label_clrs.0 '8']
+  | prepend [$env.map.label_clrs.0 $env.map.border_clr]
   | str join "\n"
   | save -f (txt_path $env.map.out "clr")
 }
