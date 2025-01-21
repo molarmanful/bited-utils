@@ -1,8 +1,6 @@
 src = "src/{name}.bdf"
 out_dir = "out"
-verfile = "VERSION"
 xs = []
-zip_includes = []
 x_format = "{name} {x}x"
 sfnt_lang = "English (US)"
 ttfix = ""
