@@ -1,4 +1,4 @@
-export def main [cfg = 'bited-build.toml', --nerd, --release] {
+export def main [cfg = 'bited-build.toml', --nerd] {
   if ($cfg | path type) != 'file' { return }
 
   open $cfg | transpose k v | each {
@@ -28,8 +28,6 @@ export def main [cfg = 'bited-build.toml', --nerd, --release] {
         | uniq
         | filter { $in > 0 }
         | each { mk_x $in }
-
-        if $release { mk_zip }
       }
     }
 
@@ -76,13 +74,6 @@ def mk_rest [stem: string, name: string] {
   | fontforge -c $in $env.src (out_path $'($stem).') $name
 
   bdftopcf -o (out_path $'($stem).pcf') $env.src
-}
-
-def mk_zip [] {
-  let tag = open $env.verfile
-
-  $env.zip_includes | each { cp $in $env.out_dir }
-  ^zip -r (out_path $'kirsch_($tag).zip') (out_path '*')
 }
 
 def deps_path [name: string] {
