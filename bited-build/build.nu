@@ -82,7 +82,7 @@ def mk_zip [] {
   let tag = open $env.verfile
 
   $env.zip_includes | each { cp $in $env.out_dir }
-  ^zip -r (out_path $'kirsch_($tag).zip') $env.out_dir
+  ^zip -r (out_path $'kirsch_($tag).zip') (out_path '*')
 }
 
 def deps_path [name: string] {
