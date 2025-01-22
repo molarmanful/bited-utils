@@ -55,25 +55,26 @@ def mk_nerd [] {
 
 def mk_x [x = 1] {
   if $x <= 1 {
-    mk_rest $env.stem $env.name
+    mk_rest $env.src $env.stem $env.name
   } else {
     let name = { name: $env.name, x: $x } | format pattern $env.x_format
     let stem = $'($env.name)_($x)x'
+    let out = out_path $'($stem).bdf'
     open $env.src
     | bited-scale -n $x --name $name
-    | save -f (out_path $'($stem).bdf')
-    mk_rest $stem $name
+    | save -f $out
+    mk_rest $out $stem $name
   }
 }
 
-def mk_rest [stem: string, name: string] {
+def mk_rest [src: path, stem: string, name: string] {
   [si0 si1 fix so0]
   | each { deps_path $'($in).py' | open }
   | insert 2 (ttfix)
   | str join "\n"
-  | fontforge -c $in $env.src (out_path $'($stem).') $name
+  | fontforge -c $in $src (out_path $'($stem).') $name
 
-  bdftopcf -o (out_path $'($stem).pcf') $env.src
+  bdftopcf -o (out_path $'($stem).pcf') $src
 }
 
 def deps_path [name: string] {

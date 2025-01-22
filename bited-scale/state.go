@@ -43,6 +43,7 @@ func (state *State) ModeX() error {
 
 	case "STARTPROPERTIES":
 		state.Mode = Prop
+		fmt.Print(" ", state.V)
 
 	case "BITMAP":
 		state.Mode = Bm
@@ -78,7 +79,7 @@ func (state *State) ModeProp() error {
 		state.Mode = X
 
 	case "FAMILY_NAME":
-		fmt.Print(`"`, strings.ReplaceAll(state.Name, `"`, `""`), `"`)
+		fmt.Print(` "`, strings.ReplaceAll(state.Name, `"`, `""`), `"`)
 
 	case
 		"PIXEL_SIZE",
