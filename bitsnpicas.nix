@@ -13,7 +13,7 @@ stdenvNoCC.mkDerivation rec {
 
   src = fetchFromGitHub {
     owner = "molarmanful"; # TODO: switch back to kreativekorp if pr merges
-    repo = pname;
+    repo = "bitsnpicas";
     rev = version;
     sha256 = "sha256-7qwjZj0dTZyTh6GSsDfDY8b/J5yfmRfWzPBpbuS2xhw=";
     sparseCheckout = [ "main/java/BitsNPicas" ];
