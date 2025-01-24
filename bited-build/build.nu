@@ -28,12 +28,11 @@ export def main [cfg = 'bited-build.toml', --nerd] {
         | uniq
         | filter { $in > 0 }
         | each { mk_x $in }
+
+        print $'($name) built.'
       }
     }
-
-    print $'($name) built.'
   }
-  return
 }
 
 def mk_vec [] {

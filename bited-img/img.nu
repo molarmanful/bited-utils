@@ -36,10 +36,10 @@ def gen_chars []: list<int> -> nothing {
 
   $in
   | each { char -i $in }
-  | if $env.accents { str replace -r '(\p{M})' ' $1' } else { }
   | chunks $env.chars.width
   | each { str join ' ' }
   | str join "\n"
+  | if $env.accents { str replace -r -a '(\pM)' '.' } else { }
   | save -f (txt_path $env.chars.out)
 }
 
@@ -61,7 +61,6 @@ def gen_map []: list<int> -> nothing {
       $k * 16
       | $in..($in + 15)
       | each { if $in in $v { char -i $in } else { ' ' } }
-      | if $env.accents { str replace -r '(\p{M})' ' $1' } else { }
       | prepend $'U+($u)_ │'
       | str join ' '
     }
@@ -76,6 +75,7 @@ def gen_map []: list<int> -> nothing {
   | repeat ($kvs | length)
   | prepend [$env.map.label_clrs.0 $env.map.border_clr]
   | str join "\n"
+  | if $env.accents { str replace -r -a '(\pM)' '.' } else { }
   | save -f (txt_path $env.map.out "clr")
 }
 
@@ -91,21 +91,21 @@ def gen_imgs [] {
   mkdir ($tmpd | path join 'fonts')
   let txtd = $tmpd | path join 'txts'
   mkdir $txtd
-  let ttf = $tmpd | path join 'fonts/tmp.ttf'
+  let font = $tmpd | path join 'fonts/tmp.ttf'
 
-  bitsnpicas convertbitmap -f 'ttf' -o $ttf $env.src
+  bitsnpicas convertbitmap -f 'ttf' -o $font $env.src
   let conf = gen_fc $tmpd
 
   print 'imgs...'
-  ls_txts | par-each { gen_img $txtd $conf $ttf }
+  ls_txts | par-each { gen_img $txtd $conf $font }
 
   print 'gens...'
-  gen_gens $txtd $conf $ttf
+  gen_gens $txtd $conf $font
 
   rm -rf $tmpd
 }
 
-def gen_gens [txtd: path, conf: path, ttf: path] {
+def gen_gens [txtd: path, conf: path, font: path] {
   $env.gens
   | transpose k v
   | each {
@@ -120,11 +120,11 @@ def gen_gens [txtd: path, conf: path, ttf: path] {
       | each {|x| $txtd | path join $x | open }
       | str join "\n"
       | save -f ($txtd | path join $k)
-      txt_path $k | gen_img $txtd $conf $ttf --gen
+      txt_path $k | gen_img $txtd $conf $font --gen
     }
 }
 
-def gen_img [txtd: path, conf: path, ttf: path, --gen] {
+def gen_img [txtd: path, conf: path, font: path, --gen] {
   let txt = $in
   let path = $txt | path parse
   if ($path.stem in $env.gens) == $gen {
@@ -133,7 +133,7 @@ def gen_img [txtd: path, conf: path, ttf: path, --gen] {
     if not $gen { $path | gen_pango $pango }
 
     with-env { FONTCONFIG_FILE: $conf } {
-      bash (deps_path 'magick.bash') $ttf $txt $pango $out $env.font_size $env.clrs.bg $env.clrs.fg
+      bash (deps_path 'magick.bash') $font $txt $pango $out $env.font_size $env.clrs.bg $env.clrs.fg
     }
     print $' + ($path.stem)'
   }
