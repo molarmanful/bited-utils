@@ -33,7 +33,7 @@ export def main [cfg = 'bited-build.toml', --nerd] {
       }
     }
   }
-  []
+  1
 }
 
 def mk_vec [] {
