@@ -1,7 +1,7 @@
 src = "src/{name}.bdf"
 out_dir = "img"
 txt_dir = "txt"
-accents = false
+hide_accents = true
 gens = []
 font_size = 16
 

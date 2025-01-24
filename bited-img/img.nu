@@ -39,7 +39,7 @@ def gen_chars []: list<int> -> nothing {
   | chunks $env.chars.width
   | each { str join ' ' }
   | str join "\n"
-  | if $env.accents { str replace -r -a '(\pM)' '.' } else { }
+  | if $env.hide_accents { str replace -r -a '(\pM)' '.' } else { }
   | save -f (txt_path $env.chars.out)
 }
 
@@ -75,7 +75,7 @@ def gen_map []: list<int> -> nothing {
   | repeat ($kvs | length)
   | prepend [$env.map.label_clrs.0 $env.map.border_clr]
   | str join "\n"
-  | if $env.accents { str replace -r -a '(\pM)' '.' } else { }
+  | if $env.hide_accents { str replace -r -a '(\pM)' '.' } else { }
   | save -f (txt_path $env.map.out "clr")
 }
 
