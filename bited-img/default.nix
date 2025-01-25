@@ -1,6 +1,8 @@
 {
   version,
-  P,
+
+  bitsnpicas,
+  bited-pangogo,
 
   lib,
   stdenvNoCC,
@@ -25,8 +27,8 @@ stdenvNoCC.mkDerivation {
     makeWrapper ${nushell}/bin/nu $out/bin/bited-img \
       --set PATH ${
         lib.makeBinPath [
-          P.bitsnpicas
-          P.bited-pangogo
+          bitsnpicas
+          bited-pangogo
           bash
           imagemagick
         ]

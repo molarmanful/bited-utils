@@ -1,6 +1,8 @@
 {
   version,
-  P,
+
+  bitsnpicas,
+  bited-scale,
 
   lib,
   stdenvNoCC,
@@ -28,8 +30,8 @@ stdenvNoCC.mkDerivation {
     makeWrapper ${nushell}/bin/nu $out/bin/bited-build \
       --set PATH ${
         lib.makeBinPath [
-          P.bitsnpicas
-          P.bited-scale
+          bitsnpicas
+          bited-scale
           fontforge
           xorg.bdftopcf
           woff2
