@@ -98,7 +98,6 @@ func (state *State) MkView(app *tview.Application) {
 			state.ClrC(ec)
 			return nil
 		}
-
 		switch event.Rune() {
 		case 'h':
 			state.MoveC(-1, 0)
