@@ -1,4 +1,4 @@
-module bited-clr
+module github.com/molarmanful/bited-utils/bited-clr
 
 go 1.23.4
 

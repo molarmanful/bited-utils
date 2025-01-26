@@ -5,9 +5,8 @@
   bited-scale,
 
   lib,
-  stdenvNoCC,
+  buildGoModule,
   makeWrapper,
-  nushell,
   fontforge,
   xorg,
   woff2,
@@ -16,18 +15,17 @@
   ...
 }:
 
-stdenvNoCC.mkDerivation {
+buildGoModule {
   inherit version;
   pname = "bited-build";
-  src = ./.;
+  src = ../.;
+  vendorHash = "sha256-/yI0zBqOOhN+PrgF8WvHgdU1zwsmxr6gg0PuHDb1Y2Q=";
 
+  modRoot = "bited-build";
   nativeBuildInputs = [ makeWrapper ];
 
-  installPhase = ''
-    runHook preInstall
-    mkdir -p $out/share $out/bin
-    cp -r . $out/share
-    makeWrapper ${nushell}/bin/nu $out/bin/bited-build \
+  postFixup = ''
+    wrapProgram $out/bin/bited-build \
       --set PATH ${
         lib.makeBinPath [
           bitsnpicas
@@ -38,8 +36,6 @@ stdenvNoCC.mkDerivation {
           zip
           nerd-font-patcher
         ]
-      } \
-      --add-flags "$out/share/build.nu"
-    runHook postInstall
+      }
   '';
 }
