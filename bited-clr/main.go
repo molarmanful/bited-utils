@@ -206,5 +206,6 @@ func (state *State) WriteClr() {
 	Check(err)
 	_, err = state.ClrF.Seek(0, 0)
 	Check(err)
-	state.ClrF.WriteString(strings.TrimRight(res.String(), "\n"))
+	_, err = state.ClrF.WriteString(strings.TrimRight(res.String(), "\n"))
+	Check(err)
 }
