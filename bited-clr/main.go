@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/gdamore/tcell/v2"
+	"github.com/molarmanful/bited-utils"
 	"github.com/rivo/tview"
 )
 
@@ -18,7 +19,7 @@ func main() {
 	state := &State{}
 
 	txtF, err := os.Open(base + ".txt")
-	Check(err)
+	bitedutils.Check(err)
 	defer txtF.Close()
 
 	txtScan := bufio.NewScanner(txtF)
@@ -27,7 +28,7 @@ func main() {
 	}
 
 	clrF, err := os.OpenFile(base+".clr", os.O_CREATE|os.O_RDWR, 0644)
-	Check(err)
+	bitedutils.Check(err)
 	defer clrF.Close()
 	state.ClrF = clrF
 
@@ -42,13 +43,7 @@ func main() {
 	state.View.SetTitle(" COLORING: " + base + " ")
 
 	err = app.SetRoot(state.View, true).SetFocus(state.View).Run()
-	Check(err)
-}
-
-func Check(err error) {
-	if err != nil {
-		panic(err)
-	}
+	bitedutils.Check(err)
 }
 
 var clrMap = map[rune]string{
@@ -203,9 +198,9 @@ func (state *State) WriteClr() {
 	}
 
 	err := state.ClrF.Truncate(0)
-	Check(err)
+	bitedutils.Check(err)
 	_, err = state.ClrF.Seek(0, 0)
-	Check(err)
+	bitedutils.Check(err)
 	_, err = state.ClrF.WriteString(strings.TrimRight(res.String(), "\n"))
-	Check(err)
+	bitedutils.Check(err)
 }
