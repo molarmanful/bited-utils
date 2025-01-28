@@ -2,7 +2,6 @@
   version,
 
   bitsnpicas,
-  bited-scale,
 
   lib,
   buildGoModule,
@@ -19,7 +18,7 @@ buildGoModule {
   inherit version;
   pname = "bited-build";
   src = ../.;
-  vendorHash = "sha256-/yI0zBqOOhN+PrgF8WvHgdU1zwsmxr6gg0PuHDb1Y2Q=";
+  vendorHash = "sha256-29FQTGC5xnbTTT7+zoDfYgqHQKBxmyeRKSxf8rSQzYk=";
 
   modRoot = "bited-build";
   nativeBuildInputs = [ makeWrapper ];
@@ -29,7 +28,6 @@ buildGoModule {
       --set PATH ${
         lib.makeBinPath [
           bitsnpicas
-          bited-scale
           fontforge
           xorg.bdftopcf
           woff2

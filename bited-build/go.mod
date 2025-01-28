@@ -6,6 +6,7 @@ require (
 	github.com/BurntSushi/toml v1.4.0
 	github.com/bitfield/script v0.24.0
 	github.com/molarmanful/bited-utils v0.0.0-00010101000000-000000000000
+	github.com/molarmanful/bited-utils/bited-scale v0.0.0-00010101000000-000000000000
 )
 
 require (
@@ -15,3 +16,5 @@ require (
 )
 
 replace github.com/molarmanful/bited-utils => ../
+
+replace github.com/molarmanful/bited-utils/bited-scale => ../bited-scale

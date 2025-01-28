@@ -7,12 +7,12 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"strconv"
 	"strings"
 	"text/template"
 
 	"github.com/BurntSushi/toml"
 	"github.com/bitfield/script"
+	"github.com/molarmanful/bited-utils/bited-scale/lib"
 )
 
 var srcT = template.Must(template.New("").Parse("src/{{ .Name }}.bdf"))
@@ -145,10 +145,7 @@ func (unit *Unit) BuildX(x int) error {
 			return err
 		}
 		defer srcF.Close()
-		scaleCmd := exec.Command("bited-scale", "-n", strconv.Itoa(x), "--name", name)
-		scaleCmd.Stdin = script.File(unit.Src)
-		scaleCmd.Stdout = srcF
-		if err = scaleCmd.Run(); err != nil {
+		if err := bitedscale.Scale(script.File(unit.Src), srcF, x, name); err != nil {
 			return err
 		}
 
