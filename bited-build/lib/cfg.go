@@ -5,12 +5,12 @@ import (
 )
 
 type Unit struct {
-	Name  string
-	Src   string
-	Nerd  bool
-	TTF   string
-	TTFix string
-	Xs    []int
+	Name  string `toml:"-"`
+	Src   string `toml:"-"`
+	Nerd  bool   `toml:"-"`
+	TTF   string `toml:"-"`
+	TTFix string `toml:"-"`
+	Xs    []int  `toml:"-"`
 
 	SrcForm  SrcForm           `toml:"src"`
 	OutDir   string            `toml:"out_dir"`
