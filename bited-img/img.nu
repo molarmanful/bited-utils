@@ -69,13 +69,13 @@ def gen_map []: list<int> -> nothing {
       '        ┌────────────────────────────────'
     ]
   | str join "\n"
+  | if $env.hide_accents { str replace -r -a '(\pM)' '.' } else { }
   | save -f (txt_path $env.map.out)
 
   $'($env.map.label_clrs.1)     ($env.map.label_clrs.0) ($env.map.border_clr).'
   | repeat ($kvs | length)
   | prepend [$env.map.label_clrs.0 $env.map.border_clr]
   | str join "\n"
-  | if $env.hide_accents { str replace -r -a '(\pM)' '.' } else { }
   | save -f (txt_path $env.map.out "clr")
 }
 

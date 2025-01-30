@@ -2,29 +2,27 @@
   version,
 
   bitsnpicas,
-  bited-pangogo,
+  bited-pangogo, # FIXME
 
   lib,
-  stdenvNoCC,
+  buildGoModule,
   makeWrapper,
-  nushell,
   bash,
   imagemagick,
   ...
 }:
 
-stdenvNoCC.mkDerivation {
+buildGoModule {
   inherit version;
   pname = "bited-img";
-  src = ./.;
+  src = ../.;
+  vendorHash = "sha256-XAWy2JTaKAnPUrORfdXp3dPwKhXdHz/8rHTvzJQ67cA=";
 
+  modRoot = "bited-img";
   nativeBuildInputs = [ makeWrapper ];
 
-  installPhase = ''
-    runHook preInstall
-    mkdir -p $out/share $out/bin
-    cp -r . $out/share
-    makeWrapper ${nushell}/bin/nu $out/bin/bited-img \
+  postFixup = ''
+    wrapProgram $out/bin/bited-img \
       --set PATH ${
         lib.makeBinPath [
           bitsnpicas
@@ -32,8 +30,6 @@ stdenvNoCC.mkDerivation {
           bash
           imagemagick
         ]
-      } \
-      --add-flags "$out/share/img.nu"
-    runHook postInstall
+      }
   '';
 }

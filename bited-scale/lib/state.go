@@ -46,12 +46,16 @@ func (state *State) Next() error {
 }
 
 func (state *State) ModeX() error {
-	fmt.Fprint(state.W, state.K)
+	if _, err := fmt.Fprint(state.W, state.K); err != nil {
+		return err
+	}
 	switch state.K {
 
 	case "STARTPROPERTIES":
 		state.Mode = Prop
-		fmt.Fprint(state.W, " ", state.V)
+		if _, err := fmt.Fprint(state.W, " ", state.V); err != nil {
+			return err
+		}
 
 	case "BITMAP":
 		state.Mode = Bm
@@ -72,22 +76,30 @@ func (state *State) ModeX() error {
 		}
 
 	default:
-		fmt.Fprint(state.W, " ", state.V)
+		if _, err := fmt.Fprint(state.W, " ", state.V); err != nil {
+			return err
+		}
 
 	}
-	fmt.Fprintln(state.W)
+	if _, err := fmt.Fprintln(state.W); err != nil {
+		return err
+	}
 	return nil
 }
 
 func (state *State) ModeProp() error {
-	fmt.Fprint(state.W, state.K)
+	if _, err := fmt.Fprint(state.W, state.K); err != nil {
+		return err
+	}
 	switch state.K {
 
 	case "ENDPROPERTIES":
 		state.Mode = X
 
 	case "FAMILY_NAME":
-		fmt.Fprint(state.W, ` "`, strings.ReplaceAll(state.Name, `"`, `""`), `"`)
+		if _, err := fmt.Fprint(state.W, ` "`, strings.ReplaceAll(state.Name, `"`, `""`), `"`); err != nil {
+			return err
+		}
 
 	case
 		"PIXEL_SIZE",
@@ -104,17 +116,23 @@ func (state *State) ModeProp() error {
 		}
 
 	default:
-		fmt.Fprint(state.W, " ", state.V)
+		if _, err := fmt.Fprint(state.W, " ", state.V); err != nil {
+			return err
+		}
 
 	}
-	fmt.Fprintln(state.W)
+	if _, err := fmt.Fprintln(state.W); err != nil {
+		return err
+	}
 	return nil
 }
 
 func (state *State) ModeBM() error {
 	switch state.K {
 	case "ENDCHAR":
-		fmt.Fprintln(state.W, state.K)
+		if _, err := fmt.Fprintln(state.W, state.K); err != nil {
+			return err
+		}
 		state.Mode = X
 
 	default:
@@ -127,35 +145,47 @@ func (state *State) ModeBM() error {
 }
 
 func (state *State) XLFD() error {
-	fmt.Fprint(state.W, " ")
+	if _, err := fmt.Fprint(state.W, " "); err != nil {
+		return err
+	}
 
 	xlfd := strings.Split(state.V, "-")
 	for i, v := range xlfd {
 		if i == 0 {
 			continue
 		}
-		fmt.Fprint(state.W, "-")
+		if _, err := fmt.Fprint(state.W, "-"); err != nil {
+			return err
+		}
 
 		if i == 2 {
-			fmt.Fprint(state.W, state.Name)
+			if _, err := fmt.Fprint(state.W, state.Name); err != nil {
+				return err
+			}
 			continue
 		}
 
 		if i == 7 || i == 8 || i == 12 {
 			if n, err := strconv.Atoi(v); err == nil {
-				fmt.Fprint(state.W, n*state.Scale)
+				if _, err := fmt.Fprint(state.W, n*state.Scale); err != nil {
+					return err
+				}
 				continue
 			}
 			return fmt.Errorf("bad field FONT index %d", i)
 		}
 
-		fmt.Fprint(state.W, v)
+		if _, err := fmt.Fprint(state.W, v); err != nil {
+			return err
+		}
 	}
 	return nil
 }
 
 func (state *State) Vtoi() error {
-	fmt.Fprint(state.W, " ")
+	if _, err := fmt.Fprint(state.W, " "); err != nil {
+		return err
+	}
 
 	a, b, f := strings.Cut(state.V, " ")
 	n, err := strconv.Atoi(a)
@@ -163,9 +193,13 @@ func (state *State) Vtoi() error {
 		return err
 	}
 
-	fmt.Fprint(state.W, n*state.Scale)
+	if _, err := fmt.Fprint(state.W, n*state.Scale); err != nil {
+		return err
+	}
 	if f {
-		fmt.Fprint(state.W, " ", b)
+		if _, err := fmt.Fprint(state.W, " ", b); err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -182,7 +216,9 @@ func (state *State) Vstoi() error {
 		if err != nil {
 			return err
 		}
-		fmt.Fprint(state.W, " ", n*state.Scale)
+		if _, err := fmt.Fprint(state.W, " ", n*state.Scale); err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -225,7 +261,9 @@ func (state *State) ScaleHex() error {
 
 	lstr := line.String()
 	for i := 0; i < state.Scale; i++ {
-		fmt.Fprintln(state.W, lstr)
+		if _, err := fmt.Fprintln(state.W, lstr); err != nil {
+			return err
+		}
 	}
 
 	return nil

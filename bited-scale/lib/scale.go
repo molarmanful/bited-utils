@@ -15,7 +15,9 @@ func Scale(r io.Reader, w io.Writer, scale int, name string) error {
 	for scanner.Scan() {
 		line := scanner.Text()
 		if state.Scale <= 1 {
-			fmt.Fprintln(w, line)
+			if _, err := fmt.Fprintln(w, line); err != nil {
+				return err
+			}
 			continue
 		}
 
