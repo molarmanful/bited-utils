@@ -5,20 +5,30 @@ import (
 )
 
 type Unit struct {
-	Name  string `toml:"-"`
-	Src   string `toml:"-"`
-	Nerd  bool   `toml:"-"`
-	TTF   string `toml:"-"`
-	TTFix string `toml:"-"`
-	Xs    []int  `toml:"-"`
+	Name  string `koanf:"-"`
+	Src   string `koanf:"-"`
+	Nerd  bool   `koanf:"-"`
+	TTF   string `koanf:"-"`
+	TTFix string `koanf:"-"`
+	Xs    []int  `koanf:"-"`
 
-	SrcForm  SrcForm           `toml:"src"`
-	OutDir   string            `toml:"out_dir"`
-	XsPre    []int             `toml:"xs"`
-	XForm    XForm             `toml:"x_format"`
-	SFNTLang string            `toml:"sfnt_lang"`
-	TTFixPre string            `toml:"ttfix"`
-	SFNT     map[string]string `toml:"sfnt"`
+	SrcForm  SrcForm           `koanf:"src"`
+	OutDir   string            `koanf:"out_dir"`
+	XsPre    []int             `koanf:"xs"`
+	XForm    XForm             `koanf:"x_format"`
+	SFNTLang string            `koanf:"sfnt_lang"`
+	TTFixPre string            `koanf:"ttfix"`
+	SFNT     map[string]string `koanf:"sfnt"`
+}
+
+var srcT = template.Must(template.New("").Parse("src/{{ .Name }}.bdf"))
+var xFormatT = template.Must(template.New("").Parse("{{ .Name }} {{ .X }}x"))
+
+var DUnit = Unit{
+	SrcForm:  SrcForm{srcT},
+	OutDir:   "out",
+	XForm:    XForm{xFormatT},
+	SFNTLang: "English (US)",
 }
 
 type SrcForm struct{ *template.Template }

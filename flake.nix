@@ -48,6 +48,7 @@
             go
             gopls
             gotools
+            errcheck
           ];
         };
 

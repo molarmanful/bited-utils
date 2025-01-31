@@ -4,24 +4,19 @@ import (
 	"fmt"
 	"path/filepath"
 	"strings"
-	"text/template"
 
-	"github.com/BurntSushi/toml"
+	"github.com/knadh/koanf/providers/confmap"
+	"github.com/knadh/koanf/providers/structs"
+	"github.com/knadh/koanf/v2"
 )
 
-var srcT = template.Must(template.New("").Parse("src/{{ .Name }}.bdf"))
-var xFormatT = template.Must(template.New("").Parse("{{ .Name }} {{ .X }}x"))
+func FullUnit(pre map[string]any, name string, nerd bool) (Unit, error) {
+	k := koanf.New("")
+	k.Load(structs.Provider(DUnit, "koanf"), nil)
+	k.Load(confmap.Provider(pre, ""), nil)
 
-func FullUnit(md toml.MetaData, pv toml.Primitive, name string, nerd bool) error {
-	unit := &Unit{
-		OutDir:   "out",
-		SFNTLang: "English (US)",
-		SrcForm:  SrcForm{srcT},
-		XForm:    XForm{xFormatT},
-	}
-	if err := md.PrimitiveDecode(pv, unit); err != nil {
-		return err
-	}
+	var unit Unit
+	k.Unmarshal("", &unit)
 
 	unit.Name = name
 	unit.Nerd = nerd
@@ -29,7 +24,7 @@ func FullUnit(md toml.MetaData, pv toml.Primitive, name string, nerd bool) error
 
 	var srcB strings.Builder
 	if err := unit.SrcForm.Template.Execute(&srcB, SrcFormPat{Name: name}); err != nil {
-		return err
+		return unit, err
 	}
 	unit.Src = srcB.String()
 
@@ -49,5 +44,5 @@ func FullUnit(md toml.MetaData, pv toml.Primitive, name string, nerd bool) error
 		}
 	}
 
-	return unit.Build()
+	return unit, nil
 }

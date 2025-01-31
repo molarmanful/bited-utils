@@ -50,7 +50,9 @@ var fixTmpl = template.Must(template.New("").Parse(fixPy))
 
 func (unit *Unit) BuildVec() error {
 	log.Println("+ BUILD ttf")
-	if out, err := exec.Command("bitsnpicas", "convertbitmap", "-f", "ttf", "-o", unit.TTF, unit.Src).CombinedOutput(); err != nil {
+	if out, err := exec.Command(
+		"bitsnpicas", "convertbitmap", "-f", "ttf", "-o", unit.TTF, unit.Src).
+		CombinedOutput(); err != nil {
 		fmt.Fprintln(os.Stderr, string(out))
 		return err
 	}
@@ -60,18 +62,21 @@ func (unit *Unit) BuildVec() error {
 	if err := fixTmpl.Execute(&fixB, unit.TTFix); err != nil {
 		return err
 	}
-	if out, err := exec.Command("fontforge", "-c", fixB.String(), unit.TTF).CombinedOutput(); err != nil {
+	if out, err := exec.Command("fontforge", "-c", fixB.String(), unit.TTF).
+		CombinedOutput(); err != nil {
 		fmt.Fprintln(os.Stderr, string(out))
 		return err
 	}
 
 	log.Println("  + PATCH nerd")
 	if unit.Nerd {
-		if out, err := exec.Command("nerd-font-patcher", unit.TTF, "-out", unit.OutDir, "--careful", "-c").CombinedOutput(); err != nil {
+		if out, err := exec.Command("nerd-font-patcher", unit.TTF, "-out", unit.OutDir, "--careful", "-c").
+			CombinedOutput(); err != nil {
 			fmt.Fprintln(os.Stderr, string(out))
 			return err
 		}
-		if out, err := exec.Command("nerd-font-patcher", unit.TTF, "-out", unit.OutDir, "--careful", "-c", "-s").CombinedOutput(); err != nil {
+		if out, err := exec.Command("nerd-font-patcher", unit.TTF, "-out", unit.OutDir, "--careful", "-c", "-s").
+			CombinedOutput(); err != nil {
 			fmt.Fprintln(os.Stderr, string(out))
 			return err
 		}
@@ -123,13 +128,15 @@ func (unit *Unit) BuildBit(src string, base string, name string) error {
 	if err := bitTmpl.Execute(&bitB, unit.TTFix); err != nil {
 		return err
 	}
-	if out, err := exec.Command("fontforge", "-c", bitB.String(), src, base+".", name).CombinedOutput(); err != nil {
+	if out, err := exec.Command("fontforge", "-c", bitB.String(), src, base+".", name).
+		CombinedOutput(); err != nil {
 		fmt.Fprintln(os.Stderr, string(out))
 		return err
 	}
 
 	log.Println("  + BUILD pcf")
-	if out, err := exec.Command("bdftopcf", "-o", base+".pcf", src).CombinedOutput(); err != nil {
+	if out, err := exec.Command("bdftopcf", "-o", base+".pcf", src).
+		CombinedOutput(); err != nil {
 		fmt.Fprintln(os.Stderr, string(out))
 		return err
 	}
