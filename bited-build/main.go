@@ -15,14 +15,14 @@ func main() {
 	flag.Parse()
 
 	k := koanf.New("")
-	err := k.Load(file.Provider("bited-img.toml"), toml.Parser())
+	err := k.Load(file.Provider("bited-build.toml"), toml.Parser())
 	bitedutils.Check(err)
 	for _, name := range k.MapKeys("") {
 		cfg, ok := k.Get(name).(map[string]any)
 		if !ok {
 			panic(name + " is not a map[string]any")
 		}
-		unit, err := bitedbuild.FullUnit(cfg, name, *nerd)
+		unit, err := bitedbuild.NewUnit(cfg, name, *nerd)
 		bitedutils.Check(err)
 		err = unit.Build()
 		bitedutils.Check(err)

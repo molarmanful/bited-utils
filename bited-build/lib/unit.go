@@ -10,7 +10,7 @@ import (
 	"github.com/knadh/koanf/v2"
 )
 
-func FullUnit(pre map[string]any, name string, nerd bool) (Unit, error) {
+func NewUnit(pre map[string]any, name string, nerd bool) (Unit, error) {
 	k := koanf.New("")
 	k.Load(structs.Provider(DUnit, "koanf"), nil)
 	k.Load(confmap.Provider(pre, ""), nil)
