@@ -12,12 +12,8 @@ func main() {
 	k := koanf.New("")
 	err := k.Load(file.Provider("bited-img.toml"), toml.Parser())
 	bitedutils.Check(err)
-	for _, name := range k.MapKeys("") {
-		cfg, ok := k.Get(name).(map[string]any)
-		if !ok {
-			panic(name + " is not a map[string]any")
-		}
-		unit, err := bitedimg.NewUnit(cfg, name)
+	for _, cfg := range k.Slices("fonts") {
+		unit, err := bitedimg.NewUnit(cfg)
 		bitedutils.Check(err)
 		err = unit.Build()
 		bitedutils.Check(err)

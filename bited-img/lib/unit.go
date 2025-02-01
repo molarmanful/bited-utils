@@ -1,31 +1,24 @@
 package bitedimg
 
 import (
-	_ "embed"
 	"fmt"
-	"log"
 	"os"
 	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
-	"text/template"
 
 	"github.com/bitfield/script"
-	"github.com/knadh/koanf/providers/confmap"
 	"github.com/knadh/koanf/providers/structs"
 	"github.com/knadh/koanf/v2"
 )
 
 var reENC = regexp.MustCompile(`^\s*ENCODING\s+[^-]`)
 
-//go:embed fonts.conf
-var fontsConf string
-
-func NewUnit(pre map[string]any, name string) (Unit, error) {
+func NewUnit(cfg *koanf.Koanf) (Unit, error) {
 	k := koanf.New("")
 	k.Load(structs.Provider(DUnit, "koanf"), nil)
-	k.Load(confmap.Provider(pre, ""), nil)
+	k.Merge(cfg)
 
 	var unit Unit
 	if err := k.Unmarshal("", &unit); err != nil {
@@ -33,16 +26,11 @@ func NewUnit(pre map[string]any, name string) (Unit, error) {
 	}
 
 	if len(unit.Map.LabelClrs) < 2 {
-		return unit, fmt.Errorf("%s.map.label_clrs length < 2", name)
+		return unit, fmt.Errorf("map.label_clrs length < 2")
 	}
-	if len(unit.Clrs.Base) < 16 {
-		return unit, fmt.Errorf("%s.clrs.base length < 16", name)
-	}
-
-	unit.Name = name
 
 	var srcB strings.Builder
-	if err := unit.SrcForm.Template.Execute(&srcB, SrcFormPat{Name: name}); err != nil {
+	if err := unit.SrcForm.Template.Execute(&srcB, SrcFormPat{Name: unit.Name}); err != nil {
 		return unit, err
 	}
 	unit.Src = srcB.String()
@@ -60,19 +48,20 @@ func NewUnit(pre map[string]any, name string) (Unit, error) {
 		unit.Codes[i] = n
 	}
 
-	tmpd, err := os.MkdirTemp("", "")
+	tmpd, err := os.MkdirTemp("", "bited-img-")
 	if err != nil {
 		return unit, err
 	}
-	defer func() {
-		if err := os.RemoveAll(tmpd); err != nil {
-			log.Println(err)
-		}
-	}()
 	unit.TmpDir = tmpd
-	unit.TmpTxtsDir = filepath.Join(tmpd, "txts")
-	unit.TTF = filepath.Join(tmpd, "fonts/tmp.ttf")
-	unit.FC = filepath.Join(tmpd, "fonts.conf")
+	unit.TmpTxtDir = filepath.Join(unit.TmpDir, "txts")
+	unit.TmpFontDir = filepath.Join(unit.TmpDir, "fonts")
+	unit.Font = filepath.Join(unit.TmpFontDir, "tmp.ttf")
+	unit.FC = filepath.Join(unit.TmpDir, "fonts.conf")
+
+	unit.GensSet = make(map[string]struct{})
+	for _, gen := range unit.Gens {
+		unit.GensSet[gen.Name] = struct{}{}
+	}
 
 	return unit, nil
 }

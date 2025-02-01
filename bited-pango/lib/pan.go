@@ -18,13 +18,7 @@ func Pango(txtR io.Reader, clrR io.Reader, clrs []string) *pango.Node {
 	state := NewState()
 	txtScan := bufio.NewScanner(txtR)
 	clrScan := bufio.NewScanner(clrR)
-	first := true
 	for txtScan.Scan() {
-		if !first {
-			state.Content.WriteRune('\n')
-		}
-		first = false
-
 		txtLine := []rune(txtScan.Text())
 		var clrLine []rune
 		if clrScan.Scan() {
@@ -45,8 +39,8 @@ func Pango(txtR io.Reader, clrR io.Reader, clrs []string) *pango.Node {
 			}
 			state.Content.WriteRune(c)
 		}
+		state.Content.WriteRune('\n')
 	}
-
 	state.Blank()
 
 	return state.Root

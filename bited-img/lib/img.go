@@ -1,8 +1,11 @@
 package bitedimg
 
 import (
+	"bufio"
+	"context"
 	_ "embed"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"os/exec"
@@ -12,9 +15,16 @@ import (
 
 	"github.com/bitfield/script"
 	"github.com/molarmanful/bited-utils/bited-pango/lib"
+	"golang.org/x/sync/errgroup"
 )
 
 func (unit *Unit) Build() error {
+	defer func() {
+		if err := os.RemoveAll(unit.TmpDir); err != nil {
+			log.Println(err)
+		}
+	}()
+
 	log.Println("IMGS", unit.Name)
 
 	if err := unit.Pre(); err != nil {
@@ -26,25 +36,30 @@ func (unit *Unit) Build() error {
 	if err := unit.GenMap(); err != nil {
 		return err
 	}
-	if err := unit.CorrectTxts(); err != nil {
+	if err := unit.Txts(); err != nil {
+		return err
+	}
+	if err := unit.Imgs(); err != nil {
 		return err
 	}
 
 	return nil
 }
 
+//go:embed fonts.conf
+var fontsConf string
 var fcTmpl = template.Must(template.New("").Parse(fontsConf))
 
 func (unit *Unit) Pre() error {
-	for _, v := range []string{"fonts", "txts"} {
-		if err := os.MkdirAll(filepath.Join(unit.TmpDir, v), os.ModePerm); err != nil {
+	for _, v := range []string{unit.TmpFontDir, unit.TmpTxtDir, unit.OutDir} {
+		if err := os.MkdirAll(v, os.ModePerm); err != nil {
 			return err
 		}
 	}
 
-	log.Println("+ TTF")
+	log.Println("+ FONT")
 	if out, err := exec.Command(
-		"bitsnpicas", "convertbitmap", "-f", "ttf", "-o", unit.TTF, unit.Src).
+		"bitsnpicas", "convertbitmap", "-f", "ttf", "-o", unit.Font, unit.Src).
 		CombinedOutput(); err != nil {
 		fmt.Fprintln(os.Stderr, string(out))
 		return err
@@ -55,51 +70,68 @@ func (unit *Unit) Pre() error {
 	if err := fcTmpl.Execute(&fcB, unit.TmpDir); err != nil {
 		return err
 	}
-	if _, err := script.Echo(fcB.String()).WriteFile(filepath.Join(unit.TmpDir, "fonts.conf")); err != nil {
-		return err
-	}
-	if err := os.Setenv("FONTCONFIG_FILE", unit.FC); err != nil {
+	if _, err := script.Echo(fcB.String()).WriteFile(unit.FC); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (unit *Unit) CorrectTxts() error {
-	log.Println("+ TXTCORRECT")
-	if err := script.ListFiles(filepath.Join(unit.TxtDir, "*.txt")).
-		ExecForEach(`perl -pi -e 'chomp if eof' {{.}}`).
-		Wait(); err != nil {
+func (unit *Unit) Txts() error {
+	log.Println("+ PANGO")
+	if err := unit.EachTxt(unit.Pango); err != nil {
 		return err
 	}
+
+	log.Println("+ GENS")
+	for _, gen := range unit.Gens {
+		if _, err := script.Slice(gen.Txts).
+			FilterLine(func(stem string) string {
+				return filepath.Join(unit.TxtDir, stem+".txt")
+			}).
+			Concat().
+			WriteFile(filepath.Join(unit.TxtDir, gen.Name+".txt")); err != nil {
+			return err
+		}
+		if _, err := script.Slice(gen.Txts).
+			FilterLine(func(stem string) string {
+				return filepath.Join(unit.TmpTxtDir, stem)
+			}).
+			Concat().
+			WriteFile(filepath.Join(unit.TmpTxtDir, gen.Name)); err != nil {
+			return err
+		}
+		log.Println("  +", gen.Name)
+	}
+
 	return nil
 }
 
-var magick = `magick \
-  -background "{{ .Bg }}" -fill "{{ .Fg }}" +antialias \
-  pango:@"{{ .Pango }}" \
-  -bordercolor "{{ .Bg }}" -border "{{ .FontSize }}" \
-	"{{ .Out }}.png"`
-var magickTmpl = template.Must(template.New("").Parse(magick))
-
-func (unit *Unit) Img(stem string, gen bool) error {
-	if _, ok := unit.Gens[stem]; ok != gen {
-		return nil
-	}
-
+func (unit *Unit) Pango(stem string) error {
 	txtF := script.File(filepath.Join(unit.TxtDir, stem+".txt"))
 	clrF := script.File(filepath.Join(unit.TxtDir, stem+".clr"))
 	root := bitedpango.Pango(txtF, clrF, unit.Clrs.Base).
-		Font(unit.Name).Size(float64(unit.FontSize) * 0.768)
+		Font(unit.Name).Size(float64(unit.FontSize * 3 / 4))
 	bitedpango.BgFg(root, unit.Clrs.Bg, unit.Clrs.Fg)
-	pango := filepath.Join(unit.TmpTxtsDir, stem)
-	script.Echo(root.String()).WriteFile(pango)
+	script.Echo(root.String()).WriteFile(filepath.Join(unit.TmpTxtDir, stem))
+	log.Println("  +", stem)
+	return nil
+}
 
-	out := filepath.Join(unit.OutDir, stem)
+func (unit *Unit) Imgs() error {
+	log.Println("+ IMGS")
+	return unit.EachTxt(unit.Img)
+}
+
+//go:embed magick.bash
+var magickBash string
+var magickTmpl = template.Must(template.New("").Parse(magickBash))
+
+func (unit *Unit) Img(stem string) error {
 	var magickCmd strings.Builder
 	if err := magickTmpl.Execute(&magickCmd, MagickPat{
-		Pango:    pango,
-		Out:      out,
+		Pango:    filepath.Join(unit.TmpTxtDir, stem),
+		Out:      filepath.Join(unit.OutDir, stem),
 		FontSize: unit.FontSize,
 		Bg:       unit.Clrs.Bg,
 		Fg:       unit.Clrs.Fg,
@@ -110,7 +142,27 @@ func (unit *Unit) Img(stem string, gen bool) error {
 	cmd := exec.Command("bash")
 	cmd.Stdin = strings.NewReader(magickCmd.String())
 	cmd.Env = append(os.Environ(), "FONTCONFIG_FILE="+unit.FC)
+	if out, err := cmd.CombinedOutput(); err != nil {
+		fmt.Fprintln(os.Stderr, string(out))
+		return err
+	}
 
-	log.Println("+ DONE", stem)
+	log.Println("  +", stem)
 	return nil
+}
+
+func (unit *Unit) EachTxt(f func(stem string) error) error {
+	return script.ListFiles(filepath.Join(unit.TxtDir, "*.txt")).
+		Filter(func(r io.Reader, w io.Writer) error {
+			scan := bufio.NewScanner(r)
+			g, _ := errgroup.WithContext(context.Background())
+			for scan.Scan() {
+				stem, _, _ := strings.Cut(filepath.Base(scan.Text()), ".")
+				g.Go(func() error {
+					return f(stem)
+				})
+			}
+			return g.Wait()
+		}).
+		Wait()
 }

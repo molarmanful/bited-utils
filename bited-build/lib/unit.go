@@ -35,11 +35,11 @@ func NewUnit(pre map[string]any, name string, nerd bool) (Unit, error) {
 	ttfix.WriteString(unit.TTFixPre)
 	unit.TTFix = ttfix.String()
 
-	xs := map[int]bool{1: true}
+	xs := map[int]struct{}{1: {}}
 	unit.Xs = []int{1}
 	for _, x := range unit.XsPre {
 		if _, ok := xs[x]; x > 1 && !ok {
-			xs[x] = true
+			xs[x] = struct{}{}
 			unit.Xs = append(unit.Xs, x)
 		}
 	}

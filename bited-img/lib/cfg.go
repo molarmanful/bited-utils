@@ -5,30 +5,32 @@ import (
 )
 
 type Unit struct {
-	Name       string `koanf:"-"`
-	Src        string `koanf:"-"`
-	Codes      []int  `koanf:"-"`
-	TmpDir     string `koanf:"-"`
-	TmpTxtsDir string `koanf:"-"`
-	TTF        string `koanf:"-"`
-	FC         string `koanf:"-"`
+	Src        string              `koanf:"-"`
+	Codes      []int               `koanf:"-"`
+	TmpDir     string              `koanf:"-"`
+	TmpTxtDir  string              `koanf:"-"`
+	TmpFontDir string              `koanf:"-"`
+	Font       string              `koanf:"-"`
+	FC         string              `koanf:"-"`
+	GensSet    map[string]struct{} `koanf:"-"`
 
-	SrcForm     SrcForm             `koanf:"src"`
-	OutDir      string              `koanf:"out_dir"`
-	TxtDir      string              `koanf:"txt_dir"`
-	HideAccents bool                `koanf:"hide_accents"`
-	FontSize    int                 `koanf:"font_size"`
-	Chars       Chars               `koanf:"chars"`
-	Map         Map                 `koanf:"map"`
-	Clrs        Clrs                `koanf:"clrs"`
-	Gens        map[string][]string `koanf:"gens"`
+	Name        string  `koanf:"name"`
+	SrcForm     SrcForm `koanf:"src"`
+	OutDir      string  `koanf:"out_dir"`
+	TxtDir      string  `koanf:"txt_dir"`
+	HideAccents bool    `koanf:"hide_accents"`
+	FontSize    int     `koanf:"font_size"`
+	Chars       Chars   `koanf:"chars"`
+	Map         Map     `koanf:"map"`
+	Clrs        Clrs    `koanf:"clrs"`
+	Gens        []Gen   `koanf:"gens"`
 }
 
 var srcT = template.Must(template.New("").Parse("src/{{ .Name }}.bdf"))
 
 var DUnit = Unit{
 	SrcForm:     SrcForm{srcT},
-	OutDir:      "out",
+	OutDir:      "img",
 	TxtDir:      "txt",
 	HideAccents: true,
 	FontSize:    16,
@@ -92,6 +94,11 @@ type Clrs struct {
 	Bg   string   `koanf:"bg"`
 	Fg   string   `koanf:"fg"`
 	Base []string `koanf:"base"`
+}
+
+type Gen struct {
+	Name string   `koanf:"name"`
+	Txts []string `koanf:"txts"`
 }
 
 type MagickPat struct {

@@ -2,7 +2,6 @@
   version,
 
   bitsnpicas,
-  bited-pango, # FIXME
 
   lib,
   buildGoModule,
@@ -17,8 +16,7 @@ buildGoModule {
   inherit version;
   pname = "bited-img";
   src = ../.;
-  vendorHash = "sha256-XAWy2JTaKAnPUrORfdXp3dPwKhXdHz/8rHTvzJQ67cA=";
-
+  vendorHash = "sha256-zAk4gJethRyW5oGiy6v/Yv+DvrPWk/y4q7VlsIWPwtw=";
   modRoot = "bited-img";
   nativeBuildInputs = [ makeWrapper ];
 
@@ -27,7 +25,6 @@ buildGoModule {
       --set PATH ${
         lib.makeBinPath [
           bitsnpicas
-          bited-pango
           bash
           perl
           imagemagick
