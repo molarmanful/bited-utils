@@ -2,12 +2,13 @@
   version,
 
   bitsnpicas,
-  bited-pangogo, # FIXME
+  bited-pango, # FIXME
 
   lib,
   buildGoModule,
   makeWrapper,
   bash,
+  perl,
   imagemagick,
   ...
 }:
@@ -26,8 +27,9 @@ buildGoModule {
       --set PATH ${
         lib.makeBinPath [
           bitsnpicas
-          bited-pangogo
+          bited-pango
           bash
+          perl
           imagemagick
         ]
       }

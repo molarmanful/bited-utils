@@ -1,118 +1,116 @@
 package bitedimg
 
 import (
+	_ "embed"
 	"fmt"
 	"log"
 	"os"
+	"os/exec"
 	"path/filepath"
-	"regexp"
-	"slices"
 	"strings"
+	"text/template"
+
+	"github.com/bitfield/script"
+	"github.com/molarmanful/bited-utils/bited-pango/lib"
 )
 
-func (unit *Unit) Img() error {
-	log.Println("IMG", unit.Name)
+func (unit *Unit) Build() error {
+	log.Println("IMGS", unit.Name)
 
+	if err := unit.Pre(); err != nil {
+		return err
+	}
 	if err := unit.GenChars(); err != nil {
 		return err
 	}
-
 	if err := unit.GenMap(); err != nil {
 		return err
 	}
-
-	return nil
-}
-
-var reComb = regexp.MustCompile(`\pM`)
-
-func (unit *Unit) GenChars() error {
-	log.Println("+ GEN chars")
-	charsF, err := os.Create(filepath.Join(unit.TxtDir, unit.Chars.Out+".txt"))
-	if err != nil {
+	if err := unit.CorrectTxts(); err != nil {
 		return err
-	}
-	defer charsF.Close()
-
-	var first = true
-	for ns := range slices.Chunk(unit.Codes, unit.Chars.Width) {
-		if !first {
-			if _, err := fmt.Fprintln(charsF); err != nil {
-				return err
-			}
-		}
-
-		first = false
-		for i, n := range ns {
-			if i > 0 {
-				if _, err := fmt.Fprint(charsF, " "); err != nil {
-					return err
-				}
-			}
-
-			char := string(rune(n))
-			if unit.HideAccents {
-				char = reComb.ReplaceAllLiteralString(char, ".")
-			}
-			if _, err := fmt.Fprint(charsF, char); err != nil {
-				return err
-			}
-		}
 	}
 
 	return nil
 }
 
-func (unit *Unit) GenMap() error {
-	log.Println("+ GEN map")
-	mapF, err := os.Create(filepath.Join(unit.TxtDir, unit.Map.Out+".txt"))
-	if err != nil {
-		return err
-	}
-	defer mapF.Close()
-	mapClrF, err := os.Create(filepath.Join(unit.TxtDir, unit.Map.Out+".clr"))
-	if err != nil {
-		return err
-	}
-	defer mapClrF.Close()
+var fcTmpl = template.Must(template.New("").Parse(fontsConf))
 
-	if _, err := fmt.Fprint(mapF,
-		"          0 1 2 3 4 5 6 7 8 9 A B C D E F\n",
-		"        ┌────────────────────────────────",
-	); err != nil {
-		return err
-	}
-	if _, err := fmt.Fprint(mapClrF, unit.Map.LabelClrs[0], "\n", unit.Map.BorderClr); err != nil {
-		return err
-	}
-
-	row := -1
-	var line []string
-	clrLine := fmt.Sprintf("%s     %s %s.", unit.Map.LabelClrs[1], unit.Map.LabelClrs[0], unit.Map.BorderClr)
-	for _, n := range unit.Codes {
-		if n/16 != row {
-			row = n / 16
-			if _, err := fmt.Fprintln(mapF, strings.Join(line, " ")); err != nil {
-				return err
-			}
-			line = strings.Split(strings.Repeat(" ", 16), "")
-			if _, err := fmt.Fprintf(mapF, "U+%04X_ │ ", row); err != nil {
-				return err
-			}
-			if _, err := fmt.Fprint(mapClrF, "\n", clrLine); err != nil {
-				return err
-			}
+func (unit *Unit) Pre() error {
+	for _, v := range []string{"fonts", "txts"} {
+		if err := os.MkdirAll(filepath.Join(unit.TmpDir, v), os.ModePerm); err != nil {
+			return err
 		}
-
-		char := string(rune(n))
-		if unit.HideAccents {
-			char = reComb.ReplaceAllLiteralString(char, ".")
-		}
-		line[n%16] = char
 	}
-	if _, err := fmt.Fprint(mapF, strings.Join(line, " ")); err != nil {
+
+	log.Println("+ TTF")
+	if out, err := exec.Command(
+		"bitsnpicas", "convertbitmap", "-f", "ttf", "-o", unit.TTF, unit.Src).
+		CombinedOutput(); err != nil {
+		fmt.Fprintln(os.Stderr, string(out))
 		return err
 	}
 
+	log.Println("+ FONTCONFIG")
+	var fcB strings.Builder
+	if err := fcTmpl.Execute(&fcB, unit.TmpDir); err != nil {
+		return err
+	}
+	if _, err := script.Echo(fcB.String()).WriteFile(filepath.Join(unit.TmpDir, "fonts.conf")); err != nil {
+		return err
+	}
+	if err := os.Setenv("FONTCONFIG_FILE", unit.FC); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (unit *Unit) CorrectTxts() error {
+	log.Println("+ TXTCORRECT")
+	if err := script.ListFiles(filepath.Join(unit.TxtDir, "*.txt")).
+		ExecForEach(`perl -pi -e 'chomp if eof' {{.}}`).
+		Wait(); err != nil {
+		return err
+	}
+	return nil
+}
+
+var magick = `magick \
+  -background "{{ .Bg }}" -fill "{{ .Fg }}" +antialias \
+  pango:@"{{ .Pango }}" \
+  -bordercolor "{{ .Bg }}" -border "{{ .FontSize }}" \
+	"{{ .Out }}.png"`
+var magickTmpl = template.Must(template.New("").Parse(magick))
+
+func (unit *Unit) Img(stem string, gen bool) error {
+	if _, ok := unit.Gens[stem]; ok != gen {
+		return nil
+	}
+
+	txtF := script.File(filepath.Join(unit.TxtDir, stem+".txt"))
+	clrF := script.File(filepath.Join(unit.TxtDir, stem+".clr"))
+	root := bitedpango.Pango(txtF, clrF, unit.Clrs.Base).
+		Font(unit.Name).Size(float64(unit.FontSize) * 0.768)
+	bitedpango.BgFg(root, unit.Clrs.Bg, unit.Clrs.Fg)
+	pango := filepath.Join(unit.TmpTxtsDir, stem)
+	script.Echo(root.String()).WriteFile(pango)
+
+	out := filepath.Join(unit.OutDir, stem)
+	var magickCmd strings.Builder
+	if err := magickTmpl.Execute(&magickCmd, MagickPat{
+		Pango:    pango,
+		Out:      out,
+		FontSize: unit.FontSize,
+		Bg:       unit.Clrs.Bg,
+		Fg:       unit.Clrs.Fg,
+	}); err != nil {
+		return err
+	}
+
+	cmd := exec.Command("bash")
+	cmd.Stdin = strings.NewReader(magickCmd.String())
+	cmd.Env = append(os.Environ(), "FONTCONFIG_FILE="+unit.FC)
+
+	log.Println("+ DONE", stem)
 	return nil
 }

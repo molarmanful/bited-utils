@@ -166,7 +166,7 @@ def gen_content []: record -> list {
   let clr = $path | upsert extension 'clr' | path join
   if ($clr | path exists) {
     let clrs = $env.clrs.base | str join "\n"
-    bited-pangogo --txt $txt --clr $clr --clrs $clrs | from json
+    bited-pango --txt $txt --clr $clr --clrs $clrs | from json
   } else {
     [($txt | open)]
   }

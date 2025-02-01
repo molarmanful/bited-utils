@@ -17,6 +17,9 @@ func main() {
 		if !ok {
 			panic(name + " is not a map[string]any")
 		}
-		bitedimg.FullUnit(cfg, name)
+		unit, err := bitedimg.NewUnit(cfg, name)
+		bitedutils.Check(err)
+		err = unit.Build()
+		bitedutils.Check(err)
 	}
 }

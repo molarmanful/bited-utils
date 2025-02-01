@@ -5,9 +5,13 @@ import (
 )
 
 type Unit struct {
-	Name  string `koanf:"-"`
-	Src   string `koanf:"-"`
-	Codes []int  `koanf:"-"`
+	Name       string `koanf:"-"`
+	Src        string `koanf:"-"`
+	Codes      []int  `koanf:"-"`
+	TmpDir     string `koanf:"-"`
+	TmpTxtsDir string `koanf:"-"`
+	TTF        string `koanf:"-"`
+	FC         string `koanf:"-"`
 
 	SrcForm     SrcForm             `koanf:"src"`
 	OutDir      string              `koanf:"out_dir"`
@@ -19,6 +23,8 @@ type Unit struct {
 	Clrs        Clrs                `koanf:"clrs"`
 	Gens        map[string][]string `koanf:"gens"`
 }
+
+var srcT = template.Must(template.New("").Parse("src/{{ .Name }}.bdf"))
 
 var DUnit = Unit{
 	SrcForm:     SrcForm{srcT},
@@ -86,4 +92,12 @@ type Clrs struct {
 	Bg   string   `koanf:"bg"`
 	Fg   string   `koanf:"fg"`
 	Base []string `koanf:"base"`
+}
+
+type MagickPat struct {
+	Pango    string
+	Out      string
+	FontSize int
+	Bg       string
+	Fg       string
 }

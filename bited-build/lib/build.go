@@ -15,20 +15,17 @@ import (
 )
 
 func (unit *Unit) Build() error {
+	log.Println("BUILD", unit.Name)
+
 	if err := os.MkdirAll(unit.OutDir, os.ModePerm); err != nil {
 		return err
 	}
-
-	log.Println("BUILD", unit.Name)
-
 	if err := unit.BuildSrc(); err != nil {
 		return err
 	}
-
 	if err := unit.BuildVec(); err != nil {
 		return err
 	}
-
 	for _, x := range unit.Xs {
 		if err := unit.BuildX(x); err != nil {
 			return err

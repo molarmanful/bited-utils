@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"io"
 
+	"barista.run/colors"
 	"barista.run/pango"
 )
 
@@ -49,4 +50,8 @@ func Pango(txtR io.Reader, clrR io.Reader, clrs []string) *pango.Node {
 	state.Blank()
 
 	return state.Root
+}
+
+func BgFg(node *pango.Node, bg string, fg string) {
+	node.Background(colors.Hex(bg)).Color(colors.Hex(fg))
 }
