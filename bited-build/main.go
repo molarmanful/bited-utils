@@ -17,12 +17,8 @@ func main() {
 	k := koanf.New("")
 	err := k.Load(file.Provider("bited-build.toml"), toml.Parser())
 	bitedutils.Check(err)
-	for _, name := range k.MapKeys("") {
-		cfg, ok := k.Get(name).(map[string]any)
-		if !ok {
-			panic(name + " is not a map[string]any")
-		}
-		unit, err := bitedbuild.NewUnit(cfg, name, *nerd)
+	for _, cfg := range k.Slices("fonts") {
+		unit, err := bitedbuild.NewUnit(cfg, *nerd)
 		bitedutils.Check(err)
 		err = unit.Build()
 		bitedutils.Check(err)

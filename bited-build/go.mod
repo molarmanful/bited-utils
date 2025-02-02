@@ -5,7 +5,6 @@ go 1.23.4
 require (
 	github.com/bitfield/script v0.24.0
 	github.com/knadh/koanf/parsers/toml/v2 v2.1.0
-	github.com/knadh/koanf/providers/confmap v0.1.0
 	github.com/knadh/koanf/providers/file v1.1.2
 	github.com/knadh/koanf/providers/structs v0.1.0
 	github.com/knadh/koanf/v2 v2.1.2

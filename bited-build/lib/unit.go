@@ -5,25 +5,28 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/knadh/koanf/providers/confmap"
 	"github.com/knadh/koanf/providers/structs"
 	"github.com/knadh/koanf/v2"
 )
 
-func NewUnit(pre map[string]any, name string, nerd bool) (Unit, error) {
-	k := koanf.New("")
-	k.Load(structs.Provider(DUnit, "koanf"), nil)
-	k.Load(confmap.Provider(pre, ""), nil)
-
+func NewUnit(cfg *koanf.Koanf, nerd bool) (Unit, error) {
 	var unit Unit
-	k.Unmarshal("", &unit)
+	k := koanf.New("")
+	if err := k.Load(structs.Provider(DUnit, "koanf"), nil); err != nil {
+		return unit, err
+	}
+	if err := k.Merge(cfg); err != nil {
+		return unit, err
+	}
+	if err := k.Unmarshal("", &unit); err != nil {
+		return unit, err
+	}
 
-	unit.Name = name
 	unit.Nerd = nerd
-	unit.TTF = filepath.Join(unit.OutDir, name+".ttf")
+	unit.TTF = filepath.Join(unit.OutDir, unit.Name+".ttf")
 
 	var srcB strings.Builder
-	if err := unit.SrcForm.Template.Execute(&srcB, SrcFormPat{Name: name}); err != nil {
+	if err := unit.SrcForm.Template.Execute(&srcB, SrcFormPat{Name: unit.Name}); err != nil {
 		return unit, err
 	}
 	unit.Src = srcB.String()

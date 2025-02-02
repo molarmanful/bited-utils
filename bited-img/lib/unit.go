@@ -16,11 +16,14 @@ import (
 var reENC = regexp.MustCompile(`^\s*ENCODING\s+[^-]`)
 
 func NewUnit(cfg *koanf.Koanf) (Unit, error) {
-	k := koanf.New("")
-	k.Load(structs.Provider(DUnit, "koanf"), nil)
-	k.Merge(cfg)
-
 	var unit Unit
+	k := koanf.New("")
+	if err := k.Load(structs.Provider(DUnit, "koanf"), nil); err != nil {
+		return unit, err
+	}
+	if err := k.Merge(cfg); err != nil {
+		return unit, err
+	}
 	if err := k.Unmarshal("", &unit); err != nil {
 		return unit, err
 	}

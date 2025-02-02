@@ -5,13 +5,13 @@ import (
 )
 
 type Unit struct {
-	Name  string `koanf:"-"`
 	Src   string `koanf:"-"`
 	Nerd  bool   `koanf:"-"`
 	TTF   string `koanf:"-"`
 	TTFix string `koanf:"-"`
 	Xs    []int  `koanf:"-"`
 
+	Name     string            `koanf:"name"`
 	SrcForm  SrcForm           `koanf:"src"`
 	OutDir   string            `koanf:"out_dir"`
 	XsPre    []int             `koanf:"xs"`
