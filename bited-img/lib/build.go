@@ -108,12 +108,17 @@ func (unit *Unit) Txts() error {
 }
 
 func (unit *Unit) Pango(stem string) error {
+	if _, ok := unit.GensSet[stem]; ok {
+		return nil
+	}
+
 	txtF := script.File(filepath.Join(unit.TxtDir, stem+".txt"))
 	clrF := script.File(filepath.Join(unit.TxtDir, stem+".clr"))
 	root := bitedpango.Pango(txtF, clrF, unit.Clrs.Base).
-		Font(unit.Name).Size(float64(unit.FontSize * 3 / 4))
+		Font(unit.Name).Size(float64(unit.FontSize) * .75)
 	bitedpango.BgFg(root, unit.Clrs.Bg, unit.Clrs.Fg)
 	script.Echo(root.String()).WriteFile(filepath.Join(unit.TmpTxtDir, stem))
+
 	log.Println("  +", stem)
 	return nil
 }
