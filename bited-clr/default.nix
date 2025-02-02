@@ -9,7 +9,7 @@ buildGoModule {
   inherit version;
   pname = "bited-clr";
   src = ../.;
-  vendorHash = "sha256-Qf4Vidk42Wo2OBQYtI2Jwf/hU9yHTGsPHyXL5/W/LDc=";
+  vendorHash = "sha256-rJwGPn912n83hJnEogB8mRVfVFknNQOPRYAP4mapebQ=";
 
   modRoot = "bited-clr";
 }
