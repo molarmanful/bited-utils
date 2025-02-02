@@ -32,28 +32,37 @@ func NewUnit(cfg *koanf.Koanf) (Unit, error) {
 		return unit, fmt.Errorf("map.label_clrs length < 2")
 	}
 
+	err := unit.PostUnit()
+	return unit, err
+}
+
+func (unit *Unit) PostUnit() error {
 	var srcB strings.Builder
 	if err := unit.SrcForm.Template.Execute(&srcB, SrcFormPat{Name: unit.Name}); err != nil {
-		return unit, err
+		return err
 	}
 	unit.Src = srcB.String()
 
 	encs, err := script.File(unit.Src).MatchRegexp(reENC).Column(2).Slice()
 	if err != nil {
-		return unit, err
+		return err
 	}
 	unit.Codes = make([]int, len(encs))
 	for i, v := range encs {
 		n, err := strconv.Atoi(v)
 		if err != nil {
-			return unit, err
+			return err
 		}
 		unit.Codes[i] = n
 	}
 
+	unit.GensSet = make(map[string]struct{})
+	for _, gen := range unit.Gens {
+		unit.GensSet[gen.Name] = struct{}{}
+	}
 	tmpd, err := os.MkdirTemp("", "bited-img-")
 	if err != nil {
-		return unit, err
+		return err
 	}
 	unit.TmpDir = tmpd
 	unit.TmpTxtDir = filepath.Join(unit.TmpDir, "txts")
@@ -61,10 +70,5 @@ func NewUnit(cfg *koanf.Koanf) (Unit, error) {
 	unit.Font = filepath.Join(unit.TmpFontDir, "tmp.ttf")
 	unit.FC = filepath.Join(unit.TmpDir, "fonts.conf")
 
-	unit.GensSet = make(map[string]struct{})
-	for _, gen := range unit.Gens {
-		unit.GensSet[gen.Name] = struct{}{}
-	}
-
-	return unit, nil
+	return nil
 }

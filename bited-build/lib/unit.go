@@ -23,11 +23,16 @@ func NewUnit(cfg *koanf.Koanf, nerd bool) (Unit, error) {
 	}
 
 	unit.Nerd = nerd
+	unit.PostUnit()
+	return unit, nil
+}
+
+func (unit *Unit) PostUnit() error {
 	unit.TTF = filepath.Join(unit.OutDir, unit.Name+".ttf")
 
 	var srcB strings.Builder
 	if err := unit.SrcForm.Template.Execute(&srcB, SrcFormPat{Name: unit.Name}); err != nil {
-		return unit, err
+		return err
 	}
 	unit.Src = srcB.String()
 
@@ -47,5 +52,5 @@ func NewUnit(cfg *koanf.Koanf, nerd bool) (Unit, error) {
 		}
 	}
 
-	return unit, nil
+	return nil
 }
