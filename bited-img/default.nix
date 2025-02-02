@@ -16,7 +16,7 @@ buildGoModule {
   inherit version;
   pname = "bited-img";
   src = ../.;
-  vendorHash = "sha256-zAk4gJethRyW5oGiy6v/Yv+DvrPWk/y4q7VlsIWPwtw=";
+  vendorHash = "sha256-DzyHsiUguAOZIo15SULtzgg52G9ftAypmdBm0uyk9SE=";
   modRoot = "bited-img";
   nativeBuildInputs = [ makeWrapper ];
 

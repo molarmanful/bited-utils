@@ -34,6 +34,7 @@
           bited-scale = pkgs.callPackage ./bited-scale o;
           bited-pango = pkgs.callPackage ./bited-pango o;
           bited-clr = pkgs.callPackage ./bited-clr o;
+          default = pkgs.callPackage ./. o;
         };
 
         devShells.default = pkgs.mkShell {
