@@ -11,6 +11,7 @@ require (
 	github.com/knadh/koanf/v2 v2.1.2
 	github.com/molarmanful/bited-utils v0.0.0-00010101000000-000000000000
 	github.com/molarmanful/bited-utils/bited-scale v0.0.0-00010101000000-000000000000
+	golang.org/x/sync v0.2.0
 )
 
 require (
