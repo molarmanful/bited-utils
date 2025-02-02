@@ -23,18 +23,20 @@
         pkgs = nixpkgs.legacyPackages.${system};
         o = {
           inherit version;
+          vendorHash = "sha256-GQuDse45vv7artjF3aWrp6rRuRsb9odu7Iey5Vxa/V8=";
         } // self.packages.${system};
       in
       {
 
-        packages = {
-          bitsnpicas = pkgs.callPackage ./bitsnpicas.nix o;
+        packages = rec {
+          default = bited-utils;
+          bited-utils = pkgs.callPackage ./. o;
+          bitsnpicas = pkgs.callPackage ./bitsnpicas.nix { };
           bited-build = pkgs.callPackage ./bited-build o;
           bited-img = pkgs.callPackage ./bited-img o;
           bited-scale = pkgs.callPackage ./bited-scale o;
           bited-pango = pkgs.callPackage ./bited-pango o;
           bited-clr = pkgs.callPackage ./bited-clr o;
-          default = pkgs.callPackage ./. o;
         };
 
         devShells.default = pkgs.mkShell {

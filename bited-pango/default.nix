@@ -1,16 +1,14 @@
 {
   version,
+  vendorHash,
 
-  lib,
   buildGoModule,
   ...
 }:
 
 buildGoModule {
-  inherit version;
+  inherit version vendorHash;
   pname = "bited-pango";
   src = ../.;
-  vendorHash = "sha256-oHra99LHFq1bv6p1gP7+sZlbHvaAaOB2yV5ux4mfLL8=";
-
-  modRoot = "bited-pango";
+  subPackages = [ "bited-pango" ];
 }

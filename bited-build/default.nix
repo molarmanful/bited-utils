@@ -1,5 +1,6 @@
 {
   version,
+  vendorHash,
 
   bitsnpicas,
 
@@ -15,14 +16,11 @@
 }:
 
 buildGoModule {
-  inherit version;
+  inherit version vendorHash;
   pname = "bited-build";
   src = ../.;
-  vendorHash = "sha256-TpBCXEmOrUR4TLNuSYoNndMJNRZrSAAIMx7EvTcaU4s=";
-
-  modRoot = "bited-build";
+  subPackages = [ "bited-build" ];
   nativeBuildInputs = [ makeWrapper ];
-
   postFixup = ''
     wrapProgram $out/bin/bited-build \
       --set PATH ${

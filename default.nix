@@ -1,24 +1,13 @@
 {
   version,
+  vendorHash,
 
-  bited-build,
-  bited-img,
-  bited-scale,
-  bited-pango,
-  bited-clr,
-
-  symlinkJoin,
+  buildGoModule,
   ...
 }:
 
-symlinkJoin {
-  inherit version;
+buildGoModule {
+  inherit version vendorHash;
   pname = "bited-utils";
-  paths = [
-    bited-build
-    bited-img
-    bited-scale
-    bited-pango
-    bited-clr
-  ];
+  src = ./.;
 }

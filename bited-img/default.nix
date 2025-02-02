@@ -1,5 +1,6 @@
 {
   version,
+  vendorHash,
 
   bitsnpicas,
 
@@ -13,11 +14,10 @@
 }:
 
 buildGoModule {
-  inherit version;
+  inherit version vendorHash;
   pname = "bited-img";
   src = ../.;
-  vendorHash = "sha256-MqLXFi9Yc+ds3Mn4pi7/nFfosUSqaAz9a1fIDWqesW0=";
-  modRoot = "bited-img";
+  subPackages = [ "bited-img" ];
   nativeBuildInputs = [ makeWrapper ];
 
   postFixup = ''
