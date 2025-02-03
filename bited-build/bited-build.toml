@@ -5,24 +5,30 @@
 # Font name.
 # Required.
 name = "Cool Font"
+
 # Go template denoting a path to the bited BDF relative to the config.
 # - Name: font name.
 # Defaults to `src/{{ .Name }}.bdf`.
 src = "src/{{ .Name }}.bdf"
+
 # Path to the output folder relative to the config.
 # Defaults to `out`.
 out_dir = "out"
+
 # Array of integer scales to target when building to bitmap formats.
 # Defaults to `[]`.
 xs = [2, 3]
+
 # Go template denoting the font name when building scaled bitmaps.
 # - Name: font name.
 # - X: integer scale.
 # Defaults to `{{ .Name }} {{ .X }}x`.
 x_format = "{{ .Name }} {{ .X }}x"
+
 # Language to use when generating the font's SFNT names table.
 # Defaults to `English (US)`.
 sfnt_lang = "English (US)"
+
 # Python snippet that is injected into the FontForge build script.
 # `f` holds the font being built.
 # Defaults to `""`.

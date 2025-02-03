@@ -5,19 +5,24 @@
 # Font name.
 # Required.
 name = "Cool Font"
+
 # Go template denoting a path to the bited BDF relative to the config.
 # - Name: font name.
 # Defaults to `src/{{ .Name }}.bdf`.
 src = "src/{{ .Name }}.bdf"
+
 # Path to the folder with TXT/CLR files relative to the config.
 # Defaults to `txt`.
 txt_dir = "txt"
+
 # Path to the output folder relative to the config.
 # Defaults to `img`.
 out_dir = "img"
+
 # Font size (px).
 # Defaults to 16, but you really should set this accordingly.
 font_size = 16
+
 # Replaces combining characters with `.` when generating `map` and `chars`.
 # This option exists because Pango doesn't seem to enjoy rendering combining
 # characters in a bitmap-friendly way.
@@ -26,24 +31,30 @@ hide_accents = true
 
 # Options for generating a list of glyphs defined in the font.
 [fonts.chars]
+
 # Filename to output to inside `txt_dir`.
 # Defaults to `chars`.
 out = "chars"
+
 # Max number of glyphs per line.
 # Defaults to `48`.
 width = 48
 
 # Options for generating a list of glyphs defined in the font.
 [fonts.map]
+
 # Filename to output to inside `txt_dir`.
 # Defaults to `map`.
 out = "map"
+
 # TXT/CLR color code for the Unicode prefix and digits (`U+...`).
 # Defaults to `5`.
 u_clr = "5"
+
 # TXT/CLR color code for the final Unicode digit.
 # Defaults to `1`.
 x_clr = "1"
+
 # TXT/CLR color code for the border.
 # Defaults to `8`.
 border_clr = "8"
@@ -74,8 +85,10 @@ base = [
 
 # Definitions for combining existing TXT/CLR files into new ones.
 [[fonts.gens]]
+
 # Filename to output to inside `txt_dir`.
 name = "sample"
+
 # Array of TXT/CLR files to combine.
 txts = ["prog", "eng", "multi", "box"]
 
