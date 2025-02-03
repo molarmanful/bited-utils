@@ -9,8 +9,8 @@ import (
 	"github.com/knadh/koanf/parsers/toml/v2"
 	"github.com/knadh/koanf/providers/file"
 	"github.com/knadh/koanf/v2"
-	"github.com/molarmanful/bited-utils"
-	"github.com/molarmanful/bited-utils/bited-img/lib"
+	bitedutils "github.com/molarmanful/bited-utils"
+	bitedimg "github.com/molarmanful/bited-utils/bited-img/lib"
 	"github.com/rivo/tview"
 )
 

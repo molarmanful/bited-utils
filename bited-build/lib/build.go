@@ -12,7 +12,7 @@ import (
 	"text/template"
 
 	"github.com/bitfield/script"
-	"github.com/molarmanful/bited-utils/bited-scale/lib"
+	bitedscale "github.com/molarmanful/bited-utils/bited-scale/lib"
 	"golang.org/x/sync/errgroup"
 )
 

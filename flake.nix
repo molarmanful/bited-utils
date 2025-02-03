@@ -46,12 +46,18 @@
             nixfmt-rfc-style
             statix
             deadnix
-            nushell
             taplo
             go
             gopls
             gotools
+            golines
             errcheck
+            marksman
+            mdformat
+            python312Packages.mdformat-gfm
+            python312Packages.mdformat-frontmatter
+            python312Packages.mdformat-footnote
+            python312Packages.mdformat-gfm-alerts
           ];
         };
 

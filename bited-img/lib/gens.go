@@ -74,7 +74,12 @@ func (unit *Unit) GenMap() error {
 
 	row := -1
 	var line []string
-	clrLine := fmt.Sprintf("%s     %s %s.", unit.Map.LabelClrs[1], unit.Map.LabelClrs[0], unit.Map.BorderClr)
+	clrLine := fmt.Sprintf(
+		"%s     %s %s.",
+		unit.Map.LabelClrs[1],
+		unit.Map.LabelClrs[0],
+		unit.Map.BorderClr,
+	)
 	for _, n := range unit.Codes {
 		if n/16 != row {
 			row = n / 16

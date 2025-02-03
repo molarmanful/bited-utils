@@ -6,8 +6,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/molarmanful/bited-utils"
-	"github.com/molarmanful/bited-utils/bited-pango/lib"
+	bitedutils "github.com/molarmanful/bited-utils"
+	bitedpango "github.com/molarmanful/bited-utils/bited-pango/lib"
 )
 
 func main() {

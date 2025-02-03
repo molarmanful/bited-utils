@@ -5,8 +5,8 @@ import (
 	"strings"
 
 	"github.com/gdamore/tcell/v2"
-	"github.com/molarmanful/bited-utils"
-	"github.com/molarmanful/bited-utils/bited-img/lib"
+	bitedutils "github.com/molarmanful/bited-utils"
+	bitedimg "github.com/molarmanful/bited-utils/bited-img/lib"
 	"github.com/rivo/tview"
 )
 

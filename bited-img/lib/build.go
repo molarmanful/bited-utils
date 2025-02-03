@@ -14,7 +14,7 @@ import (
 	"text/template"
 
 	"github.com/bitfield/script"
-	"github.com/molarmanful/bited-utils/bited-pango/lib"
+	bitedpango "github.com/molarmanful/bited-utils/bited-pango/lib"
 	"golang.org/x/sync/errgroup"
 )
 

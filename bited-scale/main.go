@@ -4,8 +4,8 @@ import (
 	"flag"
 	"os"
 
-	"github.com/molarmanful/bited-utils"
-	"github.com/molarmanful/bited-utils/bited-scale/lib"
+	bitedutils "github.com/molarmanful/bited-utils"
+	bitedscale "github.com/molarmanful/bited-utils/bited-scale/lib"
 )
 
 func main() {
