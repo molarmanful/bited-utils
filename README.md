@@ -49,3 +49,27 @@ A    . D    .
 Would produce:
 
 ![TXT/CLR output](assets/txtclr_example.png)
+
+### Why TXT/CLR?
+
+When designing the pipeline for creating color specimens for my fonts (what
+would eventually become bited-img), I initially considered several existing
+approaches to creating the specimen sources:
+
+- Writing Pango markup directly, which would make passing them to ImageMagick
+  super easy.
+- Creating ANSI via an editor and then generating the Pango markup.
+
+Both of these approaches suffer from a rather important flaw, however: because
+they embed color data alongside content in the same file, their source files are
+difficult to read and/or write in a text editor. So my caveman solution was to
+just separate the color data into its own file, which preserves a readable TXT
+source.
+
+My workflow for creating these TXT/CLR files goes something like:
+
+1. Create the TXT file with uncolored contents.
+1. Copy the TXT file to CLR.
+1. Block out the CLR file with color codes. Neovim's visual block mode is
+   especially well-suited for this.
+1. Remove extraneous text and use bited-clr for finer adjustments if necessary.
