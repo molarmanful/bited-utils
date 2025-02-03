@@ -1,0 +1,127 @@
+# This is an annotated example bited-img config.
+
+[[fonts]]
+
+# Font name.
+# Required.
+name = "Cool Font"
+# Go template denoting a path to the bited BDF relative to the config.
+# - Name: font name.
+# Defaults to `src/{{ .Name }}.bdf`.
+src = "src/{{ .Name }}.bdf"
+# Path to the folder with TXT/CLR files relative to the config.
+# Defaults to `txt`.
+txt_dir = "txt"
+# Path to the output folder relative to the config.
+# Defaults to `img`.
+out_dir = "img"
+# Font size (px).
+# Defaults to 16, but you really should set this accordingly.
+font_size = 16
+# Replaces combining characters with `.` when generating `map` and `chars`.
+# This option exists because Pango doesn't seem to enjoy rendering combining
+# characters in a bitmap-friendly way.
+# Defaults to `true`.
+hide_accents = true
+
+# Options for generating a list of glyphs defined in the font.
+[fonts.chars]
+# Filename to output to inside `txt_dir`.
+# Defaults to `chars`.
+out = "chars"
+# Max number of glyphs per line.
+# Defaults to `48`.
+width = 48
+
+# Options for generating a list of glyphs defined in the font.
+[fonts.map]
+# Filename to output to inside `txt_dir`.
+# Defaults to `map`.
+out = "map"
+# TXT/CLR color code for the Unicode prefix and digits (`U+...`).
+# Defaults to `5`.
+u_clr = "5"
+# TXT/CLR color code for the final Unicode digit.
+# Defaults to `1`.
+x_clr = "1"
+# TXT/CLR color code for the border.
+# Defaults to `8`.
+border_clr = "8"
+
+# Base16 color options.
+# bited-img comes with a default colorscheme if you don't wish to define one.
+[fonts.clrs]
+bg = "#161616" # background
+fg = "#ffffff" # foreground
+base = [
+  "#222222", # [0] black
+  "#e84f4f", # [1] red
+  "#b7ce42", # [2] green
+  "#fea63c", # [3] yellow
+  "#66aabb", # [4] blue
+  "#b7416e", # [5] magenta
+  "#6d878d", # [6] cyan
+  "#dddddd", # [7] white
+  "#666666", # [8] bright black
+  "#d23d3d", # [9] bright red
+  "#bde077", # [A] bright green
+  "#ffe863", # [B] bright yellow
+  "#aaccbb", # [C] bright blue
+  "#e16a98", # [D] bright magenta
+  "#42717b", # [E] bright cyan
+  "#cccccc", # [F] bright white
+]
+
+# Definitions for combining existing TXT/CLR files into new ones.
+[[fonts.gens]]
+# Filename to output to inside `txt_dir`.
+name = "sample"
+# Array of TXT/CLR files to combine.
+txts = ["prog", "eng", "multi", "box"]
+
+# These definitions are evaluated sequentially, so it's possible to reference
+# previously generated TXT/CLR files.
+[[fonts.gens]]
+name = "all"
+txts = ["header", "sample"]
+
+# Multiple fonts can be defined in one file.
+
+[[fonts]]
+name = "Cool Font Bold"
+font_size = 16
+hide_accents = true
+out_dir = "img_bold"
+
+[fonts.chars]
+width = 48
+
+[fonts.clrs]
+bg = "#161616"
+fg = "#ffffff"
+base = [
+  "#222222",
+  "#e84f4f",
+  "#b7ce42",
+  "#fea63c",
+  "#66aabb",
+  "#b7416e",
+  "#6d878d",
+  "#dddddd",
+  "#666666",
+  "#d23d3d",
+  "#bde077",
+  "#ffe863",
+  "#aaccbb",
+  "#e16a98",
+  "#42717b",
+  "#cccccc",
+]
+
+[[fonts.gens]]
+name = "sample"
+txts = ["prog", "eng", "multi", "box"]
+
+[[fonts.gens]]
+name = "all"
+txts = ["header", "sample"]

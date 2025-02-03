@@ -68,7 +68,7 @@ func (unit *Unit) GenMap() error {
 	); err != nil {
 		return err
 	}
-	if _, err := fmt.Fprint(mapClrF, unit.Map.LabelClrs[0], "\n", unit.Map.BorderClr); err != nil {
+	if _, err := fmt.Fprint(mapClrF, unit.Map.XClr, "\n", unit.Map.BorderClr); err != nil {
 		return err
 	}
 
@@ -76,8 +76,8 @@ func (unit *Unit) GenMap() error {
 	var line []string
 	clrLine := fmt.Sprintf(
 		"%s     %s %s.",
-		unit.Map.LabelClrs[1],
-		unit.Map.LabelClrs[0],
+		unit.Map.UClr,
+		unit.Map.XClr,
 		unit.Map.BorderClr,
 	)
 	for _, n := range unit.Codes {

@@ -1,7 +1,6 @@
 package bitedimg
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -26,10 +25,6 @@ func NewUnit(cfg *koanf.Koanf) (Unit, error) {
 	}
 	if err := k.Unmarshal("", &unit); err != nil {
 		return unit, err
-	}
-
-	if len(unit.Map.LabelClrs) < 2 {
-		return unit, fmt.Errorf("map.label_clrs length < 2")
 	}
 
 	err := unit.PostUnit()

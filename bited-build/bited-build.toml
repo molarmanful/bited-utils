@@ -1,0 +1,70 @@
+# This is an annotated example bited-build config.
+
+[[fonts]]
+
+# Font name.
+# Required.
+name = "Cool Font"
+# Go template denoting a path to the bited BDF relative to the config.
+# - Name: font name.
+# Defaults to `src/{{ .Name }}.bdf`.
+src = "src/{{ .Name }}.bdf"
+# Path to the output folder relative to the config.
+# Defaults to `out`.
+out_dir = "out"
+# Array of integer scales to target when building to bitmap formats.
+# Defaults to `[]`.
+xs = [2, 3]
+# Go template denoting the font name when building scaled bitmaps.
+# - Name: font name.
+# - X: integer scale.
+# Defaults to `{{ .Name }} {{ .X }}x`.
+x_format = "{{ .Name }} {{ .X }}x"
+# Language to use when generating the font's SFNT names table.
+# Defaults to `English (US)`.
+sfnt_lang = "English (US)"
+# Python snippet that is injected into the FontForge build script.
+# `f` holds the font being built.
+# Defaults to `""`.
+ttfix = '''
+f.os2_version = 4
+f.os2_vendor = "XYZ"
+f.os2_panose = (2, 0, 6, 9, 0, 0, 0, 0, 0, 0)
+f.os2_weight_width_slope_only = True
+f.em = 1200
+for g in f.glyphs():
+    g.width = 800
+'''
+
+# Key-value pairs that correspond to fields in the generated SFNT names table.
+# Defaults to `{}`.
+[fonts.sfnt]
+"UniqueID" = "johndoe: Cool Font: 2025"
+"Vendor URL" = "https://example.com/cool_font"
+"Designer" = "John Doe"
+"Designer URL" = "https://example.com"
+"License" = "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: https://scripts.sil.org/OFL"
+"License URL" = "https://scripts.sil.org/OFL"
+
+# Multiple fonts can be defined in one config.
+
+[[fonts]]
+name = "Cool Font Bold"
+xs = [2, 3]
+ttfix = '''
+f.os2_version = 4
+f.os2_vendor = "XYZ"
+f.os2_panose = (2, 0, 6, 9, 0, 0, 0, 0, 0, 0)
+f.os2_weight_width_slope_only = True
+f.em = 1200
+for g in f.glyphs():
+    g.width = 800
+'''
+
+[fonts.sfnt]
+"UniqueID" = "johndoe: Cool Font Bold: 2025"
+"Vendor URL" = "https://example.com/cool_font"
+"Designer" = "John Doe"
+"Designer URL" = "https://example.com"
+"License" = "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: https://scripts.sil.org/OFL"
+"License URL" = "https://scripts.sil.org/OFL"

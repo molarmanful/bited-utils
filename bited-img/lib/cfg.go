@@ -40,7 +40,8 @@ var DUnit = Unit{
 	},
 	Map: Map{
 		Out:       "map",
-		LabelClrs: []string{"1", "5"},
+		UClr:      "5",
+		XClr:      "1",
 		BorderClr: "8",
 	},
 	Clrs: Clrs{
@@ -85,9 +86,10 @@ type Chars struct {
 }
 
 type Map struct {
-	Out       string   `koanf:"out"`
-	LabelClrs []string `koanf:"label_clrs"`
-	BorderClr string   `koanf:"border_clr"`
+	Out       string `koanf:"out"`
+	UClr      string `koanf:"u_clr"`
+	XClr      string `koanf:"x_clr"`
+	BorderClr string `koanf:"border_clr"`
 }
 
 type Clrs struct {
