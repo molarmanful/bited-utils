@@ -54,10 +54,8 @@
             errcheck
             marksman
             mdformat
-            python312Packages.mdformat-gfm
-            python312Packages.mdformat-frontmatter
-            python312Packages.mdformat-footnote
-            python312Packages.mdformat-gfm-alerts
+            python313Packages.mdformat-gfm
+            python313Packages.mdformat-gfm-alerts
           ];
         };
 

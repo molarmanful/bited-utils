@@ -48,6 +48,22 @@ func (state *State) MkView(app *tview.Application) {
 			state.ClrC(ec)
 			return nil
 		}
+
+		switch event.Key() {
+		case tcell.KeyLeft:
+			state.MoveC(-1, 0)
+			return nil
+		case tcell.KeyDown:
+			state.MoveC(0, 1)
+			return nil
+		case tcell.KeyUp:
+			state.MoveC(0, -1)
+			return nil
+		case tcell.KeyRight:
+			state.MoveC(1, 0)
+			return nil
+		}
+
 		switch event.Rune() {
 		case 'h':
 			state.MoveC(-1, 0)
@@ -62,6 +78,7 @@ func (state *State) MkView(app *tview.Application) {
 			state.MoveC(1, 0)
 			return nil
 		}
+
 		return event
 	})
 
@@ -78,8 +95,7 @@ func (state *State) Gen() {
 				ir.Reset()
 				res.WriteString(state.ClrMap[ca])
 			}
-			isC := x == state.X && y == state.Y
-			if isC {
+			if x == state.X && y == state.Y {
 				res.WriteString(tview.Escape(ir.String()))
 				ir.Reset()
 				res.WriteString(`["c"]`)
