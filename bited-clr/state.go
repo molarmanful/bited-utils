@@ -44,8 +44,8 @@ func (state *State) MkView(app *tview.Application) {
 		SetTitleColor(tcell.ColorGray)
 
 	state.View.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
-		ec := event.Rune()
-		if _, ok := state.ClrMap[unicode.ToUpper(ec)]; ok {
+		ec := unicode.ToUpper(event.Rune())
+		if _, ok := state.ClrMap[ec]; ok {
 			state.ClrC(ec)
 			return nil
 		}
