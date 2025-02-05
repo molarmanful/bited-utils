@@ -1,0 +1,37 @@
+# Fully annotated config:
+# https://github.com/molarmanful/bited-utils/blob/main/bited-img/bited-img.toml
+
+[[fonts]]
+name = "FIXME"
+font_size = 16
+hide_accents = true
+
+[fonts.clrs]
+bg = "#161616" # background
+fg = "#ffffff" # foreground
+base = [
+  "#222222", # [0] black
+  "#e84f4f", # [1] red
+  "#b7ce42", # [2] green
+  "#fea63c", # [3] yellow
+  "#66aabb", # [4] blue
+  "#b7416e", # [5] magenta
+  "#6d878d", # [6] cyan
+  "#dddddd", # [7] white
+  "#666666", # [8] bright black
+  "#d23d3d", # [9] bright red
+  "#bde077", # [A] bright green
+  "#ffe863", # [B] bright yellow
+  "#aaccbb", # [C] bright blue
+  "#e16a98", # [D] bright magenta
+  "#42717b", # [E] bright cyan
+  "#cccccc", # [F] bright white
+]
+
+[[fonts.gens]]
+name = "sample"
+txts = ["prog"]
+
+[[fonts.gens]]
+name = "all"
+txts = ["header", "sample"]

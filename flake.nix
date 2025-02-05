@@ -17,7 +17,13 @@
       version = builtins.readFile ./VERSION;
     in
 
-    flake-utils.lib.eachDefaultSystem (
+    {
+      templates.default = {
+        path = ./template;
+        description = "bited font project with bited-utils";
+      };
+    }
+    // flake-utils.lib.eachDefaultSystem (
       system:
       let
         pkgs = nixpkgs.legacyPackages.${system};

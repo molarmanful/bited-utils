@@ -1,0 +1,23 @@
+# Fully annotated config:
+# https://github.com/molarmanful/bited-utils/blob/main/bited-build/bited-build.toml
+
+[[fonts]]
+name = "FIXME"
+xs = [2, 3]
+ttfix = '''
+f.os2_version = 4
+f.os2_vendor = "XYZ"
+f.os2_panose = (2, 0, 6, 9, 0, 0, 0, 0, 0, 0)
+f.os2_weight_width_slope_only = True
+f.em = 1600
+for g in f.glyphs():
+    g.width = 600
+'''
+
+[fonts.sfnt]
+"UniqueID" = "ghost: FIXME: 2025"
+"Vendor URL" = "https://github.com/ghost/FIXME"
+"Designer" = "ghost"
+"Designer URL" = "https://github.com/ghost/FIXME"
+"License" = "This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is available with a FAQ at: https://scripts.sil.org/OFL"
+"License URL" = "https://scripts.sil.org/OFL"
