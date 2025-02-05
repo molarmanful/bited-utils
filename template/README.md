@@ -26,6 +26,11 @@ To only update bited-utils:
 nix flake update bited-utils
 ```
 
+### Licensing
+
+The project comes with SIL Open Font License 1.1 by default. Feel free to alter
+this to your liking.
+
 ### Versioning
 
 By default, Nix flake reads versions via the `VERSION` file.
