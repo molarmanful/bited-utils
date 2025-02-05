@@ -14,6 +14,17 @@ and Nix flakes.
   files into Go-typed Pango markup nodes.
 - [**bited-scale**](bited-scale): A library and command for scaling a bited BDF.
 
+## Nix flake template
+
+In a blank directory where you want your font project to reside, run:
+
+```bash
+nix flake init --template github:molarmanful/bited-utils
+```
+
+This will create an annotated [template project](template) with Nix scaffolding
+around bited-utils to help get your font project up and running.
+
 ## TXT/CLR files
 
 To generate colorful images, bited-img accepts pairs of `.txt` and `.clr` files.

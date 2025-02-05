@@ -5,12 +5,10 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"regexp"
 	"slices"
 	"strings"
+	"unicode"
 )
-
-var reComb = regexp.MustCompile(`\pM`)
 
 func (unit *Unit) GenChars() error {
 	log.Println("+ GEN chars")
@@ -36,11 +34,11 @@ func (unit *Unit) GenChars() error {
 				}
 			}
 
-			char := string(rune(n))
-			if unit.HideAccents {
-				char = reComb.ReplaceAllLiteralString(char, ".")
+			char := rune(n)
+			if unit.HideAccents && unicode.IsMark(char) {
+				char = '.'
 			}
-			if _, err := fmt.Fprint(charsF, char); err != nil {
+			if _, err := fmt.Fprint(charsF, string(char)); err != nil {
 				return err
 			}
 		}
@@ -95,11 +93,11 @@ func (unit *Unit) GenMap() error {
 			}
 		}
 
-		char := string(rune(n))
-		if unit.HideAccents {
-			char = reComb.ReplaceAllLiteralString(char, ".")
+		char := rune(n)
+		if unit.HideAccents && unicode.IsMark(char) {
+			char = '.'
 		}
-		line[n%16] = char
+		line[n%16] = string(char)
 	}
 	if _, err := fmt.Fprint(mapF, strings.Join(line, " ")); err != nil {
 		return err

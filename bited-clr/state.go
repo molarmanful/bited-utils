@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 	"strings"
+	"unicode"
 
 	"github.com/gdamore/tcell/v2"
 	bitedutils "github.com/molarmanful/bited-utils"
@@ -44,7 +45,7 @@ func (state *State) MkView(app *tview.Application) {
 
 	state.View.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
 		ec := event.Rune()
-		if _, ok := state.ClrMap[ec]; ok {
+		if _, ok := state.ClrMap[unicode.ToUpper(ec)]; ok {
 			state.ClrC(ec)
 			return nil
 		}

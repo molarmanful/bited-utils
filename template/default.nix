@@ -18,8 +18,7 @@ stdenvNoCC.mkDerivation {
   buildPhase = ''
     runHook preBuild
     rm -rf out
-    ${bited-build}/bin/bited-build \
-      ${lib.optionalString nerd "--nerd"}
+    ${bited-build}/bin/bited-build ${lib.optionalString nerd "--nerd"}
     runHook postBuild
   '';
 
