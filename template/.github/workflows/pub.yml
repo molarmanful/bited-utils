@@ -17,7 +17,7 @@ jobs:
         with:
           ref: main
       - uses: DeterminateSystems/nix-installer-action@main
-      - uses: DeterminateSystems/flakehub-cache-action@main
+      # - uses: DeterminateSystems/flakehub-cache-action@main
       - run: echo -n ${{ github.ref_name }} > VERSION
       - run: nix build .#FIXME-release
       - name: push
@@ -30,9 +30,9 @@ jobs:
         with:
           file: result/share/fonts/*
           file_glob: true
-      - uses: "DeterminateSystems/flakehub-push@main"
-        with:
-          visibility: "public"
-          name: "ghost/FIXME"
-          tag: "${{ inputs.tag }}"
-          include-output-paths: true
+      # - uses: "DeterminateSystems/flakehub-push@main"
+      #   with:
+      #     visibility: "public"
+      #     name: "ghost/FIXME"
+      #     tag: "${{ inputs.tag }}"
+      #     include-output-paths: true

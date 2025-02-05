@@ -14,6 +14,8 @@ own font's name. The project's default author is
 
 ### Updating
 
+To update all inputs:
+
 ```
 nix flake update
 ```
@@ -29,10 +31,3 @@ nix flake update bited-utils
 By default, Nix flake reads versions via the `VERSION` file.
 `.github/workflows/pub.yml` bumps the version based on Github releases. These
 can all be modified to fit your preferred versioning scheme.
-
-### CI
-
-The default CI caching solution defined is
-[FlakeHub Cache](https://flakehub.com/cache); feel free to replace this with
-another caching solution of your choice or simply remove it if you don't need
-one.
