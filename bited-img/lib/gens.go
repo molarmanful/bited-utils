@@ -34,10 +34,7 @@ func (unit *Unit) GenChars() error {
 				}
 			}
 
-			char := rune(n)
-			if unit.HideAccents && unicode.IsMark(char) {
-				char = '.'
-			}
+			char := unit.HideRune(rune(n))
 			if _, err := fmt.Fprint(charsF, string(char)); err != nil {
 				return err
 			}
@@ -93,10 +90,7 @@ func (unit *Unit) GenMap() error {
 			}
 		}
 
-		char := rune(n)
-		if unit.HideAccents && unicode.IsMark(char) {
-			char = '.'
-		}
+		char := unit.HideRune(rune(n))
 		line[n%16] = string(char)
 	}
 	if _, err := fmt.Fprint(mapF, strings.Join(line, " ")); err != nil {
@@ -104,4 +98,11 @@ func (unit *Unit) GenMap() error {
 	}
 
 	return nil
+}
+
+func (unit *Unit) HideRune(c rune) rune {
+	if unit.HideAccents != "" && (unicode.IsMark(c) || c == 0x9 || c == 0xAD) {
+		return []rune(unit.HideAccents)[0]
+	}
+	return c
 }

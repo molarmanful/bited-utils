@@ -18,7 +18,7 @@ type Unit struct {
 	SrcForm     SrcForm `koanf:"src"`
 	OutDir      string  `koanf:"out_dir"`
 	TxtDir      string  `koanf:"txt_dir"`
-	HideAccents bool    `koanf:"hide_accents"`
+	HideAccents string  `koanf:"hide_accents"`
 	FontSize    int     `koanf:"font_size"`
 	Chars       Chars   `koanf:"chars"`
 	Map         Map     `koanf:"map"`
@@ -32,7 +32,7 @@ var DUnit = Unit{
 	SrcForm:     SrcForm{srcT},
 	OutDir:      "img",
 	TxtDir:      "txt",
-	HideAccents: true,
+	HideAccents: ".",
 	FontSize:    16,
 	Chars: Chars{
 		Out:   "chars",

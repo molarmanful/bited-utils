@@ -23,11 +23,12 @@ out_dir = "img"
 # Defaults to 16, but you really should set this accordingly.
 font_size = 16
 
-# Replaces combining characters with `.` when generating `map` and `chars`.
-# This option exists because Pango doesn't seem to enjoy rendering combining
-# characters in a bitmap-friendly way.
-# Defaults to `true`.
-hide_accents = true
+# If non-empty, replaces combining characters with the string when generating
+# `map` and `chars`.
+# This option exists because Pango doesn't seem to enjoy rendering certain
+# combining characters in a bitmap-friendly way.
+# Defaults to `.`.
+hide_accents = "."
 
 # Options for generating a list of glyphs defined in the font.
 [fonts.chars]
