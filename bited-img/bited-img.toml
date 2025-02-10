@@ -19,10 +19,6 @@ txt_dir = "txt"
 # Defaults to `img`.
 out_dir = "img"
 
-# Font size (px).
-# Defaults to 16, but you really should set this accordingly.
-font_size = 16
-
 # If non-empty, replaces combining characters with the string when generating
 # `map` and `chars`.
 # This option exists because Pango doesn't seem to enjoy rendering certain

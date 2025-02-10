@@ -5,11 +5,13 @@ import (
 )
 
 type Unit struct {
-	Src   string `koanf:"-"`
-	Nerd  bool   `koanf:"-"`
-	TTF   string `koanf:"-"`
-	TTFix string `koanf:"-"`
-	Xs    []int  `koanf:"-"`
+	Src      string         `koanf:"-"`
+	Nerd     bool           `koanf:"-"`
+	TTF      string         `koanf:"-"`
+	TTFix    string         `koanf:"-"`
+	Xs       []int          `koanf:"-"`
+	FontSize int            `koanf:"-"`
+	Widths   map[string]int `koanf:"-"`
 
 	Name     string            `koanf:"name"`
 	SrcForm  SrcForm           `koanf:"src"`

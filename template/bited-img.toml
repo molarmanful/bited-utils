@@ -3,7 +3,6 @@
 
 [[fonts]]
 name = "FIXME"
-font_size = 13
 hide_accents = true
 
 [fonts.clrs]

@@ -13,13 +13,13 @@ type Unit struct {
 	Font       string              `koanf:"-"`
 	FC         string              `koanf:"-"`
 	GensSet    map[string]struct{} `koanf:"-"`
+	FontSize   int                 `koanf:"-"`
 
 	Name        string  `koanf:"name"`
 	SrcForm     SrcForm `koanf:"src"`
 	OutDir      string  `koanf:"out_dir"`
 	TxtDir      string  `koanf:"txt_dir"`
 	HideAccents string  `koanf:"hide_accents"`
-	FontSize    int     `koanf:"font_size"`
 	Chars       Chars   `koanf:"chars"`
 	Map         Map     `koanf:"map"`
 	Clrs        Clrs    `koanf:"clrs"`

@@ -3,11 +3,13 @@ package bitedbuild
 import (
 	"context"
 	_ "embed"
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"text/template"
 
@@ -59,7 +61,7 @@ func (unit *Unit) BuildVec() error {
 	if err := fixTmpl.Execute(&fixB, unit.TTFix); err != nil {
 		return err
 	}
-	if out, err := exec.Command("fontforge", "-c", fixB.String(), unit.TTF).
+	if out, err := exec.Command("fontforge", "-c", fixB.String(), unit.TTF, strconv.Itoa(unit.FontSize)).
 		CombinedOutput(); err != nil {
 		fmt.Fprintln(os.Stderr, string(out))
 		return err
@@ -125,24 +127,30 @@ func (unit *Unit) BuildX(x int) error {
 			return err
 		}
 
-		return unit.BuildBit(src, base, nameB.String())
+		return unit.BuildBit(src, x, base, nameB.String())
 	}
 
 	stem, _, _ := strings.Cut(filepath.Base(unit.Src), ".")
-	return unit.BuildBit(unit.Src, filepath.Join(unit.OutDir, stem), unit.Name)
+	return unit.BuildBit(unit.Src, 1, filepath.Join(unit.OutDir, stem), unit.Name)
 }
 
 //go:embed bit.py
 var bitPy string
 var bitTmpl = template.Must(template.New("").Parse(bitPy))
 
-func (unit *Unit) BuildBit(src string, base string, name string) error {
+func (unit *Unit) BuildBit(src string, x int, base string, name string) error {
 	var bitB strings.Builder
 	if err := bitTmpl.Execute(&bitB, unit.TTFix); err != nil {
 		return err
 	}
-	if out, err := exec.Command("fontforge", "-c", bitB.String(), src, base+".", name).
-		CombinedOutput(); err != nil {
+	widthsJSON, err := json.Marshal(unit.Widths)
+	if err != nil {
+		return nil
+	}
+	if out, err := exec.Command(
+		"fontforge", "-c", bitB.String(),
+		src, strconv.Itoa(x), strconv.Itoa(unit.FontSize), string(widthsJSON), base+".", name,
+	).CombinedOutput(); err != nil {
 		fmt.Fprintln(os.Stderr, string(out))
 		return err
 	}

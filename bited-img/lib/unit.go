@@ -10,6 +10,7 @@ import (
 	"github.com/bitfield/script"
 	"github.com/knadh/koanf/providers/structs"
 	"github.com/knadh/koanf/v2"
+	bitedutils "github.com/molarmanful/bited-utils"
 )
 
 var reENC = regexp.MustCompile(`^\s*ENCODING\s+[^-]`)
@@ -64,6 +65,12 @@ func (unit *Unit) PostUnit() error {
 	unit.TmpFontDir = filepath.Join(unit.TmpDir, "fonts")
 	unit.Font = filepath.Join(unit.TmpFontDir, "tmp.ttf")
 	unit.FC = filepath.Join(unit.TmpDir, "fonts.conf")
+
+	fsz, err := bitedutils.GetFsz(unit.Src)
+	if err != nil {
+		return err
+	}
+	unit.FontSize = fsz
 
 	return nil
 }
