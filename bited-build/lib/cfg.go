@@ -22,7 +22,7 @@ type Unit struct {
 }
 
 var srcT = template.Must(template.New("").Parse("src/{{ .Name }}.bdf"))
-var xFormatT = template.Must(template.New("").Parse("{{ .Name }} {{ .X }}x"))
+var xFormatT = template.Must(template.New("").Parse("{{ .Name }}{{ .X }}x"))
 
 var DUnit = Unit{
 	SrcForm:  SrcForm{srcT},

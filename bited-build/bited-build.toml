@@ -22,8 +22,8 @@ xs = [2, 3]
 # Go template denoting the font name when building scaled bitmaps.
 # - Name: font name.
 # - X: integer scale.
-# Defaults to `{{ .Name }} {{ .X }}x`.
-x_format = "{{ .Name }} {{ .X }}x"
+# Defaults to `{{ .Name }}{{ .X }}x`.
+x_format = "{{ .Name }}{{ .X }}x"
 
 # Language to use when generating the font's SFNT names table.
 # Defaults to `English (US)`.
