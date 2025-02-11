@@ -5,7 +5,7 @@ support.
 
 ## Usage
 
-```
+```bash
 bited-img
 ```
 

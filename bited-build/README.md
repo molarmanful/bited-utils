@@ -5,7 +5,7 @@ fonts from bited BDFs. Supports integer scaling and Nerd Font patching.
 
 ## Usage
 
-```
+```bash
 bited-build [--nerd]
 ```
 
