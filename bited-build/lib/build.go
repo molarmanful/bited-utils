@@ -161,6 +161,13 @@ func (unit *Unit) BuildBit(src string, x int, base string, name string) error {
 		return err
 	}
 
+	if out, err := exec.Command(
+		"bitsnpicas", "convertbitmap", "-f", "psf2gz", "-o", base+".psfu.gz", unit.Src).
+		CombinedOutput(); err != nil {
+		fmt.Fprintln(os.Stderr, string(out))
+		return err
+	}
+
 	log.Println("  + DONE", name)
 	return nil
 }
