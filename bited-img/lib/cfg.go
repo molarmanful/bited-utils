@@ -2,18 +2,17 @@ package bitedimg
 
 import (
 	"text/template"
+
+	"golang.org/x/image/font"
 )
 
 type Unit struct {
-	Src        string              `koanf:"-"`
-	Codes      []int               `koanf:"-"`
-	TmpDir     string              `koanf:"-"`
-	TmpTxtDir  string              `koanf:"-"`
-	TmpFontDir string              `koanf:"-"`
-	Font       string              `koanf:"-"`
-	FC         string              `koanf:"-"`
-	GensSet    map[string]struct{} `koanf:"-"`
-	FontSize   int                 `koanf:"-"`
+	Src      string          `koanf:"-"`
+	Codes    []int           `koanf:"-"`
+	Font     string          `koanf:"-"`
+	BDF      font.Face       `koanf:"-"`
+	ClrsMap  map[rune]string `koanf:"-"`
+	FontSize int             `koanf:"-"`
 
 	Name        string  `koanf:"name"`
 	SrcForm     SrcForm `koanf:"src"`
@@ -29,11 +28,10 @@ type Unit struct {
 var srcT = template.Must(template.New("").Parse("src/{{ .Name }}.bdf"))
 
 var DUnit = Unit{
-	SrcForm:     SrcForm{srcT},
-	OutDir:      "img",
-	TxtDir:      "txt",
-	HideAccents: ".",
-	FontSize:    16,
+	SrcForm:  SrcForm{srcT},
+	OutDir:   "img",
+	TxtDir:   "txt",
+	FontSize: 16,
 	Chars: Chars{
 		Out:   "chars",
 		Width: 48,

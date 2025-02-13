@@ -1,8 +1,6 @@
 package bitedimg
 
 import (
-	"os"
-	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
@@ -11,6 +9,7 @@ import (
 	"github.com/knadh/koanf/providers/structs"
 	"github.com/knadh/koanf/v2"
 	bitedutils "github.com/molarmanful/bited-utils"
+	"github.com/zachomedia/go-bdf"
 )
 
 var reENC = regexp.MustCompile(`^\s*ENCODING\s+[^-]`)
@@ -52,25 +51,27 @@ func (unit *Unit) PostUnit() error {
 		unit.Codes[i] = n
 	}
 
-	unit.GensSet = make(map[string]struct{})
-	for _, gen := range unit.Gens {
-		unit.GensSet[gen.Name] = struct{}{}
-	}
-	tmpd, err := os.MkdirTemp("", "bited-img-")
-	if err != nil {
-		return err
-	}
-	unit.TmpDir = tmpd
-	unit.TmpTxtDir = filepath.Join(unit.TmpDir, "txts")
-	unit.TmpFontDir = filepath.Join(unit.TmpDir, "fonts")
-	unit.Font = filepath.Join(unit.TmpFontDir, "tmp.ttf")
-	unit.FC = filepath.Join(unit.TmpDir, "fonts.conf")
-
 	fsz, err := bitedutils.GetFsz(unit.Src)
 	if err != nil {
 		return err
 	}
 	unit.FontSize = fsz
+
+	bdfB, err := script.File(unit.Src).Bytes()
+	if err != nil {
+		return err
+	}
+	bdfP, err := bdf.Parse(bdfB)
+	if err != nil {
+		return err
+	}
+	unit.BDF = bdfP.NewFace()
+
+	unit.ClrsMap = make(map[rune]string)
+	unit.ClrsMap['.'] = unit.Clrs.Fg
+	for i, r := range "0123456789ABCDEF" {
+		unit.ClrsMap[r] = unit.Clrs.Base[i]
+	}
 
 	return nil
 }

@@ -29,7 +29,7 @@
         pkgs = nixpkgs.legacyPackages.${system};
         o = {
           inherit version;
-          vendorHash = "sha256-GQuDse45vv7artjF3aWrp6rRuRsb9odu7Iey5Vxa/V8=";
+          vendorHash = "sha256-mq4RJ+8TSOhQduUKA+sHFLq66ZvgbbPxyiWpTbykYSs=";
         } // self.packages.${system};
       in
       {

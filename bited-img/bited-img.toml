@@ -21,9 +21,7 @@ out_dir = "img"
 
 # If non-empty, replaces combining characters with the string when generating
 # `map` and `chars`.
-# This option exists because Pango doesn't seem to enjoy rendering certain
-# combining characters in a bitmap-friendly way.
-# Defaults to `.`.
+# Defaults to `""`.
 hide_accents = "."
 
 # Options for generating a list of glyphs defined in the font.
@@ -100,7 +98,7 @@ txts = ["header", "sample"]
 [[fonts]]
 name = "Cool Font Bold"
 font_size = 16
-hide_accents = true
+hide_accents = "."
 out_dir = "img_bold"
 
 [fonts.chars]
