@@ -3,17 +3,13 @@ package bitedbuild
 import (
 	"fmt"
 	"path/filepath"
-	"regexp"
-	"strconv"
 	"strings"
 
 	"github.com/bitfield/script"
 	"github.com/knadh/koanf/providers/structs"
 	"github.com/knadh/koanf/v2"
-	bitedutils "github.com/molarmanful/bited-utils"
+	"github.com/zachomedia/go-bdf"
 )
-
-var reCHAR = regexp.MustCompile(`^\s*(STARTCHAR|ENCODING|DWIDTH)\s+`)
 
 func NewUnit(cfg *koanf.Koanf, nerd bool) (Unit, error) {
 	var unit Unit
@@ -58,40 +54,23 @@ func (unit *Unit) PostUnit() error {
 		}
 	}
 
-	fsz, err := bitedutils.GetFsz(unit.Src)
+	bdfB, err := script.File(unit.Src).Bytes()
 	if err != nil {
 		return err
 	}
-	unit.FontSize = fsz
+	bdfP, err := bdf.Parse(bdfB)
+	if err != nil {
+		return err
+	}
+	unit.FontSize = bdfP.PixelSize
 
-	chars, err := script.File(unit.Src).MatchRegexp(reCHAR).Slice()
-	if err != nil {
-		return err
-	}
 	unit.Widths = make(map[string]int)
-	name := ""
-	for _, line := range chars {
-		kv := strings.Fields(line)
-		if len(kv) < 2 {
-			return fmt.Errorf("invalid BDF line: %q", line)
+	for _, g := range bdfP.Characters {
+		name := g.Name
+		if g.Encoding >= 0 {
+			name = fmt.Sprintf("U+%04X", g.Encoding)
 		}
-		switch kv[0] {
-		case "STARTCHAR":
-			name = kv[1]
-		case "ENCODING":
-			uc, err := strconv.Atoi(kv[1])
-			if err != nil {
-				return err
-			}
-			name = fmt.Sprintf("U+%04X", uc)
-		case "DWIDTH":
-			w, err := strconv.Atoi(kv[1])
-			if err != nil {
-				return err
-			}
-			unit.Widths[name] = w
-			name = ""
-		}
+		unit.Widths[name] = g.Advance[0]
 	}
 
 	return nil
