@@ -19,10 +19,10 @@ txt_dir = "txt"
 # Defaults to `img`.
 out_dir = "img"
 
-# If non-empty, replaces combining characters with the string when generating
+# Whether to add an extra space to zero-width glyphs when generating
 # `map` and `chars`.
-# Defaults to `""`.
-hide_accents = "."
+# Defaults to `false`.
+pad_zws = false
 
 # Options for generating a list of glyphs defined in the font.
 [fonts.chars]
@@ -98,7 +98,7 @@ txts = ["header", "sample"]
 [[fonts]]
 name = "Cool Font Bold"
 font_size = 16
-hide_accents = "."
+pad_zws = false
 out_dir = "img_bold"
 
 [fonts.chars]

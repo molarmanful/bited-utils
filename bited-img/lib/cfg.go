@@ -7,31 +7,30 @@ import (
 )
 
 type Unit struct {
-	Src      string          `koanf:"-"`
-	Codes    []int           `koanf:"-"`
-	Font     string          `koanf:"-"`
-	BDF      font.Face       `koanf:"-"`
-	ClrsMap  map[rune]string `koanf:"-"`
-	FontSize int             `koanf:"-"`
+	Src     string          `koanf:"-"`
+	Codes   []int           `koanf:"-"`
+	Font    string          `koanf:"-"`
+	BDF     font.Face       `koanf:"-"`
+	Ascent  int             `koanf:"-"`
+	ClrsMap map[rune]string `koanf:"-"`
 
-	Name        string  `koanf:"name"`
-	SrcForm     SrcForm `koanf:"src"`
-	OutDir      string  `koanf:"out_dir"`
-	TxtDir      string  `koanf:"txt_dir"`
-	HideAccents string  `koanf:"hide_accents"`
-	Chars       Chars   `koanf:"chars"`
-	Map         Map     `koanf:"map"`
-	Clrs        Clrs    `koanf:"clrs"`
-	Gens        []Gen   `koanf:"gens"`
+	Name    string  `koanf:"name"`
+	SrcForm SrcForm `koanf:"src"`
+	OutDir  string  `koanf:"out_dir"`
+	TxtDir  string  `koanf:"txt_dir"`
+	PadZWs  bool    `koanf:"pad_zws"`
+	Chars   Chars   `koanf:"chars"`
+	Map     Map     `koanf:"map"`
+	Clrs    Clrs    `koanf:"clrs"`
+	Gens    []Gen   `koanf:"gens"`
 }
 
 var srcT = template.Must(template.New("").Parse("src/{{ .Name }}.bdf"))
 
 var DUnit = Unit{
-	SrcForm:  SrcForm{srcT},
-	OutDir:   "img",
-	TxtDir:   "txt",
-	FontSize: 16,
+	SrcForm: SrcForm{srcT},
+	OutDir:  "img",
+	TxtDir:  "txt",
 	Chars: Chars{
 		Out:   "chars",
 		Width: 48,
@@ -99,12 +98,4 @@ type Clrs struct {
 type Gen struct {
 	Name string   `koanf:"name"`
 	Txts []string `koanf:"txts"`
-}
-
-type MagickPat struct {
-	Pango    string
-	Out      string
-	FontSize int
-	Bg       string
-	Fg       string
 }

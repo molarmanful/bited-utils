@@ -7,7 +7,6 @@ import (
 	"path/filepath"
 	"slices"
 	"strings"
-	"unicode"
 )
 
 func (unit *Unit) GenChars() error {
@@ -34,8 +33,8 @@ func (unit *Unit) GenChars() error {
 				}
 			}
 
-			char := unit.HideRune(rune(n))
-			if _, err := fmt.Fprint(charsF, string(char)); err != nil {
+			char := unit.PadRune(rune(n))
+			if _, err := fmt.Fprint(charsF, char); err != nil {
 				return err
 			}
 		}
@@ -90,8 +89,7 @@ func (unit *Unit) GenMap() error {
 			}
 		}
 
-		char := unit.HideRune(rune(n))
-		line[n%16] = string(char)
+		line[n%16] = unit.PadRune(rune(n))
 	}
 	if _, err := fmt.Fprint(mapF, strings.Join(line, " ")); err != nil {
 		return err
@@ -100,9 +98,11 @@ func (unit *Unit) GenMap() error {
 	return nil
 }
 
-func (unit *Unit) HideRune(c rune) rune {
-	if unit.HideAccents != "" && (unicode.IsMark(c) || c == 0x9 || c == 0xAD) {
-		return []rune(unit.HideAccents)[0]
+func (unit *Unit) PadRune(c rune) string {
+	if unit.PadZWs {
+		if w, ok := unit.BDF.GlyphAdvance(c); ok && w.Floor() == 0 {
+			return fmt.Sprintf("%c ", c)
+		}
 	}
-	return c
+	return string(c)
 }

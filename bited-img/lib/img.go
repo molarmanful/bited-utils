@@ -31,7 +31,7 @@ func (unit *Unit) DrawTCs(stem string) error {
 	ctx.SetFontFace(unit.BDF)
 
 	X := pad
-	Y := pad + unit.BDF.Metrics().Ascent.Floor()
+	Y := pad + unit.Ascent
 	clrScan := bufio.NewScanner(script.File(filepath.Join(unit.TxtDir, stem+".clr")))
 	ctx.SetHexColor(unit.Clrs.Fg)
 	for _, line := range lines {

@@ -8,7 +8,6 @@ import (
 	"github.com/bitfield/script"
 	"github.com/knadh/koanf/providers/structs"
 	"github.com/knadh/koanf/v2"
-	bitedutils "github.com/molarmanful/bited-utils"
 	"github.com/zachomedia/go-bdf"
 )
 
@@ -51,12 +50,6 @@ func (unit *Unit) PostUnit() error {
 		unit.Codes[i] = n
 	}
 
-	fsz, err := bitedutils.GetFsz(unit.Src)
-	if err != nil {
-		return err
-	}
-	unit.FontSize = fsz
-
 	bdfB, err := script.File(unit.Src).Bytes()
 	if err != nil {
 		return err
@@ -66,6 +59,7 @@ func (unit *Unit) PostUnit() error {
 		return err
 	}
 	unit.BDF = bdfP.NewFace()
+	unit.Ascent = bdfP.Ascent
 
 	unit.ClrsMap = make(map[rune]string)
 	unit.ClrsMap['.'] = unit.Clrs.Fg
