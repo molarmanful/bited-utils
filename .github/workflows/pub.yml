@@ -16,6 +16,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: main
+      - uses: DeterminateSystems/nix-installer-action@main
       - uses: "DeterminateSystems/flakehub-push@main"
         with:
           visibility: "public"
