@@ -25,7 +25,7 @@ and Nix flakes.
 
 ### [ANAKRON](https://github.com/molarmanful/ANAKRON)
 
-![ANAKRON](https://github.com/molarmanful/ANAKRON/blob/master/img/header.png)
+![ANAKRON](https://github.com/molarmanful/ANAKRON/blob/main/img/header.png)
 
 ## Nix flake template
 
