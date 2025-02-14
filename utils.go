@@ -9,7 +9,7 @@
 //   - [github.com/molarmanful/bited-utils/bited-scale]
 package bitedutils
 
-// Panics if error is non-nil.
+// Check panics if error is non-nil.
 func Check(err error) {
 	if err != nil {
 		panic(err)
