@@ -1,16 +1,20 @@
 # bited-utils
 
+[![Go Reference](https://pkg.go.dev/badge/github.com/molarmanful/bited-utils.svg)](https://pkg.go.dev/github.com/molarmanful/bited-utils)
+
 Pipeline helpers and utilities for building fonts from bited BDFs. Built with Go
 and Nix flakes.
 
-- [**bited-build**](bited-build): A command that generates vector (TTF, WOFF2)
-  and bitmap (BDF, PCF, OTB, DFONT) fonts from bited BDFs. Supports integer
-  scaling and Nerd Font patching.
-- [**bited-img**](bited-img): A command that generates image specimens for bited
-  BDFs. Features Base16 color support.
-- [**bited-clr**](bited-clr): A TUI tool for fine-tuned coloring of TXT/CLR
-  pairs.
-- [**bited-scale**](bited-scale): A command for scaling a bited BDF.
+- [**bited-build**](https://pkg.go.dev/github.com/molarmanful/bited-utils/bited-build):
+  A command that generates vector (TTF, WOFF2) and bitmap (BDF, PCF, OTB, DFONT)
+  fonts from bited BDFs. Supports integer scaling and Nerd Font patching.
+- [**bited-img**](https://pkg.go.dev/github.com/molarmanful/bited-utils/bited-img):
+  A command that generates image specimens for bited BDFs. Features Base16 color
+  support.
+- [**bited-clr**](https://pkg.go.dev/github.com/molarmanful/bited-utils/bited-clr):
+  A TUI tool for fine-tuned coloring of TXT/CLR pairs.
+- [**bited-scale**](https://pkg.go.dev/github.com/molarmanful/bited-utils/bited-scale):
+  A command for scaling a bited BDF.
 
 ## Nix flake template
 
