@@ -17,6 +17,16 @@ and Nix flakes.
 - [**bited-scale**](https://pkg.go.dev/github.com/molarmanful/bited-utils/bited-scale):
   A command for scaling a bited BDF.
 
+## Built with bited-utils
+
+### [kirsch](https://github.com/molarmanful/kirsch)
+
+![kirsch](https://github.com/molarmanful/kirsch/blob/master/img/header.png)
+
+### [ANAKRON](https://github.com/molarmanful/ANAKRON)
+
+![ANAKRON](https://github.com/molarmanful/ANAKRON/blob/master/img/header.png)
+
 ## Nix flake template
 
 In a blank directory where you want your font project to reside, run:
