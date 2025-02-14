@@ -41,7 +41,6 @@
           bited-build = pkgs.callPackage ./bited-build o;
           bited-img = pkgs.callPackage ./bited-img o;
           bited-scale = pkgs.callPackage ./bited-scale o;
-          bited-pango = pkgs.callPackage ./bited-pango o;
           bited-clr = pkgs.callPackage ./bited-clr o;
         };
 

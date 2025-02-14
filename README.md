@@ -10,8 +10,6 @@ and Nix flakes.
   BDFs. Features Base16 color support.
 - [**bited-clr**](bited-clr): A TUI tool for fine-tuned coloring of TXT/CLR
   files.
-- [**bited-pango**](bited-pango): A library and command for converting TXT/CLR
-  files into Go-typed Pango markup nodes.
 - [**bited-scale**](bited-scale): A library and command for scaling a bited BDF.
 
 ## Nix flake template
