@@ -1,3 +1,19 @@
+// bited-build generates vector (TTF, WOFF2) and bitmap (BDF, PCF, OTB, DFONT)
+// fonts from bited BDFs. It supports integer scaling and Nerd Font patching.
+//
+// Usage:
+//
+//	bited-build [--nerd]
+//
+// Flags:
+//
+//	--nerd
+//		Whether to compile Nerd Fonts variants.
+//
+// bited-build reads configuration from [bited-build.toml] in the current
+// working directory, typically the font project's root.
+//
+// [bited-build.toml]: https://github.com/molarmanful/bited-utils/blob/main/bited-build/bited-build.toml
 package main
 
 import (

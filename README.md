@@ -9,8 +9,8 @@ and Nix flakes.
 - [**bited-img**](bited-img): A command that generates image specimens for bited
   BDFs. Features Base16 color support.
 - [**bited-clr**](bited-clr): A TUI tool for fine-tuned coloring of TXT/CLR
-  files.
-- [**bited-scale**](bited-scale): A library and command for scaling a bited BDF.
+  pairs.
+- [**bited-scale**](bited-scale): A command for scaling a bited BDF.
 
 ## Nix flake template
 

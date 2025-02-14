@@ -11,6 +11,8 @@ import (
 	"github.com/zachomedia/go-bdf"
 )
 
+// NewUnit creates a full-fledged [Unit] from a single-font config and
+// populates it with the necessary data for building.
 func NewUnit(cfg *koanf.Koanf, nerd bool) (Unit, error) {
 	var unit Unit
 	k := koanf.New("")
@@ -25,11 +27,13 @@ func NewUnit(cfg *koanf.Koanf, nerd bool) (Unit, error) {
 	}
 
 	unit.Nerd = nerd
-	unit.PostUnit()
+	unit.postUnit()
 	return unit, nil
 }
 
-func (unit *Unit) PostUnit() error {
+// postUnit populates a newly-unmarshaled [Unit] with the necessary data for
+// building.
+func (unit *Unit) postUnit() error {
 	unit.TTF = filepath.Join(unit.OutDir, unit.Name+".ttf")
 
 	var srcB strings.Builder

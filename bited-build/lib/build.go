@@ -18,26 +18,28 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+// Build builds bitmap/vector formats from a [Unit] for single font.
 func (unit *Unit) Build() error {
 	log.Println("BUILD", unit.Name)
 
 	if err := os.MkdirAll(unit.OutDir, os.ModePerm); err != nil {
 		return err
 	}
-	if err := unit.BuildSrc(); err != nil {
+	if err := unit.buildSrc(); err != nil {
 		return err
 	}
-	if err := unit.BuildVec(); err != nil {
+	if err := unit.buildVec(); err != nil {
 		return err
 	}
-	if err := unit.BuildXs(); err != nil {
+	if err := unit.buildXs(); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (unit *Unit) BuildSrc() error {
+// buildSrc copies the source BDF to the output directory.
+func (unit *Unit) buildSrc() error {
 	log.Println("+ COPY src")
 	_, err := script.File(unit.Src).WriteFile(filepath.Join(unit.OutDir, filepath.Base(unit.Src)))
 	return err
@@ -47,7 +49,9 @@ func (unit *Unit) BuildSrc() error {
 var fixPy string
 var fixTmpl = template.Must(template.New("").Parse(fixPy))
 
-func (unit *Unit) BuildVec() error {
+// buildVec converts BDF to TTF, fixes it via FontForge, patches with Nerd
+// Fonts if needed, and converts TTF to WOFF2.
+func (unit *Unit) buildVec() error {
 	log.Println("+ TTF")
 	if out, err := exec.Command(
 		"bitsnpicas", "convertbitmap", "-f", "ttf", "-o", unit.TTF, unit.Src).
@@ -97,18 +101,20 @@ func (unit *Unit) BuildVec() error {
 	return nil
 }
 
-func (unit *Unit) BuildXs() error {
+// buildXs builds scaled bitmap formats as specified in config.
+func (unit *Unit) buildXs() error {
 	log.Println("+ XS")
 	g, _ := errgroup.WithContext(context.Background())
 	for _, x := range unit.Xs {
 		g.Go(func() error {
-			return unit.BuildX(x)
+			return unit.buildX(x)
 		})
 	}
 	return g.Wait()
 }
 
-func (unit *Unit) BuildX(x int) error {
+// buildXs scales and converts BDF to other bitmap formats.
+func (unit *Unit) buildX(x int) error {
 	if x > 1 {
 		var nameB strings.Builder
 		if err := unit.XForm.Template.Execute(&nameB, XFormPat{Name: unit.Name, X: x}); err != nil {
@@ -127,18 +133,20 @@ func (unit *Unit) BuildX(x int) error {
 			return err
 		}
 
-		return unit.BuildBit(src, x, base, nameB.String())
+		return unit.buildBit(src, x, base, nameB.String())
 	}
 
 	stem, _, _ := strings.Cut(filepath.Base(unit.Src), ".")
-	return unit.BuildBit(unit.Src, 1, filepath.Join(unit.OutDir, stem), unit.Name)
+	return unit.buildBit(unit.Src, 1, filepath.Join(unit.OutDir, stem), unit.Name)
 }
 
 //go:embed bit.py
 var bitPy string
 var bitTmpl = template.Must(template.New("").Parse(bitPy))
 
-func (unit *Unit) BuildBit(src string, x int, base string, name string) error {
+// buildBit converts BDF to OTB/DFONT via FontForge (with a fix step), and
+// converts BDF to PCF via bdftopcf.
+func (unit *Unit) buildBit(src string, x int, base string, name string) error {
 	var bitB strings.Builder
 	if err := bitTmpl.Execute(&bitB, unit.TTFix); err != nil {
 		return err

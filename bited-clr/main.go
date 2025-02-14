@@ -1,3 +1,20 @@
+// bited-clr is a TUI tool for fine-tuned coloring of TXT/CLR pairs.
+//
+// Usage:
+//
+//	bited-clr [--name <string>] [--stem <string>]
+//
+// Flags:
+//
+//	--name
+//		Font name to retrieve colors from in bited-img.toml.
+//	--stem
+//		TXT/CLR pair to edit (relative to txt_dir in bited-img.toml).
+//
+// bited-img reads configuration from [bited-img.toml] in the current
+// working directory, typically the font project's root.
+//
+// [bited-img.toml]: https://github.com/molarmanful/bited-utils/blob/main/bited-img/bited-img.toml
 package main
 
 import (

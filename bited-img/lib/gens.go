@@ -9,7 +9,8 @@ import (
 	"strings"
 )
 
-func (unit *Unit) GenChars() error {
+// genChars generates chars.txt.
+func (unit *Unit) genChars() error {
 	log.Println("+ GEN chars")
 	charsF, err := os.Create(filepath.Join(unit.TxtDir, unit.Chars.Out+".txt"))
 	if err != nil {
@@ -33,7 +34,7 @@ func (unit *Unit) GenChars() error {
 				}
 			}
 
-			char := unit.PadRune(rune(n))
+			char := unit.padRune(rune(n))
 			if _, err := fmt.Fprint(charsF, char); err != nil {
 				return err
 			}
@@ -43,7 +44,8 @@ func (unit *Unit) GenChars() error {
 	return nil
 }
 
-func (unit *Unit) GenMap() error {
+// genMap generates map.txt.
+func (unit *Unit) genMap() error {
 	log.Println("+ GEN map")
 	mapF, err := os.Create(filepath.Join(unit.TxtDir, unit.Map.Out+".txt"))
 	if err != nil {
@@ -89,7 +91,7 @@ func (unit *Unit) GenMap() error {
 			}
 		}
 
-		line[n%16] = unit.PadRune(rune(n))
+		line[n%16] = unit.padRune(rune(n))
 	}
 	if _, err := fmt.Fprint(mapF, strings.Join(line, " ")); err != nil {
 		return err
@@ -98,7 +100,8 @@ func (unit *Unit) GenMap() error {
 	return nil
 }
 
-func (unit *Unit) PadRune(c rune) string {
+// padRune adds a space if a character is zero-width in font.
+func (unit *Unit) padRune(c rune) string {
 	if unit.PadZWs {
 		if w, ok := unit.BDF.GlyphAdvance(c); ok && w.Floor() == 0 {
 			return fmt.Sprintf("%c ", c)

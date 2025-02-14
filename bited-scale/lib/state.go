@@ -9,12 +9,12 @@ import (
 )
 
 const (
-	X = iota
-	Prop
-	Bm
+	X    = iota // anywhere else not covered by Prop or Bm
+	Prop        // STARTPROPERTIES ... ENDPROPERTIES
+	Bm          // BITMAP ... ENDCHAR
 )
 
-type State struct {
+type _State struct {
 	W     io.Writer
 	Scale int
 	Name  string
@@ -24,8 +24,8 @@ type State struct {
 	LUT   map[rune]string
 }
 
-func NewState(w io.Writer, scale int, name string) *State {
-	return &State{
+func newState(w io.Writer, scale int, name string) *_State {
+	return &_State{
 		W:     w,
 		Scale: scale,
 		Name:  name,
@@ -34,7 +34,7 @@ func NewState(w io.Writer, scale int, name string) *State {
 	}
 }
 
-func (state *State) Next() error {
+func (state *_State) Next() error {
 	switch state.Mode {
 	case Bm:
 		return state.ModeBM()
@@ -45,7 +45,7 @@ func (state *State) Next() error {
 	}
 }
 
-func (state *State) ModeX() error {
+func (state *_State) ModeX() error {
 	if _, err := fmt.Fprint(state.W, state.K); err != nil {
 		return err
 	}
@@ -87,7 +87,7 @@ func (state *State) ModeX() error {
 	return nil
 }
 
-func (state *State) ModeProp() error {
+func (state *_State) ModeProp() error {
 	if _, err := fmt.Fprint(state.W, state.K); err != nil {
 		return err
 	}
@@ -127,7 +127,7 @@ func (state *State) ModeProp() error {
 	return nil
 }
 
-func (state *State) ModeBM() error {
+func (state *_State) ModeBM() error {
 	switch state.K {
 	case "ENDCHAR":
 		if _, err := fmt.Fprintln(state.W, state.K); err != nil {
@@ -144,7 +144,7 @@ func (state *State) ModeBM() error {
 	return nil
 }
 
-func (state *State) XLFD() error {
+func (state *_State) XLFD() error {
 	if _, err := fmt.Fprint(state.W, " "); err != nil {
 		return err
 	}
@@ -182,7 +182,7 @@ func (state *State) XLFD() error {
 	return nil
 }
 
-func (state *State) Vtoi() error {
+func (state *_State) Vtoi() error {
 	if _, err := fmt.Fprint(state.W, " "); err != nil {
 		return err
 	}
@@ -205,7 +205,7 @@ func (state *State) Vtoi() error {
 	return nil
 }
 
-func (state *State) Vstoi() error {
+func (state *_State) Vstoi() error {
 	vs := strings.Fields(state.V)
 	if len(vs) == 0 {
 		return fmt.Errorf("nothing to parse")
@@ -224,7 +224,7 @@ func (state *State) Vstoi() error {
 	return nil
 }
 
-func (state *State) ScaleHex() error {
+func (state *_State) ScaleHex() error {
 	var line strings.Builder
 	for _, c := range state.K {
 		if (c < '0' || c > '9') && (c < 'A' || c > 'F') && (c < 'a' || c > 'f') {

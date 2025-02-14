@@ -1,3 +1,14 @@
+// bited-img generates image specimens for bited BDFs. It features Base16 color
+// support.
+//
+// Usage:
+//
+//	bited-img
+//
+// bited-img reads configuration from [bited-img.toml] in the current
+// working directory, typically the font project's root.
+//
+// [bited-img.toml]: https://github.com/molarmanful/bited-utils/blob/main/bited-img/bited-img.toml
 package main
 
 import (

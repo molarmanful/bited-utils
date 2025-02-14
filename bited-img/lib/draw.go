@@ -9,7 +9,8 @@ import (
 	"github.com/fogleman/gg"
 )
 
-func (unit *Unit) DrawTCs(stem string) error {
+// drawTCs draws a TXT/CLR pair to PNG.
+func (unit *Unit) drawTCs(stem string) error {
 	txt, err := script.File(filepath.Join(unit.TxtDir, stem+".txt")).String()
 	if err != nil {
 		return err

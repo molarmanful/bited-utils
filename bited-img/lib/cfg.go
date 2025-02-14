@@ -6,29 +6,45 @@ import (
 	"golang.org/x/image/font"
 )
 
+// A Unit holds the data necessary to build a single font.
 type Unit struct {
-	Src     string          `koanf:"-"`
-	Codes   []int           `koanf:"-"`
-	Font    string          `koanf:"-"`
-	BDF     font.Face       `koanf:"-"`
-	Ascent  int             `koanf:"-"`
+	// Src is the processed path to the source bited BDF.
+	// Derived from SrcForm.
+	Src string `koanf:"-"`
+	// Codes is the list of all defined codepoints in the source BDF.
+	Codes []int `koanf:"-"`
+	// BDF is a representation of the source BDF for use with drawing.
+	BDF font.Face `koanf:"-"`
+	// Ascent is the font's ascent.
+	Ascent int `koanf:"-"`
+	// ClrsMap maps CLR codes to hex colors.
+	// Derived from Clrs.
 	ClrsMap map[rune]string `koanf:"-"`
 
-	Name    string  `koanf:"name"`
+	// Name is the font's family name.
+	Name string `koanf:"name"`
+	// SrcForm is the template for Src.
 	SrcForm SrcForm `koanf:"src"`
-	OutDir  string  `koanf:"out_dir"`
-	TxtDir  string  `koanf:"txt_dir"`
-	PadZWs  bool    `koanf:"pad_zws"`
-	Chars   Chars   `koanf:"chars"`
-	Map     Map     `koanf:"map"`
-	Clrs    Clrs    `koanf:"clrs"`
-	Gens    []Gen   `koanf:"gens"`
+	// OutDir is the output directory for generated images.
+	OutDir string `koanf:"out_dir"`
+	// OutDir is the source directory for TXT/CLR pairs.
+	TxtDir string `koanf:"txt_dir"`
+	// PadZWs determines whether to add a zero-width space when generating map.txt
+	// and chars.txt.
+	PadZWs bool `koanf:"pad_zws"`
+
+	Chars Chars `koanf:"chars"`
+	Map   Map   `koanf:"map"`
+	Clrs  Clrs  `koanf:"clrs"`
+	Gens  []Gen `koanf:"gens"`
 }
 
-var srcT = template.Must(template.New("").Parse("src/{{ .Name }}.bdf"))
+// SrcT is the default value for [Unit] SrcForm.
+var SrcT = template.Must(template.New("").Parse("src/{{ .Name }}.bdf"))
 
+// DUnit specifies default values for [Unit].
 var DUnit = Unit{
-	SrcForm: SrcForm{srcT},
+	SrcForm: SrcForm{SrcT},
 	OutDir:  "img",
 	TxtDir:  "txt",
 	Chars: Chars{
@@ -65,8 +81,11 @@ var DUnit = Unit{
 	},
 }
 
+// SrcForm is a wrapper type to enable [koanf] to unmarshal strings into
+// [template.Template] for [Unit] SrcForm.
 type SrcForm struct{ *template.Template }
 
+// A SrcFormPat specifies fields passed to [Unit] SrcForm templates.
 type SrcFormPat struct {
 	Name string
 }
@@ -77,25 +96,38 @@ func (src *SrcForm) UnmarshalText(text []byte) error {
 	return err
 }
 
+// Chars is the subconfig for generating chars.txt.
 type Chars struct {
-	Out   string `koanf:"out"`
-	Width int    `koanf:"width"`
+	// Out is the base filename to output to inside TxtDir.
+	Out string `koanf:"out"`
+	// Width is the maximum number of glyphs to fit per line.
+	Width int `koanf:"width"`
 }
 
+// Map is the subconfig for generating map.txt.
 type Map struct {
+	// Map is the base filename to output to inside TxtDir.
 	Out       string `koanf:"out"`
 	UClr      string `koanf:"u_clr"`
 	XClr      string `koanf:"x_clr"`
 	BorderClr string `koanf:"border_clr"`
 }
 
+// Clrs specifies the colorscheme to use during image generation.
 type Clrs struct {
-	Bg   string   `koanf:"bg"`
-	Fg   string   `koanf:"fg"`
+	// Bg is the background color (hex).
+	Bg string `koanf:"bg"`
+	// Fg is the foreground color (hex).
+	Fg string `koanf:"fg"`
+	// Base is a list of 16 hex colors corresponding to Base16 colors.
 	Base []string `koanf:"base"`
 }
 
+// Gen specifies a TXT/CLR pair to generate by combining individual TXT/CLR
+// pairs.
 type Gen struct {
-	Name string   `koanf:"name"`
+	// Name is the base filename to output to inside TxtDir.
+	Name string `koanf:"name"`
+	// Txts is a list of TXT/CLR pair basenames to combine in order.
 	Txts []string `koanf:"txts"`
 }

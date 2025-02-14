@@ -15,34 +15,32 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+// Build generates images from a [Unit] for a single font.
 func (unit *Unit) Build() error {
 	log.Println("IMGS", unit.Name)
 
-	if err := unit.Pre(); err != nil {
+	if err := os.MkdirAll(unit.OutDir, os.ModePerm); err != nil {
 		return err
 	}
-	if err := unit.GenChars(); err != nil {
+	if err := unit.genChars(); err != nil {
 		return err
 	}
-	if err := unit.GenMap(); err != nil {
+	if err := unit.genMap(); err != nil {
 		return err
 	}
-	if err := unit.GenGens(); err != nil {
+	if err := unit.genGens(); err != nil {
 		return err
 	}
-	if err := unit.DrawTxts(); err != nil {
+	if err := unit.drawTxts(); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (unit *Unit) Pre() error {
-	return os.MkdirAll(unit.OutDir, os.ModePerm)
-}
-
-func (unit *Unit) GenGens() error {
-	log.Println("+ GENS")
+// genGens combines existing TXT/CLR pairs into new ones.
+func (unit *Unit) genGens() error {
+	log.Println("+ GEN gens")
 	for _, gen := range unit.Gens {
 		if _, err := script.Slice(gen.Txts).
 			FilterLine(func(stem string) string {
@@ -79,7 +77,8 @@ func (unit *Unit) GenGens() error {
 	return nil
 }
 
-func (unit *Unit) DrawTxts() error {
+// drawTxts draws all TXT/CLR pairs in TxtDir to PNG.
+func (unit *Unit) drawTxts() error {
 	log.Println("+ IMGS")
 	return script.ListFiles(filepath.Join(unit.TxtDir, "*.txt")).
 		Filter(func(r io.Reader, w io.Writer) error {
@@ -88,7 +87,7 @@ func (unit *Unit) DrawTxts() error {
 			for scan.Scan() {
 				stem, _, _ := strings.Cut(filepath.Base(scan.Text()), ".")
 				g.Go(func() error {
-					if err := unit.DrawTCs(stem); err != nil {
+					if err := unit.drawTCs(stem); err != nil {
 						return err
 					}
 					log.Println("  +", stem)

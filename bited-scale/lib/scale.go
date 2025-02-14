@@ -9,8 +9,10 @@ import (
 
 var reKV = regexp.MustCompile(`^\s*(\w+)\s*(.*)\s*$`)
 
+// Scale scales a bited BDF by an integer factor.
+// It reads/writes via streams.
 func Scale(r io.Reader, w io.Writer, scale int, name string) error {
-	state := NewState(w, scale, name)
+	state := newState(w, scale, name)
 	scanner := bufio.NewScanner(r)
 	for scanner.Scan() {
 		line := scanner.Text()

@@ -1,8 +1,6 @@
 package bitedimg
 
 import (
-	"regexp"
-	"strconv"
 	"strings"
 
 	"github.com/bitfield/script"
@@ -11,8 +9,8 @@ import (
 	"github.com/zachomedia/go-bdf"
 )
 
-var reENC = regexp.MustCompile(`^\s*ENCODING\s+[^-]`)
-
+// NewUnit creates a full-fledged [Unit] from a single-font config and
+// populates it with the necessary data for building.
 func NewUnit(cfg *koanf.Koanf) (Unit, error) {
 	var unit Unit
 	k := koanf.New("")
@@ -26,29 +24,18 @@ func NewUnit(cfg *koanf.Koanf) (Unit, error) {
 		return unit, err
 	}
 
-	err := unit.PostUnit()
+	err := unit.postUnit()
 	return unit, err
 }
 
-func (unit *Unit) PostUnit() error {
+// postUnit populates a newly-unmarshaled [Unit] with the necessary data for
+// building.
+func (unit *Unit) postUnit() error {
 	var srcB strings.Builder
 	if err := unit.SrcForm.Template.Execute(&srcB, SrcFormPat{Name: unit.Name}); err != nil {
 		return err
 	}
 	unit.Src = srcB.String()
-
-	encs, err := script.File(unit.Src).MatchRegexp(reENC).Column(2).Slice()
-	if err != nil {
-		return err
-	}
-	unit.Codes = make([]int, len(encs))
-	for i, v := range encs {
-		n, err := strconv.Atoi(v)
-		if err != nil {
-			return err
-		}
-		unit.Codes[i] = n
-	}
 
 	bdfB, err := script.File(unit.Src).Bytes()
 	if err != nil {
@@ -60,6 +47,13 @@ func (unit *Unit) PostUnit() error {
 	}
 	unit.BDF = bdfP.NewFace()
 	unit.Ascent = bdfP.Ascent
+
+	unit.Codes = make([]int, 0, len(bdfP.Characters))
+	for _, g := range bdfP.Characters {
+		if g.Encoding > -1 {
+			unit.Codes = append(unit.Codes, int(g.Encoding))
+		}
+	}
 
 	unit.ClrsMap = make(map[rune]string)
 	unit.ClrsMap['.'] = unit.Clrs.Fg
