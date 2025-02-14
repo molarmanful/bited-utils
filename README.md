@@ -1,6 +1,7 @@
 # bited-utils
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/molarmanful/bited-utils.svg)](https://pkg.go.dev/github.com/molarmanful/bited-utils)
+[![FlakeHub](https://img.shields.io/endpoint?url=https://flakehub.com/f/molarmanful/bited-utils/badge)](https://flakehub.com/flake/molarmanful/bited-utils)
 
 Pipeline helpers and utilities for building fonts from bited BDFs. Built with Go
 and Nix flakes.
