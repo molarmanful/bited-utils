@@ -11,11 +11,7 @@
   outputs =
     inputs@{ flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } (
-      {
-        flake-parts-lib,
-        withSystem,
-        ...
-      }:
+      { flake-parts-lib, withSystem, ... }:
 
       let
         flakeModule = flake-parts-lib.importApply ./flake-module.nix {

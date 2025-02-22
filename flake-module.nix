@@ -1,6 +1,6 @@
 {
-  mkPerSystemOption,
   withSystem,
+  mkPerSystemOption,
   lib,
   ...
 }:
@@ -30,12 +30,6 @@ _: {
           description = "Font package version.";
         };
         nerd = lib.mkEnableOption "Nerd Fonts patching";
-        bitsnpicas = lib.mkOption {
-          type = lib.types.package;
-          default = withSystem system ({ config, ... }: config.packages.bitsnpicas);
-          defaultText = "mkdocs-flake.packages.\${system}.mkdocs";
-          description = "The bitsnpicas package to use.";
-        };
         buildTransformer = lib.mkOption {
           type = lib.types.functionTo lib.types.package;
           default = build: build;
@@ -63,7 +57,22 @@ _: {
                 )
               );
           in
-          lib.mkIf (cfg.name != null) {
+
+          builtins.listToAttrs (
+            builtins.map
+              (name: {
+                inherit name;
+                value = withSystem system ({ config, ... }: config.packages.${name});
+              })
+              [
+                "bited-build"
+                "bited-img"
+                "bited-scale"
+                "bited-clr"
+              ]
+          )
+
+          // lib.mkIf (cfg.name != null) {
             ${cfg.name} = build { pname = cfg.name; };
             "${cfg.name}-nerd" = build {
               pname = "${cfg.name}-nerd";
