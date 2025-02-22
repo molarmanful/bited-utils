@@ -53,7 +53,7 @@ _: {
           let
             build =
               o:
-              cfg.buildTransform (
+              cfg.buildTransformer (
                 pkgs.callPackage ./nix/build.nix (
                   {
                     inherit (cfg) version;
@@ -74,10 +74,12 @@ _: {
               pname = "${cfg.name}-release";
               release = true;
             };
-            "${cfg.name}-img" = pkgs.callPackage ./nix/img.nix {
-              inherit (config.packages) bited-img;
-              name = "${cfg.name}-img";
-            };
+            "${cfg.name}-img" = cfg.imgTransformer (
+              pkgs.callPackage ./nix/img.nix {
+                inherit (config.packages) bited-img;
+                name = "${cfg.name}-img";
+              }
+            );
           };
       };
     }
