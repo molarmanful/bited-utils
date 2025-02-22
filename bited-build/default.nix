@@ -5,7 +5,6 @@
   bitsnpicas,
 
   lib,
-  licenses,
   buildGoModule,
   makeWrapper,
   fontforge,
@@ -36,7 +35,7 @@ buildGoModule {
       }
   '';
 
-  meta = {
+  meta = with lib; {
     description = "A builder for bited BDFs";
     longDescription = ''
       bited-build generates vector (TTF, WOFF2) and bitmap (BDF, PCF, OTB,

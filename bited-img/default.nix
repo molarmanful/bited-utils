@@ -2,8 +2,8 @@
   version,
   vendorHash,
 
+  lib,
   buildGoModule,
-  licenses,
   ...
 }:
 
@@ -13,7 +13,7 @@ buildGoModule {
   src = ../.;
   subPackages = [ "bited-img" ];
 
-  meta = {
+  meta = with lib; {
     description = "An image specimen generator for bited BDF fonts";
     longDescription = ''
       bited-img generates image specimens for bited BDFs. It features Base16

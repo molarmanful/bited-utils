@@ -2,8 +2,8 @@
   version,
   vendorHash,
 
+  lib,
   buildGoModule,
-  licenses,
   ...
 }:
 
@@ -13,7 +13,7 @@ buildGoModule {
   src = ../.;
   subPackages = [ "bited-scale" ];
 
-  meta = {
+  meta = with lib; {
     description = "A command for scaling bited BDFs";
     longDescription = ''
       bited-scale is a command for scaling bited BDFs.

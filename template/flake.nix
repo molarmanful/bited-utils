@@ -10,11 +10,7 @@
   };
 
   outputs =
-    inputs@{
-      systems,
-      flake-parts,
-      ...
-    }:
+    inputs@{ systems, flake-parts, ... }:
 
     let
       name = "FIXME";
@@ -31,6 +27,7 @@
         { config, pkgs, ... }:
         {
           inherit name version;
+          # nerd = true;
 
           packages = {
             default = config.packages.${name};
@@ -71,10 +68,14 @@
                 category = "formatter";
               }
               {
-                package = bupkgs.bited-clr;
+                package = config.packages.bited-clr;
               }
             ];
 
+            packages = with pkgs; [
+              python313Packages.mdformat-gfm
+              python313Packages.mdformat-gfm-alerts
+            ];
           };
         };
     };
