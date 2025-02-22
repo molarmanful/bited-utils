@@ -5,6 +5,7 @@
   bitsnpicas,
 
   lib,
+  licenses,
   buildGoModule,
   makeWrapper,
   fontforge,
@@ -34,4 +35,15 @@ buildGoModule {
         ]
       }
   '';
+
+  meta = {
+    description = "A builder for bited BDFs";
+    longDescription = ''
+      bited-build generates vector (TTF, WOFF2) and bitmap (BDF, PCF, OTB,
+      DFONT) fonts from bited BDFs. It supports integer scaling and Nerd Font
+      patching.
+    '';
+    homepage = "https://github.com/molarmanful/bited-utils";
+    license = licenses.mit;
+  };
 }

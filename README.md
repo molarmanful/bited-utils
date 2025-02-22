@@ -15,7 +15,7 @@ and Nix flakes.
 - [**bited-clr**](https://pkg.go.dev/github.com/molarmanful/bited-utils/bited-clr):
   A TUI tool for fine-tuned coloring of TXT/CLR pairs.
 - [**bited-scale**](https://pkg.go.dev/github.com/molarmanful/bited-utils/bited-scale):
-  A command for scaling a bited BDF.
+  A command for scaling bited BDFs.
 
 ## Built with bited-utils
 
@@ -47,10 +47,8 @@ include `test.clr` containing your desired color codes in the same directory.
 A `.clr` file is really just lines of spaces and color codes. The color codes
 are as follows:
 
-| Code         | Definition                  |
-| ------------ | --------------------------- |
-| `0-9`, `A-F` | Set color to a Base16 color |
-| `.`          | Reset to foreground color   |
+| Code | Definition | | ------------ | --------------------------- | | `0-9`,
+`A-F` | Set color to a Base16 color | | `.` | Reset to foreground color |
 
 All other characters are treated as no-ops and simply pass on the current color.
 

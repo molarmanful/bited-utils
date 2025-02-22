@@ -1,4 +1,4 @@
-// bited-scale is a command for scaling a bited BDF.
+// bited-scale is a command for scaling bited BDFs.
 //
 // Usage:
 //
