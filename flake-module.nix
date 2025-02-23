@@ -62,7 +62,7 @@ _: {
         );
 
       config = {
-        packages =
+        packages = lib.mkIf (cfg.name != null) (
           let
             build =
               o:
@@ -77,29 +77,28 @@ _: {
               );
             base = build { pname = cfg.name; };
           in
-          lib.mkIf (cfg.name != null) (
-            {
-              default = lib.mkDefault base;
-              ${cfg.name} = base;
-              "${cfg.name}-release" = build {
-                inherit (cfg) nerd;
-                pname = "${cfg.name}-release";
-                release = true;
-              };
-              "${cfg.name}-img" = cfg.imgTransformer (
-                pkgs.callPackage ./nix/img.nix {
-                  inherit (cfg) bited-img;
-                  name = "${cfg.name}-img";
-                }
-              );
-            }
-            // lib.mkIf cfg.nerd {
-              "${cfg.name}-nerd" = build {
-                pname = "${cfg.name}-nerd";
-                nerd = true;
-              };
-            }
-          );
+          {
+            default = lib.mkDefault base;
+            ${cfg.name} = base;
+            "${cfg.name}-release" = build {
+              inherit (cfg) nerd;
+              pname = "${cfg.name}-release";
+              release = true;
+            };
+            "${cfg.name}-img" = cfg.imgTransformer (
+              pkgs.callPackage ./nix/img.nix {
+                inherit (cfg) bited-img;
+                name = "${cfg.name}-img";
+              }
+            );
+          }
+          // lib.optionalAttrs cfg.nerd {
+            "${cfg.name}-nerd" = build {
+              pname = "${cfg.name}-nerd";
+              nerd = true;
+            };
+          }
+        );
       };
     }
   );
