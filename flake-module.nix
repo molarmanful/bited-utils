@@ -58,7 +58,7 @@ _: {
               );
           in
 
-          builtins.listToAttrs (
+          (builtins.listToAttrs (
             builtins.map
               (name: {
                 inherit name;
@@ -70,7 +70,7 @@ _: {
                 "bited-scale"
                 "bited-clr"
               ]
-          )
+          ))
 
           // lib.mkIf (cfg.name != null) {
             ${cfg.name} = build { pname = cfg.name; };
