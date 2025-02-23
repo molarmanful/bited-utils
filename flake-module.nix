@@ -72,13 +72,7 @@ _: {
             build =
               o:
               cfg.buildTransformer (
-                pkgs.callPackage ./nix/build.nix (
-                  {
-                    inherit (cfg) version;
-                    inherit (cfg) bited-build;
-                  }
-                  // o
-                )
+                pkgs.callPackage ./nix/build.nix ({ inherit (cfg) src version bited-build; } // o)
               );
             base = build { pname = cfg.name; };
           in

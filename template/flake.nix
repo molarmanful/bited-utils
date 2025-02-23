@@ -22,10 +22,10 @@
         {
 
           bited-utils = {
-            name = "FIXME";
+            name = "FIXME"; # Change this to your font's name
             version = builtins.readFile ./VERSION;
             src = ./.;
-            # nerd = true;
+            # nerd = true; # Uncomment this line to enable Nerd Font patching
           };
 
           # Devtools available via `nix develop` or direnv.
@@ -62,9 +62,7 @@
                 package = mdformat;
                 category = "formatter";
               }
-              {
-                package = config.bited-utils.bited-clr;
-              }
+              { package = config.bited-utils.bited-clr; }
             ];
 
             packages = with pkgs; [
