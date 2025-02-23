@@ -25,7 +25,8 @@
             name = "FIXME"; # Change this to your font's name
             version = builtins.readFile ./VERSION;
             src = ./.;
-            # nerd = true; # Uncomment this line to enable Nerd Font patching
+            # Uncomment the following line to enable Nerd Font patching:
+            # nerd = true;
           };
 
           # Devtools available via `nix develop` or direnv.
