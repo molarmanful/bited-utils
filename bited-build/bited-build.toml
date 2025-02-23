@@ -15,6 +15,26 @@ src = "src/{{ .Name }}.bdf"
 # Defaults to `out`.
 out_dir = "out"
 
+# Suffix to append to family names of built vector formats
+# (i.e. `name + suffix`).
+# Defaults to ` Vec`.
+vec_suffix = " Vec"
+
+# Suffix to append to family names of built OTB formats
+# (i.e. `name + suffix`).
+# Defaults to empty string.
+otb_suffix = " OTB"
+
+# Suffix to append to family names of built DFONT formats
+# (i.e. `name + suffix`).
+# Defaults to empty string.
+dfont_suffix = " DFONT"
+
+# Suffix to append to family names of built PCF formats
+# (i.e. `name + suffix`).
+# Defaults to ` PCF`.
+dfont_suffix = " PCF"
+
 # Array of integer scales to target when building to bitmap formats.
 # Defaults to `[]`.
 xs = [2, 3]

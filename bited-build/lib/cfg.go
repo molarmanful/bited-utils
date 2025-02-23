@@ -32,13 +32,13 @@ type Unit struct {
 	// OutDir is the output directory for generated images.
 	OutDir string `koanf:"out_dir"`
 	// VecSuffix is the suffix for vector format names.
-	VecSuffix string `koanf:"vec_format"`
+	VecSuffix string `koanf:"vec_suffix"`
 	// OTBSuffix is the suffix for OTB format names.
-	OTBSuffix string `koanf:"pcf_format"`
+	OTBSuffix string `koanf:"pcf_suffix"`
 	// DFONTSuffix is the suffix for DFONT format names.
-	DFONTSuffix string `koanf:"dfont_format"`
+	DFONTSuffix string `koanf:"dfont_suffix"`
 	// PCFSuffix is the template for PCF format names.
-	PCFSuffix string `koanf:"pcf_format"`
+	PCFSuffix string `koanf:"pcf_suffix"`
 	// Xs is an unprocessed list of integer scales to build.
 	XsPre []int `koanf:"xs"`
 	// XForm is the template for each scaled font's name.
