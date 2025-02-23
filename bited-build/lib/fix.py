@@ -1,7 +1,8 @@
-src, fsz = argv[1:]
+src, fsz, name = argv[1:]
 fsz = int(fsz)
 
 f = open(argv[1])
+f.fontname = name
 f.em = fsz * 10
 
 {{.}}

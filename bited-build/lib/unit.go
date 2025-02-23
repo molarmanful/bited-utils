@@ -34,13 +34,13 @@ func NewUnit(cfg *koanf.Koanf, nerd bool) (Unit, error) {
 // postUnit populates a newly-unmarshaled [Unit] with the necessary data for
 // building.
 func (unit *Unit) postUnit() error {
-	unit.TTF = filepath.Join(unit.OutDir, unit.Name+".ttf")
-
 	var srcB strings.Builder
 	if err := unit.SrcForm.Template.Execute(&srcB, SrcFormPat{Name: unit.Name}); err != nil {
 		return err
 	}
 	unit.Src = srcB.String()
+
+	unit.TTF = filepath.Join(unit.OutDir, unit.Name+".ttf")
 
 	var ttfix strings.Builder
 	for k, v := range unit.SFNT {

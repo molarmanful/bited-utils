@@ -65,8 +65,9 @@ func (unit *Unit) buildVec() error {
 	if err := fixTmpl.Execute(&fixB, unit.TTFix); err != nil {
 		return err
 	}
-	if out, err := exec.Command("fontforge", "-c", fixB.String(), unit.TTF, strconv.Itoa(unit.FontSize)).
-		CombinedOutput(); err != nil {
+	if out, err := exec.Command("fontforge", "-c", fixB.String(),
+		unit.TTF, strconv.Itoa(unit.FontSize), unit.Name+unit.VecSuffix,
+	).CombinedOutput(); err != nil {
 		fmt.Fprintln(os.Stderr, string(out))
 		return err
 	}
@@ -157,13 +158,19 @@ func (unit *Unit) buildBit(src string, x int, base string, name string) error {
 	}
 	if out, err := exec.Command(
 		"fontforge", "-c", bitB.String(),
-		src, strconv.Itoa(x), strconv.Itoa(unit.FontSize), string(widthsJSON), base+".", name,
+		src, strconv.Itoa(x), strconv.Itoa(unit.FontSize), string(widthsJSON),
+		base+".", name+unit.OTBSuffix, name+unit.DFONTSuffix,
 	).CombinedOutput(); err != nil {
 		fmt.Fprintln(os.Stderr, string(out))
 		return err
 	}
 
-	if out, err := exec.Command("bdftopcf", "-o", base+".pcf", src).
+	tmp, err := unit.mkRenamedBDF(name + unit.PCFSuffix)
+	if err != nil {
+		return err
+	}
+	defer os.Remove(tmp)
+	if out, err := exec.Command("bdftopcf", "-o", base+".pcf", tmp).
 		CombinedOutput(); err != nil {
 		fmt.Fprintln(os.Stderr, string(out))
 		return err

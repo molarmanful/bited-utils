@@ -31,6 +31,14 @@ type Unit struct {
 	SrcForm SrcForm `koanf:"src"`
 	// OutDir is the output directory for generated images.
 	OutDir string `koanf:"out_dir"`
+	// VecSuffix is the suffix for vector format names.
+	VecSuffix string `koanf:"vec_format"`
+	// OTBSuffix is the suffix for OTB format names.
+	OTBSuffix string `koanf:"pcf_format"`
+	// DFONTSuffix is the suffix for DFONT format names.
+	DFONTSuffix string `koanf:"dfont_format"`
+	// PCFSuffix is the template for PCF format names.
+	PCFSuffix string `koanf:"pcf_format"`
 	// Xs is an unprocessed list of integer scales to build.
 	XsPre []int `koanf:"xs"`
 	// XForm is the template for each scaled font's name.
@@ -48,14 +56,18 @@ type Unit struct {
 var SrcT = template.Must(template.New("").Parse("src/{{ .Name }}.bdf"))
 
 // XFormT is the default value for [Unit] XForm.
-var XFormatT = template.Must(template.New("").Parse("{{ .Name }}{{ .X }}x"))
+var XFormT = template.Must(template.New("").Parse("{{ .Name }}{{ .X }}x"))
 
 // DUnit specifies default values for [Unit].
 var DUnit = Unit{
-	SrcForm:  SrcForm{SrcT},
-	OutDir:   "out",
-	XForm:    XForm{XFormatT},
-	SFNTLang: "English (US)",
+	SrcForm:     SrcForm{SrcT},
+	OutDir:      "out",
+	XForm:       XForm{XFormT},
+	VecSuffix:   " Vec",
+	OTBSuffix:   "",
+	DFONTSuffix: "",
+	PCFSuffix:   " PCF",
+	SFNTLang:    "English (US)",
 }
 
 // SrcForm is a wrapper type to enable [koanf] to unmarshal strings into
