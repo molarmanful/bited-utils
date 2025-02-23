@@ -25,6 +25,11 @@ _: {
             default = null;
             description = "Font family name.";
           };
+          src = lib.mkOption {
+            type = lib.types.nullOr lib.types.path;
+            default = null;
+            description = "Location of both `bited-build.toml` and `bited-img.toml`.";
+          };
           version = lib.mkOption {
             type = lib.types.nonEmptyStr;
             default = "v0.0.0-0";
@@ -62,7 +67,7 @@ _: {
         );
 
       config = {
-        packages = lib.mkIf (cfg.name != null) (
+        packages = lib.mkIf (cfg.name != null && cfg.src != null) (
           let
             build =
               o:

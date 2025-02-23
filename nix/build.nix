@@ -1,6 +1,7 @@
 {
   pname,
   version,
+  src,
   nerd ? false,
   release ? false,
 
@@ -12,8 +13,7 @@
 }:
 
 stdenvNoCC.mkDerivation {
-  inherit pname version;
-  src = ./.;
+  inherit pname version src;
 
   buildPhase = ''
     runHook preBuild
