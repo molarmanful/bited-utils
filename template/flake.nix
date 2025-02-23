@@ -26,11 +26,9 @@
       perSystem =
         { config, pkgs, ... }:
         {
-          inherit name version;
-          # nerd = true;
-
-          packages = {
-            default = config.packages.${name};
+          bited-utils = {
+            inherit name version;
+            # nerd = true;
           };
 
           # Devtools available via `nix develop` or direnv.
@@ -68,7 +66,7 @@
                 category = "formatter";
               }
               {
-                package = config.packages.bited-clr;
+                package = config.bited-utils.bited-clr;
               }
             ];
 
