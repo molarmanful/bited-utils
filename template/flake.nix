@@ -11,12 +11,6 @@
 
   outputs =
     inputs@{ systems, flake-parts, ... }:
-
-    let
-      name = "FIXME";
-      version = builtins.readFile ./VERSION;
-    in
-
     flake-parts.lib.mkFlake { inherit inputs; } {
       imports = [
         inputs.devshell.flakeModule
@@ -26,8 +20,11 @@
       perSystem =
         { config, pkgs, ... }:
         {
+
           bited-utils = {
-            inherit name version;
+            name = "FIXME";
+            version = builtins.readFile ./VERSION;
+            src = ./.;
             # nerd = true;
           };
 
