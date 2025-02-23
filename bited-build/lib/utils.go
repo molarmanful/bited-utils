@@ -22,6 +22,7 @@ func (unit *Unit) mkRenamedBDF(name string) (string, error) {
 		ReplaceRegexp(reFONT, `FONT $1`+name+`$2`).
 		ReplaceRegexp(reFAM, `FAMILY_NAME "`+strings.ReplaceAll(name, `"`, `""`)+`"`).
 		WithStdout(tmp).Stdout(); err != nil {
+		os.Remove(tmp.Name())
 		return "", err
 	}
 	return tmp.Name(), nil
