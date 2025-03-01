@@ -17,7 +17,7 @@ jobs:
         with:
           ref: main
       - uses: DeterminateSystems/nix-installer-action@main
-      - run: echo -n ${{ github.ref_name }} > VERSION
+      - run: printf "%s" "${{ github.ref_name }}" > VERSION
       - name: push
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
