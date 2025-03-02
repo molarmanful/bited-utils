@@ -21,7 +21,7 @@ and Nix flakes.
 
 ### [kirsch](https://github.com/molarmanful/kirsch)
 
-![kirsch](https://github.com/molarmanful/kirsch/blob/master/img/header.png)
+![kirsch](https://github.com/molarmanful/kirsch/blob/main/img/header.png)
 
 ### [ANAKRON](https://github.com/molarmanful/ANAKRON)
 
