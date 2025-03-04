@@ -1,8 +1,7 @@
----
 name: pub
 on:
   push:
-    tags: ['*']
+    tags: ['v*']
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -10,7 +9,7 @@ jobs:
   pub:
     runs-on: ubuntu-latest
     permissions:
-      id-token: write
+      # id-token: write
       contents: write
     steps:
       - uses: actions/checkout@v4
@@ -18,7 +17,7 @@ jobs:
           ref: main
       - uses: DeterminateSystems/nix-installer-action@main
       # - uses: DeterminateSystems/flakehub-cache-action@main
-      - run: printf "%s" "${{ github.ref_name }}" > VERSION
+      - run: printf "%s" "${{ github.ref_name }}" | sed 's/^v//' > VERSION
       - run: nix build .#FIXME-release
       - name: push
         uses: stefanzweifel/git-auto-commit-action@v5

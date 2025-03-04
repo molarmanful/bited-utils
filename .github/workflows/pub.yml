@@ -1,8 +1,7 @@
----
 name: pub
 on:
   push:
-    tags: ['*']
+    tags: ['v*']
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -17,7 +16,7 @@ jobs:
         with:
           ref: main
       - uses: DeterminateSystems/nix-installer-action@main
-      - run: printf "%s" "${{ github.ref_name }}" > VERSION
+      - run: printf "%s" "${{ github.ref_name }}" | sed 's/^v//' > VERSION
       - name: push
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
