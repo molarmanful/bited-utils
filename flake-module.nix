@@ -32,7 +32,7 @@ _: {
           };
           version = lib.mkOption {
             type = lib.types.nonEmptyStr;
-            default = "v0.0.0-0";
+            default = "0.0.0-0";
             description = "Font package version.";
           };
           nerd = lib.mkEnableOption "Nerd Fonts patching";
