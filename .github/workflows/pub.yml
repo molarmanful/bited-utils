@@ -16,15 +16,15 @@ jobs:
         with:
           ref: main
       - uses: DeterminateSystems/nix-installer-action@main
-      - run: printf "%s" "${{ github.ref_name }}" | sed 's/^v//' > VERSION
+      - run: printf '%s' '${{ github.ref_name }}' | sed 's/^v//' > VERSION
       - name: push
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           file_pattern: VERSION
           commit_message: bump version to ${{ github.ref_name }}
-      - uses: "DeterminateSystems/flakehub-push@main"
+      - uses: DeterminateSystems/flakehub-push@main
         with:
-          visibility: "public"
-          name: "molarmanful/bited-utils"
-          tag: "${{ inputs.tag }}"
+          visibility: public
+          name: molarmanful/bited-utils
+          tag: ${{ inputs.tag }}
           include-output-paths: true
