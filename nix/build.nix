@@ -27,7 +27,8 @@ stdenvNoCC.mkDerivation {
     mkdir -p $out/share/fonts
     cp -r out/. $out/share/fonts
     ${lib.optionalString release ''
-      ${zip}/bin/zip -r $out/share/fonts/${pname}_v${version}.zip $out/share/fonts
+      cd $out/share
+      ${zip}/bin/zip -r fonts/${pname}_v${version}.zip fonts
     ''}
     runHook postInstall
   '';
