@@ -34,7 +34,7 @@ type Unit struct {
 	// VecSuffix is the suffix for vector format names.
 	VecSuffix string `koanf:"vec_suffix"`
 	// OTBSuffix is the suffix for OTB format names.
-	OTBSuffix string `koanf:"pcf_suffix"`
+	OTBSuffix string `koanf:"otb_suffix"`
 	// DFONTSuffix is the suffix for DFONT format names.
 	DFONTSuffix string `koanf:"dfont_suffix"`
 	// PCFSuffix is the template for PCF format names.
