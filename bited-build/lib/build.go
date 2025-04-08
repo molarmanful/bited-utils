@@ -91,7 +91,9 @@ func (unit *Unit) buildVec() error {
 			}
 			return nil
 		})
-		return g.Wait()
+		if err := g.Wait(); err != nil {
+			return err
+		}
 	}
 
 	log.Println("  + WOFF2")
