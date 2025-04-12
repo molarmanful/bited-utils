@@ -27,8 +27,8 @@ func NewUnit(cfg *koanf.Koanf, nerd bool) (Unit, error) {
 	}
 
 	unit.Nerd = nerd
-	unit.postUnit()
-	return unit, nil
+	err := unit.postUnit()
+	return unit, err
 }
 
 // postUnit populates a newly-unmarshaled [Unit] with the necessary data for

@@ -116,7 +116,7 @@ func (unit *Unit) buildXs() error {
 	return g.Wait()
 }
 
-// buildXs scales and converts BDF to other bitmap formats.
+// buildX scales and converts BDF to other bitmap formats.
 func (unit *Unit) buildX(x int) error {
 	if x > 1 {
 		var nameB strings.Builder

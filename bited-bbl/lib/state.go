@@ -71,8 +71,10 @@ func (state *_State) ModeX() error {
 		}
 
 	default:
-		if _, err := fmt.Fprint(state.W, " ", state.V); err != nil {
-			return err
+		if state.V != "" {
+			if _, err := fmt.Fprint(state.W, " ", state.V); err != nil {
+				return err
+			}
 		}
 
 	}
@@ -97,8 +99,10 @@ func (state *_State) ModeProp() error {
 		}
 
 	default:
-		if _, err := fmt.Fprint(state.W, " ", state.V); err != nil {
-			return err
+		if state.V != "" {
+			if _, err := fmt.Fprint(state.W, " ", state.V); err != nil {
+				return err
+			}
 		}
 
 	}
@@ -158,7 +162,7 @@ func (state *_State) ModeChar() error {
 		copy(state.BBX[:], ns)
 
 	}
-	b.WriteString(" ")
+	b.WriteRune(' ')
 	b.WriteString(state.V)
 	state.Char = append(state.Char, b.String())
 	return nil
