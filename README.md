@@ -16,6 +16,8 @@ and Nix flakes.
   A TUI tool for fine-tuned coloring of TXT/CLR pairs.
 - [**bited-scale**](https://pkg.go.dev/github.com/molarmanful/bited-utils/bited-scale):
   A command for scaling bited BDFs.
+- [**bited-bbl**](https://pkg.go.dev/github.com/molarmanful/bited-utils/bited-bbl):
+  A command for proportionalizing bited BDFs.
 
 ## Built with bited-utils
 
