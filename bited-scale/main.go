@@ -24,7 +24,7 @@ import (
 
 func main() {
 	scale := flag.Int("x", 2, "scaling factor")
-	name := flag.String("name", "", "scaled font name")
+	name := flag.String("name", "", "output font name")
 	flag.Parse()
 	err := bitedscale.Scale(os.Stdin, os.Stdout, *scale, *name)
 	bitedutils.Check(err)

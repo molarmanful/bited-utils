@@ -58,6 +58,7 @@
                 bited-img = pkgs.callPackage ./bited-img args;
                 bited-scale = pkgs.callPackage ./bited-scale args;
                 bited-clr = pkgs.callPackage ./bited-clr args;
+                bited-bbl = pkgs.callPackage ./bited-bbl args;
               };
 
             devshells.default = {

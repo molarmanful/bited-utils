@@ -29,7 +29,6 @@ func newState(w io.Writer, scale int, name string) *_State {
 		W:     w,
 		Scale: scale,
 		Name:  name,
-		Mode:  X,
 		LUT:   make(map[rune]string),
 	}
 }
