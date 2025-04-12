@@ -7,9 +7,9 @@
 // Flags:
 //
 //	--x
-//		Scaling factor.
+//		Scaling factor. Defaults to 2.
 //	--name
-//		Family name of the scaled font.
+//		Family name of the output font.
 //
 // bited-scale accepts input via STDIN and outputs to STDOUT.
 package main
