@@ -5,6 +5,7 @@ import (
 	"io"
 	"strconv"
 	"strings"
+	"unicode"
 )
 
 const (
@@ -13,23 +14,55 @@ const (
 	Char        // STARTCHAR ... BITMAP
 )
 
+var NerdFont = &unicode.RangeTable{
+	R16: []unicode.Range16{
+		{0x23fb, 0x23fe, 1},
+		{0x2b58, 0x2b58, 1},
+		{0xe000, 0xe00a, 1},
+		{0xe0a0, 0xe0a3, 1},
+		{0xe0b0, 0xe0c8, 1},
+		{0xe0ca, 0xe0ca, 1},
+		{0xe0cc, 0xe0d7, 1},
+		{0xe200, 0xe2a9, 1},
+		{0xe300, 0xe3e3, 1},
+		{0xe5fa, 0xe6b7, 1},
+		{0xe700, 0xe8ef, 1},
+		{0xea60, 0xec1e, 1},
+		{0xed00, 0xefce, 1},
+		{0xf000, 0xf381, 1},
+		{0xf400, 0xf533, 1},
+	},
+	R32: []unicode.Range32{
+		{0xf0001, 0xf1af0, 1},
+	},
+}
+
 type _State struct {
 	W       io.Writer
 	Name    string
+	Nerd    bool
+	Ceil    int
 	Mode    int
 	K       string
 	V       string
 	Char    []string
+	Enc     int
 	DWIDTH  int
 	DWIDTHi int
 	BBX     [4]int
 	BBXi    int
 }
 
-func newState(w io.Writer, name string) *_State {
+func newState(w io.Writer, name string, nerd bool, ceil bool) *_State {
+	var cn int
+	if ceil {
+		cn = 1
+	}
 	return &_State{
 		W:    w,
 		Name: name,
+		Nerd: nerd,
+		Ceil: cn,
 	}
 }
 
@@ -59,6 +92,7 @@ func (state *_State) ModeX() error {
 	case "STARTCHAR":
 		state.Mode = Char
 		state.Char = make([]string, 0, 4)
+		state.Enc = -1
 		state.DWIDTHi = -1
 		state.BBXi = -1
 		if _, err := fmt.Fprint(state.W, " ", state.V); err != nil {
@@ -118,8 +152,16 @@ func (state *_State) ModeChar() error {
 	switch state.K {
 
 	case "BITMAP":
+		n := 1
+		if state.Nerd && state.Enc >= 0 && unicode.Is(NerdFont, rune(state.Enc)) {
+			n = 2
+		}
+		if state.DWIDTHi >= 0 {
+			state.DWIDTH = max(state.DWIDTH*n, state.BBX[0])
+			state.Char[state.DWIDTHi] = fmt.Sprintf("DWIDTH %d 0", state.DWIDTH)
+		}
 		if state.BBXi >= 0 {
-			state.BBX[2] = max(0, state.BBX[2])
+			state.BBX[2] = max(0, state.BBX[2]+(state.DWIDTH+state.Ceil)*(n-1)/n/2)
 			state.Char[state.BBXi] = fmt.Sprintf(
 				"BBX %d %d %d %d",
 				state.BBX[0],
@@ -127,10 +169,6 @@ func (state *_State) ModeChar() error {
 				state.BBX[2],
 				state.BBX[3],
 			)
-		}
-		if state.DWIDTHi >= 0 {
-			state.DWIDTH = max(state.DWIDTH, state.BBX[0])
-			state.Char[state.DWIDTHi] = fmt.Sprintf("DWIDTH %d 0", state.DWIDTH)
 		}
 		for _, line := range state.Char {
 			if _, err := fmt.Fprintln(state.W, line); err != nil {
@@ -141,6 +179,13 @@ func (state *_State) ModeChar() error {
 			return err
 		}
 		state.Mode = X
+
+	case "ENCODING":
+		n, err := state.Atoi()
+		if err != nil {
+			return err
+		}
+		state.Enc = n
 
 	case "DWIDTH":
 		state.DWIDTHi = len(state.Char)

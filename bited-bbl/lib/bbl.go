@@ -11,12 +11,12 @@ var reKV = regexp.MustCompile(`^\s*(\w+)\s*(.*)\s*$`)
 
 // Bbl proportionalizes a bited BDF.
 // It reads/writes via streams.
-func Bbl(r io.Reader, w io.Writer, name string) error {
+func Bbl(r io.Reader, w io.Writer, name string, nerd bool, ceil bool) error {
 	if name == "" {
 		return fmt.Errorf("name is empty")
 	}
 
-	state := newState(w, name)
+	state := newState(w, name, nerd, ceil)
 	scanner := bufio.NewScanner(r)
 	for scanner.Scan() {
 		line := scanner.Text()
