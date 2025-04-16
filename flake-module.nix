@@ -63,6 +63,7 @@ _: {
               "bited-img"
               "bited-scale"
               "bited-clr"
+              "bited-bbl"
             ]
         );
 
