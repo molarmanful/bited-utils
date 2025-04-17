@@ -48,19 +48,19 @@ func ParseXLFD(s string) (*XLFD, error) {
 	xlfd.Setwidth = xs[5]
 	xlfd.AddStyle = xs[6]
 
-	n, err := X2i("px size", xs[7])
+	n, err := x2i("px size", xs[7])
 	if err != nil {
 		return nil, err
 	}
 	xlfd.PxSize = n
 
-	n, err = X2i("res x", xs[9])
+	n, err = x2i("res x", xs[9])
 	if err != nil {
 		return nil, err
 	}
 	xlfd.Res.X = n
 
-	n, err = X2i("res y", xs[10])
+	n, err = x2i("res y", xs[10])
 	if err != nil {
 		return nil, err
 	}
@@ -133,7 +133,7 @@ func (xlfd *XLFD) ValidateSpacing() error {
 	return fmt.Errorf("XLFD spacing '%s' is not one of (M, P, C)", xlfd.Spacing)
 }
 
-func X2i(x string, s string) (int, error) {
+func x2i(x string, s string) (int, error) {
 	n, err := strconv.Atoi(s)
 	if err != nil {
 		return n, errors.WithMessagef(err, "XLFD %s", x)
