@@ -157,7 +157,9 @@ func (state *_State) ModeX() error {
 		"DWIDTH",
 		"DWIDTH1",
 		"VVECTOR":
-		state.NotDefK()
+		if err := state.NotDefK(); err != nil {
+			return err
+		}
 
 	default:
 		return fmt.Errorf("unknown keyword %s", state.K)

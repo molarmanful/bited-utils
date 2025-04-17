@@ -40,10 +40,14 @@ func (bdf *BDF) WriteProps(w io.Writer) error {
 		return err
 	}
 	for k, v := range bdf.XLFD.Props().FromOldest() {
-		fmt.Fprintln(w, k, PropString(v))
+		if _, err := fmt.Fprintln(w, k, PropString(v)); err != nil {
+			return err
+		}
 	}
 	for k, v := range bdf.Props.FromOldest() {
-		fmt.Fprintln(w, k, PropString(v))
+		if _, err := fmt.Fprintln(w, k, PropString(v)); err != nil {
+			return err
+		}
 	}
 	if _, err := fmt.Fprintln(w, "ENDPROPERTIES"); err != nil {
 		return err

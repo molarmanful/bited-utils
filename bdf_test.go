@@ -18,7 +18,9 @@ func TestBDFRoundTrip(t *testing.T) {
 		t.Error(err)
 	}
 	var w strings.Builder
-	bdf.BDF2W(&w)
+	if err := bdf.BDF2W(&w); err != nil {
+		t.Error(err)
+	}
 	res := w.String()
 	assert.Equal(t, test0, res)
 }

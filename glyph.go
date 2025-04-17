@@ -115,7 +115,9 @@ func (glyph *Glyph) WriteBm(w io.Writer) error {
 				}
 			}
 		}
-		fmt.Fprintln(w)
+		if _, err := fmt.Fprintln(w); err != nil {
+			return err
+		}
 	}
 
 	return nil
