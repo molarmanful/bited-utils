@@ -41,7 +41,7 @@ func R2BDF(r io.Reader) (*BDF, error) {
 
 		state.K = ""
 		if len(match) > 1 {
-			state.K = match[1]
+			state.K = strings.ToUpper(match[1])
 		}
 		if state.K == "COMMENT" {
 			continue
