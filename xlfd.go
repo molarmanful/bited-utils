@@ -16,10 +16,13 @@ type XLFD struct {
 	Slant    string
 	Setwidth string
 	AddStyle string
-	PxSize   uint64
-	Res      [2]uint64
-	Spacing  string
-	AvgW     uint64
+	PxSize   int
+	Res      struct {
+		X int
+		Y int
+	}
+	Spacing string
+	avgW    int
 }
 
 func ParseXLFD(s string) (*XLFD, error) {
@@ -45,23 +48,23 @@ func ParseXLFD(s string) (*XLFD, error) {
 	xlfd.Setwidth = xs[5]
 	xlfd.AddStyle = xs[6]
 
-	n, err := X2u("px size", xs[7])
+	n, err := X2i("px size", xs[7])
 	if err != nil {
 		return nil, err
 	}
 	xlfd.PxSize = n
 
-	n, err = X2u("res x", xs[9])
+	n, err = X2i("res x", xs[9])
 	if err != nil {
 		return nil, err
 	}
-	xlfd.Res[0] = n
+	xlfd.Res.X = n
 
-	n, err = X2u("res y", xs[10])
+	n, err = X2i("res y", xs[10])
 	if err != nil {
 		return nil, err
 	}
-	xlfd.Res[1] = n
+	xlfd.Res.Y = n
 
 	xlfd.Spacing = xs[11]
 	if err := xlfd.ValidateSpacing(); err != nil {
@@ -82,10 +85,10 @@ func (xlfd *XLFD) String() string {
 		xlfd.AddStyle,
 		xlfd.PxSize,
 		xlfd.PtSize(),
-		xlfd.Res[0],
-		xlfd.Res[1],
+		xlfd.Res.X,
+		xlfd.Res.X,
 		xlfd.Spacing,
-		xlfd.AvgW,
+		xlfd.avgW,
 	)
 }
 
@@ -100,18 +103,18 @@ func (xlfd *XLFD) Props() *orderedmap.OrderedMap[string, interface{}] {
 			{Key: "ADD_STYLE_NAME", Value: xlfd.AddStyle},
 			{Key: "PIXEL_SIZE", Value: xlfd.PxSize},
 			{Key: "POINT_SIZE", Value: xlfd.PtSize()},
-			{Key: "RESOLUTION_X", Value: xlfd.Res[0]},
-			{Key: "RESOLUTION_Y", Value: xlfd.Res[1]},
+			{Key: "RESOLUTION_X", Value: xlfd.Res.X},
+			{Key: "RESOLUTION_Y", Value: xlfd.Res.Y},
 			{Key: "SPACING", Value: xlfd.Spacing},
-			{Key: "AVERAGE_WIDTH", Value: xlfd.AvgW},
+			{Key: "AVERAGE_WIDTH", Value: xlfd.avgW},
 			{Key: "CHARSET_REGISTRY", Value: "ISO10646"},
 			{Key: "CHARSET_ENCODING", Value: "1"},
 		}...,
 	))
 }
 
-func (xlfd *XLFD) PtSize() uint64 {
-	return xlfd.PxSize * 72 / xlfd.Res[1] * 10
+func (xlfd *XLFD) PtSize() int {
+	return xlfd.PxSize * 72 / xlfd.Res.Y * 10
 }
 
 func (xlfd *XLFD) ValidateSlant() error {
@@ -130,8 +133,8 @@ func (xlfd *XLFD) ValidateSpacing() error {
 	return fmt.Errorf("XLFD spacing '%s' is not one of (M, P, C)", xlfd.Spacing)
 }
 
-func X2u(x string, s string) (uint64, error) {
-	n, err := strconv.ParseUint(s, 10, 64)
+func X2i(x string, s string) (int, error) {
+	n, err := strconv.Atoi(s)
 	if err != nil {
 		return n, errors.WithMessagef(err, "XLFD %s", x)
 	}

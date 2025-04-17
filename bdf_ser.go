@@ -5,23 +5,21 @@ import (
 	"io"
 	"maps"
 	"slices"
-
-	"github.com/makiuchi-d/gozxing"
 )
 
 func (bdf *BDF) BDF2W(w io.Writer) error {
-	bdf.CalcAvgWidth()
-	bdf.CalcBBX()
+	bdf.calcAvgWidth()
+	bdf.calcBbx()
 	if _, err := fmt.Fprintln(w, "STARTFONT 2.1"); err != nil {
 		return err
 	}
 	if _, err := fmt.Fprintln(w, "FONT", bdf.XLFD.String()); err != nil {
 		return err
 	}
-	if _, err := fmt.Fprintln(w, "SIZE", bdf.XLFD.PtSize()/10, bdf.XLFD.Res[0], bdf.XLFD.Res[0]); err != nil {
+	if _, err := fmt.Fprintln(w, "SIZE", bdf.XLFD.PtSize()/10, bdf.XLFD.Res.X, bdf.XLFD.Res.Y); err != nil {
 		return err
 	}
-	if _, err := fmt.Fprintln(w, "FONTBOUNDINGBOX", bdf.BBX.W, bdf.BBX.H, bdf.BBX.X, bdf.BBX.Y); err != nil {
+	if _, err := fmt.Fprintln(w, "FONTBOUNDINGBOX", bdf.bbx.W, bdf.bbx.H, bdf.bbx.X, bdf.bbx.Y); err != nil {
 		return err
 	}
 	if err := bdf.WriteProps(w); err != nil {
@@ -75,7 +73,7 @@ func (bdf *BDF) WriteChars(w io.Writer) error {
 }
 
 func (glyph *Glyph) Write(bdf *BDF, w io.Writer) error {
-	if _, err := fmt.Fprintln(w, "STARTCHAR", glyph.GetName()); err != nil {
+	if _, err := fmt.Fprintln(w, "STARTCHAR", glyph.Name()); err != nil {
 		return err
 	}
 	if _, err := fmt.Fprintln(w, "ENCODING", glyph.Code); err != nil {
@@ -87,8 +85,7 @@ func (glyph *Glyph) Write(bdf *BDF, w io.Writer) error {
 	if _, err := fmt.Fprintln(w, "DWIDTH", glyph.DWidth, 0); err != nil {
 		return err
 	}
-	dw, dh := glyph.Dim()
-	if _, err := fmt.Fprintln(w, "BBX", dw, dh, glyph.Off[0], glyph.Off[1]); err != nil {
+	if _, err := fmt.Fprintln(w, "BBX", glyph.w, glyph.h, glyph.X, glyph.Y); err != nil {
 		return err
 	}
 	if _, err := fmt.Fprintln(w, "BITMAP"); err != nil {
@@ -104,31 +101,18 @@ func (glyph *Glyph) Write(bdf *BDF, w io.Writer) error {
 }
 
 func (glyph *Glyph) WriteBm(w io.Writer) error {
-	if glyph.Bm == nil {
+	if len(glyph.bm) <= 0 {
 		return nil
 	}
-	dw := glyph.Bm.GetWidth()
-	dh := glyph.Bm.GetHeight()
-	row := gozxing.NewBitArray(dw)
-	dwbs := row.GetSizeInBytes()
-
-	for i := range int(dh) {
-		glyph.Bm.GetRow(i, row)
-	row:
-		for i, n := range row.GetBitArray() {
-			for o := range 4 {
-				if i*4+o >= dwbs {
-					break row
-				}
-				if _, err := fmt.Fprintf(w, "%02X", n>>((3-o)*8)); err != nil {
-					return err
-				}
-			}
-		}
-		if _, err := fmt.Fprintln(w); err != nil {
+	for i, b := range glyph.Bytes() {
+		if _, err := fmt.Fprintf(w, "%02X", b); err != nil {
 			return err
 		}
+		if i.IsRowEnd {
+			if _, err := fmt.Fprintln(w); err != nil {
+				return err
+			}
+		}
 	}
-
 	return nil
 }

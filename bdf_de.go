@@ -8,7 +8,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/makiuchi-d/gozxing"
 	"github.com/pkg/errors"
 	orderedmap "github.com/wk8/go-ordered-map/v2"
 )
@@ -71,7 +70,6 @@ type _State struct {
 	Defs map[string]struct{}
 	*Glyph
 	GlyphDefs map[string]struct{}
-	Dim       [2]uint64
 	Row       int
 }
 
@@ -214,7 +212,7 @@ func (state *_State) ModeCHARS() error {
 			return err
 		}
 		state.Glyph = &Glyph{
-			Name: state.V,
+			name: state.V,
 		}
 		clear(state.GlyphDefs)
 
@@ -251,7 +249,7 @@ func (state *_State) ModeCHAR() error {
 		if err := state.NotDefGlyphK(); err != nil {
 			return err
 		}
-		n, err := state.V2u()
+		n, err := state.V2i()
 		if err != nil {
 			return errors.WithMessage(err, "DWIDTH")
 		}
@@ -261,7 +259,7 @@ func (state *_State) ModeCHAR() error {
 		if err := state.NotDefGlyphK(); err != nil {
 			return err
 		}
-		if state.Glyph.Name == "" {
+		if state.Glyph.name == "" {
 			return fmt.Errorf("glyph name is empty")
 		}
 		if _, ok := state.GlyphDefs["ENCODING"]; !ok {
@@ -272,13 +270,6 @@ func (state *_State) ModeCHAR() error {
 		}
 		if _, ok := state.GlyphDefs["DWIDTH"]; !ok {
 			return fmt.Errorf("missing DWIDTH before BITMAP")
-		}
-		if state.Dim[0] > 0 && state.Dim[1] > 0 {
-			bm, err := gozxing.NewBitMatrix(int(state.Dim[0]), int(state.Dim[1]))
-			if err != nil {
-				return errors.WithMessage(err, "BITMAP")
-			}
-			state.Glyph.Bm = bm
 		}
 		state.Row = 0
 		state.Mode = BM
@@ -304,7 +295,7 @@ func (state *_State) ModeBM() error {
 		state.Mode = CHARS
 		state.BDF.Glyphs = append(state.BDF.Glyphs, state.Glyph)
 		if state.Code < 0 {
-			state.BDF.Named[state.Glyph.Name] = state.Glyph
+			state.BDF.Named[state.Glyph.name] = state.Glyph
 		} else {
 			state.BDF.Unicode[rune(state.Glyph.Code)] = state.Glyph
 		}
@@ -313,7 +304,7 @@ func (state *_State) ModeBM() error {
 		if state.V != "" {
 			return fmt.Errorf("bad BITMAP row")
 		}
-		if err := state.Glyph.SetRow(state.Row, state.K); err != nil {
+		if err := state.Glyph.Hex2Row(state.Row, state.K); err != nil {
 			return errors.WithMessage(err, "BITMAP")
 		}
 		state.Row++
@@ -344,7 +335,7 @@ func (state *_State) NotDefGlyph() error {
 
 func (state *_State) NotDefGlyphK() error {
 	if _, ok := state.GlyphDefs[state.K]; ok {
-		return fmt.Errorf("%s is already defined in glyph %s", state.K, state.Glyph.Name)
+		return fmt.Errorf("%s is already defined in glyph %s", state.K, state.Glyph.name)
 	}
 	state.GlyphDefs[state.K] = struct{}{}
 	return nil
@@ -352,7 +343,7 @@ func (state *_State) NotDefGlyphK() error {
 
 func (state *_State) FromProp() (interface{}, error) {
 	if strings.HasPrefix(state.V, `"`) {
-		if strings.HasSuffix(state.V, `"`) {
+		if !strings.HasSuffix(state.V, `"`) {
 			return nil, fmt.Errorf("string not properly closed")
 		}
 		s := state.V[1 : len(state.V)-1]
@@ -367,39 +358,30 @@ func (state *_State) FromBbx() error {
 		return fmt.Errorf("BBX fields < 4")
 	}
 
-	w, err := strconv.ParseUint(ss[0], 10, 64)
+	w, err := strconv.Atoi(ss[0])
 	if err != nil {
 		return errors.WithMessage(err, "BBX w")
 	}
-	state.Dim[0] = w
-
-	h, err := strconv.ParseUint(ss[1], 10, 64)
+	h, err := strconv.Atoi(ss[1])
 	if err != nil {
 		return errors.WithMessage(err, "BBX h")
 	}
-	state.Dim[1] = h
-
 	x, err := strconv.Atoi(ss[2])
 	if err != nil {
 		return errors.WithMessage(err, "BBX x")
 	}
-	state.Glyph.Off[0] = x
-
 	y, err := strconv.Atoi(ss[3])
 	if err != nil {
 		return errors.WithMessage(err, "BBX y")
 	}
-	state.Glyph.Off[1] = y
 
+	state.Glyph.X = x
+	state.Glyph.Y = y
+	state.Glyph.NewBm(w, h)
 	return nil
 }
 
 func (state *_State) V2i() (int, error) {
 	s, _, _ := strings.Cut(state.V, " ")
 	return strconv.Atoi(s)
-}
-
-func (state *_State) V2u() (uint64, error) {
-	s, _, _ := strings.Cut(state.V, " ")
-	return strconv.ParseUint(s, 10, 64)
 }

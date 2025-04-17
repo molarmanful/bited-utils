@@ -9,9 +9,9 @@ import (
 
 type BDF struct {
 	*XLFD
-	BBX struct {
-		W uint64
-		H uint64
+	bbx struct {
+		W int
+		H int
 		X int
 		Y int
 	}
@@ -21,21 +21,20 @@ type BDF struct {
 	Unicode map[rune]*Glyph
 }
 
-func (bdf *BDF) CalcAvgWidth() {
-	sum := uint64(0)
+func (bdf *BDF) calcAvgWidth() {
+	sum := 0
 	for _, glyph := range bdf.Glyphs {
 		sum += glyph.DWidth
 	}
-	bdf.XLFD.AvgW = sum * 10 / uint64(len(bdf.Glyphs))
+	bdf.XLFD.avgW = sum * 10 / len(bdf.Glyphs)
 }
 
-func (bdf *BDF) CalcBBX() {
+func (bdf *BDF) calcBbx() {
 	for _, glyph := range bdf.Glyphs {
-		dw, dh := glyph.Dim()
-		bdf.BBX.W = max(bdf.BBX.W, dw)
-		bdf.BBX.H = max(bdf.BBX.H, dh)
-		bdf.BBX.X = min(bdf.BBX.X, glyph.Off[0])
-		bdf.BBX.Y = min(bdf.BBX.Y, glyph.Off[1])
+		bdf.bbx.W = max(bdf.bbx.W, glyph.w)
+		bdf.bbx.H = max(bdf.bbx.H, glyph.h)
+		bdf.bbx.X = min(bdf.bbx.X, glyph.X)
+		bdf.bbx.Y = min(bdf.bbx.Y, glyph.Y)
 	}
 }
 
