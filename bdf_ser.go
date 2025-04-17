@@ -5,6 +5,8 @@ import (
 	"io"
 	"maps"
 	"slices"
+
+	"github.com/makiuchi-d/gozxing"
 )
 
 func (bdf *BDF) BDF2W(w io.Writer) error {
@@ -69,5 +71,64 @@ func (bdf *BDF) WriteChars(w io.Writer) error {
 			return err
 		}
 	}
+	return nil
+}
+
+func (glyph *Glyph) Write(bdf *BDF, w io.Writer) error {
+	if _, err := fmt.Fprintln(w, "STARTCHAR", glyph.GetName()); err != nil {
+		return err
+	}
+	if _, err := fmt.Fprintln(w, "ENCODING", glyph.Code); err != nil {
+		return err
+	}
+	if _, err := fmt.Fprintln(w, "SWIDTH", glyph.SWidth(bdf), 0); err != nil {
+		return err
+	}
+	if _, err := fmt.Fprintln(w, "DWIDTH", glyph.DWidth, 0); err != nil {
+		return err
+	}
+	dw, dh := glyph.Dim()
+	if _, err := fmt.Fprintln(w, "BBX", dw, dh, glyph.Off[0], glyph.Off[1]); err != nil {
+		return err
+	}
+	if _, err := fmt.Fprintln(w, "BITMAP"); err != nil {
+		return err
+	}
+	if err := glyph.WriteBm(w); err != nil {
+		return err
+	}
+	if _, err := fmt.Fprintln(w, "ENDCHAR"); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (glyph *Glyph) WriteBm(w io.Writer) error {
+	if glyph.Bm == nil {
+		return nil
+	}
+	dw := glyph.Bm.GetWidth()
+	dh := glyph.Bm.GetHeight()
+	row := gozxing.NewBitArray(dw)
+	dwbs := row.GetSizeInBytes()
+
+	for i := range int(dh) {
+		glyph.Bm.GetRow(i, row)
+	row:
+		for i, n := range row.GetBitArray() {
+			for o := range 4 {
+				if i*4+o >= dwbs {
+					break row
+				}
+				if _, err := fmt.Fprintf(w, "%02X", n>>((3-o)*8)); err != nil {
+					return err
+				}
+			}
+		}
+		if _, err := fmt.Fprintln(w); err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
