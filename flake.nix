@@ -49,7 +49,7 @@
                 args = {
                   inherit bitsnpicas;
                   version = builtins.readFile ./VERSION;
-                  vendorHash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+                  vendorHash = "sha256-Ohvp3oJotxDLjSdOjEPMo6ob4Jo24+v/kX59hDhTTBs=";
                 };
               in
               {
