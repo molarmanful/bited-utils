@@ -3,8 +3,6 @@ package bitedutils
 import (
 	"fmt"
 	"io"
-	"maps"
-	"slices"
 )
 
 func (bdf *BDF) BDF2W(w io.Writer) error {
@@ -59,13 +57,8 @@ func (bdf *BDF) WriteChars(w io.Writer) error {
 	if _, err := fmt.Fprintln(w, "CHARS", len(bdf.Glyphs)); err != nil {
 		return err
 	}
-	for _, k := range slices.Sorted(maps.Keys(bdf.Named)) {
-		if err := bdf.Named[k].Write(bdf, w); err != nil {
-			return err
-		}
-	}
-	for _, k := range slices.Sorted(maps.Keys(bdf.Unicode)) {
-		if err := bdf.Unicode[k].Write(bdf, w); err != nil {
+	for _, glyph := range bdf.Glyphs {
+		if err := glyph.Write(bdf, w); err != nil {
 			return err
 		}
 	}

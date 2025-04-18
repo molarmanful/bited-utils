@@ -15,10 +15,8 @@ type BDF struct {
 		X int
 		Y int
 	}
-	Props   *orderedmap.OrderedMap[string, any]
-	Glyphs  []*Glyph
-	Named   map[string]*Glyph
-	Unicode map[rune]*Glyph
+	Props  *orderedmap.OrderedMap[string, any]
+	Glyphs []*Glyph
 }
 
 func (bdf *BDF) calcAvgWidth() {

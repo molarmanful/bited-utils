@@ -17,9 +17,7 @@ var reKV = regexp.MustCompile(`^\s*(\w+)\s*(.*)\s*$`)
 func R2BDF(r io.Reader) (*BDF, error) {
 	state := _State{
 		BDF: &BDF{
-			Props:   orderedmap.New[string, any](),
-			Named:   make(map[string]*Glyph),
-			Unicode: make(map[rune]*Glyph),
+			Props: orderedmap.New[string, any](),
 		},
 		Defs:      make(map[string]struct{}),
 		GlyphDefs: make(map[string]struct{}),
@@ -294,11 +292,6 @@ func (state *_State) ModeBM() error {
 	case "ENDCHAR":
 		state.Mode = CHARS
 		state.BDF.Glyphs = append(state.BDF.Glyphs, state.Glyph)
-		if state.Code < 0 {
-			state.BDF.Named[state.Glyph.name] = state.Glyph
-		} else {
-			state.BDF.Unicode[rune(state.Glyph.Code)] = state.Glyph
-		}
 
 	default:
 		if state.V != "" {
