@@ -41,7 +41,9 @@ func TestBDFScale1(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-		bdf.Scale(scale)
+		if err := bdf.Scale(scale); err != nil {
+			t.Error(err)
+		}
 		var w strings.Builder
 		if err := bdf.BDF2W(&w); err != nil {
 			t.Error(err)

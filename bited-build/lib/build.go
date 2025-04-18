@@ -14,7 +14,7 @@ import (
 	"text/template"
 
 	"github.com/bitfield/script"
-	bitedscale "github.com/molarmanful/bited-utils/bited-scale/lib"
+	bitedutils "github.com/molarmanful/bited-utils"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -127,12 +127,22 @@ func (unit *Unit) buildX(x int) error {
 		base := filepath.Join(unit.OutDir, fmt.Sprintf("%s_%dx", unit.Name, x))
 		src := base + ".bdf"
 
+		bdf, err := bitedutils.R2BDF(script.File(unit.Src))
+		if err != nil {
+			return err
+		}
+		if name != "" {
+			bdf.XLFD.Family = name
+		}
+		if err := bdf.Scale(x); err != nil {
+			return err
+		}
 		srcF, err := os.Create(src)
 		if err != nil {
 			return err
 		}
 		defer srcF.Close()
-		if err := bitedscale.Scale(script.File(unit.Src), srcF, x, name); err != nil {
+		if err := bdf.BDF2W(srcF); err != nil {
 			return err
 		}
 

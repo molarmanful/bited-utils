@@ -19,13 +19,19 @@ import (
 	"os"
 
 	bitedutils "github.com/molarmanful/bited-utils"
-	bitedscale "github.com/molarmanful/bited-utils/bited-scale/lib"
 )
 
 func main() {
 	scale := flag.Int("x", 2, "scaling factor")
 	name := flag.String("name", "", "output font name")
 	flag.Parse()
-	err := bitedscale.Scale(os.Stdin, os.Stdout, *scale, *name)
+	bdf, err := bitedutils.R2BDF(os.Stdin)
+	bitedutils.Check(err)
+	if *name != "" {
+		bdf.XLFD.Family = *name
+	}
+	err = bdf.Scale(*scale)
+	bitedutils.Check(err)
+	err = bdf.BDF2W(os.Stdout)
 	bitedutils.Check(err)
 }
