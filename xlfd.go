@@ -92,9 +92,9 @@ func (xlfd *XLFD) String() string {
 	)
 }
 
-func (xlfd *XLFD) Props() *orderedmap.OrderedMap[string, interface{}] {
-	return orderedmap.New[string, interface{}](orderedmap.WithInitialData(
-		[]orderedmap.Pair[string, interface{}]{
+func (xlfd *XLFD) Props() *orderedmap.OrderedMap[string, any] {
+	return orderedmap.New[string, any](orderedmap.WithInitialData(
+		[]orderedmap.Pair[string, any]{
 			{Key: "FOUNDRY", Value: xlfd.Foundry},
 			{Key: "FAMILY_NAME", Value: xlfd.Family},
 			{Key: "WEIGHT_NAME", Value: xlfd.Weight},

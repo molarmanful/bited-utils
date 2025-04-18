@@ -17,7 +17,7 @@ var reKV = regexp.MustCompile(`^\s*(\w+)\s*(.*)\s*$`)
 func R2BDF(r io.Reader) (*BDF, error) {
 	state := _State{
 		BDF: &BDF{
-			Props:   orderedmap.New[string, interface{}](),
+			Props:   orderedmap.New[string, any](),
 			Named:   make(map[string]*Glyph),
 			Unicode: make(map[rune]*Glyph),
 		},
@@ -341,7 +341,7 @@ func (state *_State) NotDefGlyphK() error {
 	return nil
 }
 
-func (state *_State) FromProp() (interface{}, error) {
+func (state *_State) FromProp() (any, error) {
 	if strings.HasPrefix(state.V, `"`) {
 		if !strings.HasSuffix(state.V, `"`) {
 			return nil, fmt.Errorf("string not properly closed")

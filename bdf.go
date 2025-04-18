@@ -15,7 +15,7 @@ type BDF struct {
 		X int
 		Y int
 	}
-	Props   *orderedmap.OrderedMap[string, interface{}]
+	Props   *orderedmap.OrderedMap[string, any]
 	Glyphs  []*Glyph
 	Named   map[string]*Glyph
 	Unicode map[rune]*Glyph
@@ -48,7 +48,7 @@ func (bdf *BDF) CleanProps() {
 	}
 }
 
-func PropString(v interface{}) string {
+func PropString(v any) string {
 	if s, ok := v.(string); ok {
 		return fmt.Sprintf("\"%s\"", strings.ReplaceAll(s, `"`, `""`))
 	}
