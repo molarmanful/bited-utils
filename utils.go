@@ -7,6 +7,7 @@
 //   - [github.com/molarmanful/bited-utils/bited-img]
 //   - [github.com/molarmanful/bited-utils/bited-clr]
 //   - [github.com/molarmanful/bited-utils/bited-scale]
+//   - [github.com/molarmanful/bited-utils/bited-bbl]
 package bitedutils
 
 // Check panics if error is non-nil.

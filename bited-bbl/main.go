@@ -19,9 +19,9 @@ package main
 import (
 	"flag"
 	"os"
+	"unicode"
 
 	bitedutils "github.com/molarmanful/bited-utils"
-	bitedbbl "github.com/molarmanful/bited-utils/bited-bbl/lib"
 )
 
 func main() {
@@ -29,6 +29,27 @@ func main() {
 	nerd := flag.Bool("nerd", false, "whether to double Nerd Font widths")
 	ceil := flag.Bool("ceil", false, "whether to right-align glyphs")
 	flag.Parse()
-	err := bitedbbl.Bbl(os.Stdin, os.Stdout, *name, *nerd, *ceil)
+
+	ceiln := 0
+	if *ceil {
+		ceiln = 1
+	}
+
+	bdf, err := bitedutils.R2BDF(os.Stdin)
+	bitedutils.Check(err)
+	if *name != "" {
+		bdf.XLFD.Family = *name
+	}
+
+	for _, glyph := range bdf.Glyphs {
+		n := 1
+		if *nerd && glyph.Code >= 0 && unicode.Is(bitedutils.NerdFont, rune(glyph.Code)) {
+			n = 2
+		}
+		glyph.DWidth = max(glyph.DWidth*n, glyph.W())
+		glyph.X = max(0, glyph.X+(glyph.DWidth+ceiln)*(n-1)/n/2)
+	}
+
+	err = bdf.BDF2W(os.Stdout)
 	bitedutils.Check(err)
 }
