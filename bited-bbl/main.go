@@ -43,7 +43,7 @@ func main() {
 	for _, glyph := range bdf.Glyphs {
 		n := 1
 		if glyph.Code >= 0 {
-			n = min(1, bitedutils.WcWidth(rune(glyph.Code), *nerd))
+			n = max(1, bitedutils.WcWidth(rune(glyph.Code), *nerd))
 		}
 		glyph.DWidth = max(glyph.DWidth*n, glyph.W())
 		glyph.X = max(0, glyph.X+(glyph.DWidth+ceiln)*(n-1)/n/2)
