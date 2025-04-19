@@ -8,7 +8,7 @@ import (
 	"github.com/bitfield/script"
 	"github.com/knadh/koanf/providers/structs"
 	"github.com/knadh/koanf/v2"
-	"github.com/zachomedia/go-bdf"
+	bitedutils "github.com/molarmanful/bited-utils"
 )
 
 // NewUnit creates a full-fledged [Unit] from a single-font config and
@@ -58,23 +58,16 @@ func (unit *Unit) postUnit() error {
 		}
 	}
 
-	bdfB, err := script.File(unit.Src).Bytes()
+	bdfR := script.File(unit.Src).Reader
+	bdf, err := bitedutils.R2BDF(bdfR)
 	if err != nil {
 		return err
 	}
-	bdfP, err := bdf.Parse(bdfB)
-	if err != nil {
-		return err
-	}
-	unit.FontSize = bdfP.PixelSize
+	unit.FontSize = bdf.XLFD.PxSize
 
 	unit.Widths = make(map[string]int)
-	for _, g := range bdfP.Characters {
-		name := g.Name
-		if g.Encoding >= 0 {
-			name = fmt.Sprintf("U+%04X", g.Encoding)
-		}
-		unit.Widths[name] = g.Advance[0]
+	for _, glyph := range bdf.Glyphs {
+		unit.Widths[glyph.Name()] = glyph.DWidth
 	}
 
 	return nil
