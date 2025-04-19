@@ -19,7 +19,6 @@ package main
 import (
 	"flag"
 	"os"
-	"unicode"
 
 	bitedutils "github.com/molarmanful/bited-utils"
 )
@@ -43,8 +42,8 @@ func main() {
 
 	for _, glyph := range bdf.Glyphs {
 		n := 1
-		if *nerd && glyph.Code >= 0 && unicode.Is(bitedutils.NerdFont, rune(glyph.Code)) {
-			n = 2
+		if glyph.Code >= 0 {
+			n = bitedutils.WcWidth(rune(glyph.Code), *nerd)
 		}
 		glyph.DWidth = max(glyph.DWidth*n, glyph.W())
 		glyph.X = max(0, glyph.X+(glyph.DWidth+ceiln)*(n-1)/n/2)
