@@ -3,9 +3,11 @@
 
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-unstable";
-    systems.url = "systems";
-    flake-parts.url = "github:hercules-ci/flake-parts";
-    devshell.url = "github:numtide/devshell";
+    systems.url = "github:nix-systems/default";
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
+      inputs.nixpkgs-lib.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -22,10 +24,7 @@
       in
 
       {
-        imports = [
-          inputs.devshell.flakeModule
-          flakeModule
-        ];
+        imports = [ flakeModule ];
 
         flake = {
           inherit flakeModule;
@@ -37,10 +36,7 @@
 
         systems = import inputs.systems;
         perSystem =
-          {
-            pkgs,
-            ...
-          }:
+          { pkgs, self', ... }:
           {
 
             packages =
@@ -61,58 +57,39 @@
                 bited-bbl = pkgs.callPackage ./bited-bbl args;
               };
 
-            devshells.default = {
-
-              commands = with pkgs; [
-                {
-                  package = nil;
-                  category = "lsp";
-                }
-                {
-                  package = nixd;
-                  category = "lsp";
-                }
-                {
-                  package = nixfmt-rfc-style;
-                  category = "formatter";
-                }
-                {
-                  package = statix;
-                  category = "linter";
-                }
-                {
-                  package = deadnix;
-                  category = "linter";
-                }
-                { package = taplo; }
-                { package = go; }
-                { package = gotools; }
-                {
-                  package = gopls;
-                  category = "lsp";
-                }
-                {
-                  package = golines;
-                  category = "formatter";
-                }
-                {
-                  package = errcheck;
-                  category = "linter";
-                }
-                {
-                  package = marksman;
-                  category = "lsp";
-                }
-                {
-                  package = mdformat;
-                  category = "formatter";
-                }
-              ];
-
+            devShells.default = pkgs.mkShell {
               packages = with pkgs; [
-                python313Packages.mdformat-gfm
-                python313Packages.mdformat-gfm-alerts
+                go
+                gotools
+                taplo
+                # lsps
+                nil
+                nixd
+                marksman
+                gopls
+                # formatters
+                nixfmt-rfc-style
+                mdformat
+                python3Packages.mdformat-gfm
+                python3Packages.mdformat-gfm-alerts
+                golines
+                # linters
+                statix
+                deadnix
+                errcheck
               ];
+            };
+
+            formatter = pkgs.writeShellApplication {
+              name = "linter";
+              runtimeInputs = self'.devShells.default.nativeBuildInputs;
+              text = ''
+                find . -iname '*.nix' -exec nixfmt {} \; -exec deadnix -e {} \; -exec statix fix {} \;
+                find . -iname '*.toml' -exec taplo fmt {} \;
+                find . -iname '*.md' -exec mdformat {} \;
+                find . -iname '*.go' -exec golines {} \;
+                errcheck
+              '';
             };
           };
       }
