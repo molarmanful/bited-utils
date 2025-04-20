@@ -49,8 +49,10 @@ include `test.clr` containing your desired color codes in the same directory.
 A `.clr` file is really just lines of spaces and color codes. The color codes
 are as follows:
 
-| Code | Definition | | ------------ | --------------------------- | | `0-9`,
-`A-F` | Set color to a Base16 color | | `.` | Reset to foreground color |
+| Code         | Definition                  |
+| ------------ | --------------------------- |
+| `0-9`, `A-F` | Set color to a Base16 color |
+| `.`          | Reset to foreground color   |
 
 All other characters are treated as no-ops and simply pass on the current color.
 
