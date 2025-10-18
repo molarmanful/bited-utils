@@ -7,16 +7,16 @@
   ...
 }:
 
-stdenvNoCC.mkDerivation rec {
+stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "bitsnpicas";
-  version = "c6804949137229ef5a0c185e1464ef6b9e222601";
+  version = "2.1.1";
 
   src =
     fetchFromGitHub {
-      owner = "molarmanful"; # TODO: switch back to kreativekorp if pr merges
+      owner = "kreativekorp";
       repo = "bitsnpicas";
-      rev = version;
-      sha256 = "sha256-7qwjZj0dTZyTh6GSsDfDY8b/J5yfmRfWzPBpbuS2xhw=";
+      rev = "v${finalAttrs.version}";
+      sha256 = "sha256-YC3SZckxB53Kna8M9NPoQRpViWmxEu0YR/OHgxEjPiU=";
       sparseCheckout = [ "main/java/BitsNPicas" ];
     }
     + "/main/java/BitsNPicas";
@@ -36,4 +36,4 @@ stdenvNoCC.mkDerivation rec {
       --add-flags "-jar $out/share/java/BitsNPicas.jar"
     runHook postInstall
   '';
-}
+})
