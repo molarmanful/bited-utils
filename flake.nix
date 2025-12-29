@@ -45,7 +45,7 @@
                 args = {
                   inherit bitsnpicas;
                   version = builtins.readFile ./VERSION;
-                  vendorHash = "sha256-A2JBlfV/2puPAtAGoIuJhXelnO8mmYRnSl+3Tw5GKSo=";
+                  vendorHash = "sha256-pc7Q6QbnzQPDTMmwLkykwhtJSFW1qnbOyevWAzmr1dk=";
                 };
               in
               {

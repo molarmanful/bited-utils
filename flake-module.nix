@@ -18,54 +18,53 @@ _: {
     in
 
     {
-      options.bited-utils =
-        {
-          name = lib.mkOption {
-            type = lib.types.nullOr lib.types.nonEmptyStr;
-            default = null;
-            description = "Font family name.";
-          };
-          src = lib.mkOption {
-            type = lib.types.nullOr lib.types.path;
-            default = null;
-            description = "Location of both `bited-build.toml` and `bited-img.toml`.";
-          };
-          version = lib.mkOption {
-            type = lib.types.nonEmptyStr;
-            default = "0.0.0-0";
-            description = "Font package version.";
-          };
-          nerd = lib.mkEnableOption "Nerd Fonts patching";
-          buildTransformer = lib.mkOption {
-            type = lib.types.functionTo lib.types.package;
-            default = build: build;
-            description = "A function to transform the bited-build wrapper derivation.";
-          };
-          imgTransformer = lib.mkOption {
-            type = lib.types.functionTo lib.types.package;
-            default = img: img;
-            description = "A function to transform the bited-img wrapper derivation.";
-          };
-        }
+      options.bited-utils = {
+        name = lib.mkOption {
+          type = lib.types.nullOr lib.types.nonEmptyStr;
+          default = null;
+          description = "Font family name.";
+        };
+        src = lib.mkOption {
+          type = lib.types.nullOr lib.types.path;
+          default = null;
+          description = "Location of both `bited-build.toml` and `bited-img.toml`.";
+        };
+        version = lib.mkOption {
+          type = lib.types.nonEmptyStr;
+          default = "0.0.0-0";
+          description = "Font package version.";
+        };
+        nerd = lib.mkEnableOption "Nerd Fonts patching";
+        buildTransformer = lib.mkOption {
+          type = lib.types.functionTo lib.types.package;
+          default = build: build;
+          description = "A function to transform the bited-build wrapper derivation.";
+        };
+        imgTransformer = lib.mkOption {
+          type = lib.types.functionTo lib.types.package;
+          default = img: img;
+          description = "A function to transform the bited-img wrapper derivation.";
+        };
+      }
 
-        // builtins.listToAttrs (
-          builtins.map
-            (name: {
-              inherit name;
-              value = lib.mkOption {
-                type = lib.types.package;
-                default = withSystem system ({ config, ... }: config.packages.${name});
-                description = "The ${name} package to use.";
-              };
-            })
-            [
-              "bited-build"
-              "bited-img"
-              "bited-scale"
-              "bited-clr"
-              "bited-bbl"
-            ]
-        );
+      // builtins.listToAttrs (
+        builtins.map
+          (name: {
+            inherit name;
+            value = lib.mkOption {
+              type = lib.types.package;
+              default = withSystem system ({ config, ... }: config.packages.${name});
+              description = "The ${name} package to use.";
+            };
+          })
+          [
+            "bited-build"
+            "bited-img"
+            "bited-scale"
+            "bited-clr"
+            "bited-bbl"
+          ]
+      );
 
       config = {
         packages = lib.mkIf (cfg.name != null && cfg.src != null) (
