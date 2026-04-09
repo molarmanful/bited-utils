@@ -8,7 +8,7 @@
   buildGoModule,
   makeWrapper,
   fontforge,
-  xorg,
+  bdftopcf,
   woff2,
   zip,
   nerd-font-patcher,
@@ -27,7 +27,7 @@ buildGoModule {
         lib.makeBinPath [
           bitsnpicas
           fontforge
-          xorg.bdftopcf
+          bdftopcf
           woff2
           zip
           nerd-font-patcher
