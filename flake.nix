@@ -3,7 +3,6 @@
 
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-unstable";
-    systems.url = "github:nix-systems/default";
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
       inputs.nixpkgs-lib.follows = "nixpkgs";
@@ -34,7 +33,7 @@
           };
         };
 
-        systems = import inputs.systems;
+        systems = inputs.nixpkgs.lib.systems.flakeExposed;
         perSystem =
           { pkgs, self', ... }:
           {
