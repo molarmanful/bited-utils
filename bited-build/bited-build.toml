@@ -33,7 +33,7 @@ dfont_suffix = " DFONT"
 # Suffix to append to family names of built PCF formats
 # (i.e. `name + suffix`).
 # Defaults to ` PCF`.
-dfont_suffix = " PCF"
+pcf_suffix = " PCF"
 
 # Array of integer scales to target when building to bitmap formats.
 # Defaults to `[]`.
