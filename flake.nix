@@ -7,6 +7,7 @@
       url = "github:hercules-ci/flake-parts";
       inputs.nixpkgs-lib.follows = "nixpkgs";
     };
+    treefmt-nix.url = "github:numtide/treefmt-nix";
   };
 
   outputs =
@@ -23,7 +24,10 @@
       in
 
       {
-        imports = [ flakeModule ];
+        imports = [
+          inputs.treefmt-nix.flakeModule
+          flakeModule
+        ];
 
         flake = {
           inherit flakeModule;
@@ -35,9 +39,15 @@
 
         systems = inputs.nixpkgs.lib.systems.flakeExposed;
         perSystem =
-          { pkgs, self', ... }:
+          { pkgs, ... }:
+          let
+            mdformat-plugins =
+              ps: with ps; [
+                mdformat-gfm
+                mdformat-gfm-alerts
+              ];
+          in
           {
-
             packages =
               let
                 bitsnpicas = pkgs.callPackage ./nix/bitsnpicas.nix { };
@@ -59,36 +69,38 @@
             devShells.default = pkgs.mkShell {
               packages = with pkgs; [
                 go
-                gotools
+                go-tools
                 taplo
                 # lsps
-                nil
-                nixd
                 marksman
                 gopls
                 # formatters
-                nixfmt-rfc-style
                 mdformat
-                python3Packages.mdformat-gfm
-                python3Packages.mdformat-gfm-alerts
+                (python3.withPackages mdformat-plugins)
                 golines
+                yamlfmt
+                actionlint
                 # linters
-                statix
-                deadnix
                 errcheck
               ];
             };
 
-            formatter = pkgs.writeShellApplication {
-              name = "linter";
-              runtimeInputs = self'.devShells.default.nativeBuildInputs;
-              text = ''
-                find . -iname '*.nix' -exec nixfmt {} \; -exec deadnix -e {} \; -exec statix fix {} \;
-                find . -iname '*.toml' -exec taplo fmt {} \;
-                find . -iname '*.md' -exec mdformat {} \;
-                find . -iname '*.go' -exec golines {} \;
-                errcheck
-              '';
+            treefmt = {
+              projectRootFile = "flake.nix";
+              programs = {
+                nixfmt.enable = true;
+                statix.enable = true;
+                deadnix.enable = true;
+                yamlfmt.enable = true;
+                actionlint.enable = true;
+                mdformat = {
+                  enable = true;
+                  plugins = mdformat-plugins;
+                  includes = [ "docs/**/*.md" ];
+                };
+                taplo.enable = true;
+                golines.enable = true;
+              };
             };
           };
       }

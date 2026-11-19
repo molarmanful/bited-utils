@@ -29,9 +29,9 @@ jobs:
         with:
           file: result/share/fonts/*
           file_glob: true
-      # - uses: DeterminateSystems/flakehub-push@main
-      #   with:
-      #     visibility: public
-      #     name: ghost/FIXME
-      #     tag: ${{ inputs.tag }}
-      #     include-output-paths: true
+    # - uses: DeterminateSystems/flakehub-push@main
+    #   with:
+    #     visibility: public
+    #     name: ghost/FIXME
+    #     tag: ${{ inputs.tag }}
+    #     include-output-paths: true

@@ -14,10 +14,23 @@ func (bdf *BDF) BDF2W(w io.Writer) error {
 	if _, err := fmt.Fprintln(w, "FONT", bdf.XLFD.String()); err != nil {
 		return err
 	}
-	if _, err := fmt.Fprintln(w, "SIZE", bdf.XLFD.PtSize()/10, bdf.XLFD.Res.X, bdf.XLFD.Res.Y); err != nil {
+	if _, err := fmt.Fprintln(
+		w,
+		"SIZE",
+		bdf.XLFD.PtSize()/10,
+		bdf.XLFD.Res.X,
+		bdf.XLFD.Res.Y,
+	); err != nil {
 		return err
 	}
-	if _, err := fmt.Fprintln(w, "FONTBOUNDINGBOX", bdf.bbx.W, bdf.bbx.H, bdf.bbx.X, bdf.bbx.Y); err != nil {
+	if _, err := fmt.Fprintln(
+		w,
+		"FONTBOUNDINGBOX",
+		bdf.bbx.W,
+		bdf.bbx.H,
+		bdf.bbx.X,
+		bdf.bbx.Y,
+	); err != nil {
 		return err
 	}
 	if err := bdf.WriteProps(w); err != nil {
